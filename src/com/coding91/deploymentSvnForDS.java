@@ -6,6 +6,10 @@
 
 package com.coding91;
 
+import java.util.HashMap;
+import java.util.Map;
+import sync.Sync;
+
 /**
  *
  * @author Administrator
@@ -60,18 +64,18 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addComponent(sourcejLabel)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sourcejButton)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addContainerGap(212, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sourcejButton)
-                    .addComponent(sourcejLabel))
-                .addContainerGap(235, Short.MAX_VALUE))
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(sourcejLabel)
+                    .addComponent(sourcejButton))
+                .addContainerGap(239, Short.MAX_VALUE))
         );
 
         pack();
@@ -79,7 +83,11 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
     private void sourcejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sourcejButtonActionPerformed
         // TODO add your handling code here:
-        
+        Map<String, String> args = new HashMap<>();
+        args.put("source", "D:\\www\\test\\testsyc\\source");
+        args.put("target", "D:\\www\\test\\testsyc\\target");
+        args.put("force", "y");
+        Sync.syncMain(args);
     }//GEN-LAST:event_sourcejButtonActionPerformed
 
     /**

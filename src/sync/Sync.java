@@ -21,6 +21,7 @@ package sync;
 
 import java.io.Console;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.PatternSyntaxException;
 
@@ -243,12 +245,97 @@ public class Sync {
      *
      * @param args Command-line argument strings
      */
-    public static void main(
-            final String[] args) {
-        syncMain(args, true);
+    public static void main(final String[] args) {
+        syncMain(args);
     }
 
-    public static void syncMain(String[] args, boolean fromMain) {
+    public static int syncMain(Map<String, String> args) {
+        /* initialize standard output and error streams */
+        final Console console = System.console();
+
+        if (args.containsKey("stdout")) {
+            String stdoutConf = args.get("stdout");
+            Sync.stdout = new PrintWriter(System.out);
+        } else {
+            if (console == null) {
+                Sync.stdout = new PrintWriter(System.out);
+            } else {
+                Sync.stdout = console.writer();
+            }
+        }
+        if (args.containsKey("stderr")) {
+            String stderrConf = args.get("stderr");
+            Sync.stderr = new PrintWriter(System.err);
+        } else {
+            if (console == null) {
+                Sync.stderr = new PrintWriter(System.err);
+            } else {
+                Sync.stderr = console.writer();
+            }
+        }
+
+        /* display program title */
+        SyncIO.printFlush("\n" + Sync.PROGRAM_TITLE);
+
+        /* exit status code to be reported to the OS when exiting (default = 0) */
+        int exitCode = 0;
+
+        try {
+            /* determine if this is a Windows OS */
+            Sync.isWindowsOperatingSystem = System.getProperty("os.name").toUpperCase(Locale.ENGLISH).contains("WINDOWS")
+                    && (File.separatorChar == '\\');
+
+            /* process command-line arguments and configure synchronization parameters */
+            processArguments(args);
+
+            SyncIO.printLog("\n" + Sync.PROGRAM_TITLE);
+
+            /* perform synchronization */
+            switch (Sync.syncMode) {
+                case DIRECTORY:
+                    syncDirectory();
+                    break;
+
+                case FILE:
+                    syncFile();
+                    break;
+            }
+
+            SyncIO.print("\n\nSync is done!\n\n");
+        } catch (TerminatingException e) {
+            /* terminating exception thrown; proceed to abort program */
+            /* (this should be the only place where a TerminatingException is caught) */
+
+            exitCode = e.getExitCode();
+
+            if (exitCode != 0) {
+                /* abnormal termination; SyncIO.print error message */
+                SyncIO.printToErr("\n\nERROR: " + e.getMessage() + "\n");
+                SyncIO.print("\nSync aborted.\n\n");
+            }
+        } catch (Exception e) {
+            /* catch all other exceptions; proceed to abort program */
+            SyncIO.printToErr("\n\nERROR: An unexpected error has occurred:\n"
+                    + getExceptionMessage(e) + "\n");
+
+            exitCode = 1;
+            SyncIO.print("\nSync aborted.\n\n");
+        } finally {
+            /* perform clean-up before exiting */
+            Sync.stdout.flush();
+            Sync.stderr.flush();
+
+            if (Sync.log != null) {
+                Sync.log.flush();
+                Sync.log.close();
+                Sync.log = null;
+            }
+        }
+
+        return exitCode;
+    }
+
+    public static void syncMain(String[] args) {
         /* initialize standard output and error streams */
         final Console console = System.console();
 
@@ -272,11 +359,7 @@ public class Sync {
                     && (File.separatorChar == '\\');
 
             /* process command-line arguments and configure synchronization parameters */
-            if (fromMain) {
-                processArguments(args);
-            } else {
-                processArguments(args);
-            }
+            processArguments(args);
 
             SyncIO.printLog("\n" + Sync.PROGRAM_TITLE);
 
@@ -349,7 +432,7 @@ public class Sync {
 
         try {
             Sync.source = Sync.source.getCanonicalFile();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new TerminatingException("Source \"" + Sync.source.getPath() + "\" is not a valid directory/file:\n" + getExceptionMessage(e) + howHelp);
         }
 
@@ -358,7 +441,7 @@ public class Sync {
 
         try {
             Sync.target = Sync.target.getCanonicalFile();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new TerminatingException("Target \"" + Sync.target.getPath() + "\" is not a valid directory/file:\n" + getExceptionMessage(e) + howHelp);
         }
 
@@ -437,7 +520,7 @@ public class Sync {
 
                 try {
                     Sync.logName = f.getCanonicalPath();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     throw new TerminatingException("Failed to create log file \"" + f.getPath() + "\":\n" + getExceptionMessage(e) + howHelp);
                 }
             } else if (sw.startsWith("--log:") || sw.startsWith("-l:")) {
@@ -460,7 +543,7 @@ public class Sync {
 
                 try {
                     Sync.logName = f.getCanonicalPath();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     throw new TerminatingException("Failed to create log file \"" + f.getPath() + "\":\n" + getExceptionMessage(e) + howHelp);
                 }
             } else if ("--norecurse".equals(sw) || "-r".equals(sw)) {
@@ -485,7 +568,7 @@ public class Sync {
 
                 try {
                     Sync.matchTimeTolerance = Long.parseLong(a);
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     Sync.matchTimeTolerance = -1L;
                 }
 
@@ -549,7 +632,7 @@ public class Sync {
                 }
             } else if (sw.startsWith("--delete:")) {
                 /* delete unmatched target files/directories? */
-                if (syncMode != syncMode.DIRECTORY) {
+                if (syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --delete can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -559,12 +642,15 @@ public class Sync {
                     throw new TerminatingException("Empty --delete parameter:\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
                 }
 
-                if ("y".equals(a)) {
-                    Sync.defaultActionOnDeleteUnmatched = 'Y';
-                } else if ("n".equals(a)) {
-                    Sync.defaultActionOnDeleteUnmatched = 'N';
-                } else {
-                    throw new TerminatingException("Invalid --delete parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
+                switch (a) {
+                    case "y":
+                        Sync.defaultActionOnDeleteUnmatched = 'Y';
+                        break;
+                    case "n":
+                        Sync.defaultActionOnDeleteUnmatched = 'N';
+                        break;
+                    default:
+                        throw new TerminatingException("Invalid --delete parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
                 }
             } else if ("--force".equals(sw)) {
                 /* equivalent to the combination: "--rename:y --synctime:y --overwrite:y --delete:y" */
@@ -574,14 +660,14 @@ public class Sync {
                 Sync.defaultActionOnDeleteUnmatched = 'Y';
             } else if ("--path".equals(sw) || "-p".equals(sw)) {
                 /* filter relative pathnames instead of filenames (e.g. "work\report\jan.txt" instead of "jan.txt") */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --path can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
                 Sync.filterRelativePathname = true;
             } else if ("--lower".equals(sw) || "-w".equals(sw)) {
                 /* use lower case names for filtering (e.g. "HelloWorld2007.JPG" ---> "helloworld2007.jpg") */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --lower can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -591,7 +677,7 @@ public class Sync {
                 regexFilter = true;
             } else if (sw.startsWith("--include:") || sw.startsWith("-i:")) {
                 /* include source and target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --include can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -605,7 +691,7 @@ public class Sync {
                 includeTarget.add(a);
             } else if (sw.startsWith("--exclude:") || sw.startsWith("-x:")) {
                 /* exclude source and target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --exclude can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -619,7 +705,7 @@ public class Sync {
                 excludeTarget.add(a);
             } else if (sw.startsWith("--includesource:") || sw.startsWith("-is:")) {
                 /* include source files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --includesource can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -632,7 +718,7 @@ public class Sync {
                 includeSource.add(a);
             } else if (sw.startsWith("--excludesource:") || sw.startsWith("-xs:")) {
                 /* exclude source files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --excludesource can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -645,7 +731,7 @@ public class Sync {
                 excludeSource.add(a);
             } else if (sw.startsWith("--includetarget:") || sw.startsWith("-it:")) {
                 /* include target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --includetarget can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -658,7 +744,7 @@ public class Sync {
                 includeTarget.add(a);
             } else if (sw.startsWith("--excludetarget:") || sw.startsWith("-xt:")) {
                 /* exclude target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --excludetarget can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
@@ -849,13 +935,13 @@ public class Sync {
         if (Sync.logName != null) {
             try {
                 Sync.log = new PrintWriter(Sync.logName);
-            } catch (Exception e) {
+            } catch (FileNotFoundException e) {
                 throw new TerminatingException("Failed to create log file \"" + Sync.logName + "\":\n" + getExceptionMessage(e) + howHelp);
             }
         }
 
         /* disable filename matching for FILE synchronization */
-        if (Sync.syncMode == Sync.syncMode.FILE) {
+        if (Sync.syncMode == SyncMode.FILE) {
             Sync.matchName = false;
         }
 
@@ -949,13 +1035,17 @@ public class Sync {
         /* process command-line switches */
         args.remove("source");
         args.remove("target");
-        if (args.containsKey("simulate") || args.containsKey("s")) {/* simulate only; do not modify target */
-            Sync.simulateOnly = true;
-            Sync.ignoreWarnings = true;
-        } else if (args.containsKey("ignorewarnings")) {/* ignore warnings; do not pause  */
-            Sync.ignoreWarnings = true;
-        } else if (args.containsKey("log") || args.containsKey("l")) {
-            /* create log file "sync.yyyyMMdd-HHmmss.log" */
+        if (args.size() > 0) {
+
+            if (args.containsKey("simulate") || args.containsKey("s")) {/* simulate only; do not modify target */
+
+                Sync.simulateOnly = true;
+                Sync.ignoreWarnings = true;
+            } else if (args.containsKey("ignorewarnings")) {/* ignore warnings; do not pause  */
+
+                Sync.ignoreWarnings = true;
+            } else if (args.containsKey("log") || args.containsKey("l")) {
+                /* create log file "sync.yyyyMMdd-HHmmss.log" */
                 if (Sync.logName != null) {
                     throw new TerminatingException("Switch --log can be specified at most once." + howHelp);
                 }
@@ -985,35 +1075,26 @@ public class Sync {
 
                 try {
                     Sync.logName = f.getCanonicalPath();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     throw new TerminatingException("Failed to create log file \"" + f.getPath() + "\":\n" + getExceptionMessage(e) + howHelp);
                 }
-        }
-        for (int i = 0, n = args.length - 2; i < n; i++) {
-            final String sw = args[i];
-
-            if ("--simulate".equals(sw) || "-s".equals(sw)) {
-                /* simulate only; do not modify target */
-                Sync.simulateOnly = true;
-                Sync.ignoreWarnings = true;
-            } else if ("--ignorewarnings".equals(sw)) {
-                /* ignore warnings; do not pause  */
-                Sync.ignoreWarnings = true;
-            } else if ("--log".equals(sw) || "-l".equals(sw)) {
-                
-            } else if (sw.startsWith("--log:") || sw.startsWith("-l:")) {
+            } else if (args.containsKey("customLog") || args.containsKey("cl")) {
+                String sw;
+                if (args.containsKey("customLog")) {
+                    sw = args.get("customLog");
+                } else {
+                    sw = args.get("cl");
+                }
                 /* create log file with the specified name */
                 if (Sync.logName != null) {
                     throw new TerminatingException("Switch --log can be specified at most once." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --log parameter:\nA log filename must be specified, e.g. --log:\"record.txt\"." + howHelp);
                 }
 
-                File f = new File(a);
+                File f = new File(sw);
 
                 if (f.exists()) {
                     throw new TerminatingException("Log file \"" + f.getPath() + "\" already exists:\nA nonexistent file must be specified." + howHelp);
@@ -1021,48 +1102,46 @@ public class Sync {
 
                 try {
                     Sync.logName = f.getCanonicalPath();
-                } catch (Exception e) {
+                } catch (IOException e) {
                     throw new TerminatingException("Failed to create log file \"" + f.getPath() + "\":\n" + getExceptionMessage(e) + howHelp);
                 }
-            } else if ("--norecurse".equals(sw) || "-r".equals(sw)) {
+            } else if (args.containsKey("norecurse") || args.containsKey("r")) {
                 /* do not recurse into subdirectories */
                 Sync.noRecurse = true;
-            } else if ("--noname".equals(sw) || "-n".equals(sw)) {
+            } else if (args.containsKey("noname") || args.containsKey("n")) {
                 /* do not use filename for file-matching */
                 Sync.matchName = false;
-            } else if ("--notime".equals(sw) || "-t".equals(sw)) {
+            } else if (args.containsKey("notime") || args.containsKey("t")) {
                 /* do not use last-modified time for file-matching */
                 Sync.matchTime = false;
-            } else if ("--nocrc".equals(sw) || "-c".equals(sw)) {
+            } else if (args.containsKey("nocrc") || args.containsKey("c")) {
                 /* do not use CRC-32 checksum for file-matching */
                 Sync.matchCrc = false;
-            } else if (sw.startsWith("--time:")) {
+            } else if (args.containsKey("customTime")) {
                 /* use specified time-tolerance (in milliseconds) for file-matching */
-                final String a = sw.substring(sw.indexOf(':') + 1);
+                String sw = args.get("customTime");
 
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --time parameter:\nTime-tolerance (in milliseconds) must be a nonnegative integer, e.g. --time:2000." + howHelp);
                 }
 
                 try {
-                    Sync.matchTimeTolerance = Long.parseLong(a);
-                } catch (Exception e) {
+                    Sync.matchTimeTolerance = Long.parseLong(sw);
+                } catch (NumberFormatException e) {
                     Sync.matchTimeTolerance = -1L;
                 }
 
                 if (Sync.matchTimeTolerance < 0L) {
                     throw new TerminatingException("Invalid --time parameter \""
-                            + a + "\":\nTime-tolerance (in milliseconds) must be a nonnegative integer, e.g. --time:2000." + howHelp);
+                            + sw + "\":\nTime-tolerance (in milliseconds) must be a nonnegative integer, e.g. --time:2000." + howHelp);
                 }
-            } else if (sw.startsWith("--rename:")) {
-                /* rename matched target files? */
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+            } else if (args.containsKey("rename")) {
+                String sw = args.get("rename");
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --rename parameter:\nParameter must be \"y\" or \"n\", e.g. --rename:y." + howHelp);
                 }
 
-                switch (a) {
+                switch (sw) {
                     case "y":
                         Sync.defaultActionOnRenameMatched = 'Y';
                         break;
@@ -1070,17 +1149,15 @@ public class Sync {
                         Sync.defaultActionOnRenameMatched = 'N';
                         break;
                     default:
-                        throw new TerminatingException("Invalid --rename parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --rename:y." + howHelp);
+                        throw new TerminatingException("Invalid --rename parameter \"" + sw + "\":\nParameter must be \"y\" or \"n\", e.g. --rename:y." + howHelp);
                 }
-            } else if (sw.startsWith("--synctime:")) {
-                /* synchronize time of matched target files? */
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+            } else if (args.containsKey("synctime")) {
+                String sw = args.get("synctime");
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --synctime parameter:\nParameter must be \"y\" or \"n\", e.g. --synctime:y." + howHelp);
                 }
 
-                switch (a) {
+                switch (sw) {
                     case "y":
                         Sync.defaultActionOnTimeSyncMatched = 'Y';
                         break;
@@ -1088,17 +1165,15 @@ public class Sync {
                         Sync.defaultActionOnTimeSyncMatched = 'N';
                         break;
                     default:
-                        throw new TerminatingException("Invalid --synctime parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --synctime:y." + howHelp);
+                        throw new TerminatingException("Invalid --synctime parameter \"" + sw + "\":\nParameter must be \"y\" or \"n\", e.g. --synctime:y." + howHelp);
                 }
-            } else if (sw.startsWith("--overwrite:")) {
-                /* overwrite existing target files? */
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+            } else if (args.containsKey("overwrite")) {
+                String sw = args.get("overwrite");
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --overwrite parameter:\nParameter must be \"y\" or \"n\", e.g. --overwrite:y." + howHelp);
                 }
 
-                switch (a) {
+                switch (sw) {
                     case "y":
                         Sync.defaultActionOnOverwrite = 'Y';
                         break;
@@ -1106,133 +1181,168 @@ public class Sync {
                         Sync.defaultActionOnOverwrite = 'N';
                         break;
                     default:
-                        throw new TerminatingException("Invalid --overwrite parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --overwrite:y." + howHelp);
+                        throw new TerminatingException("Invalid --overwrite parameter \"" + sw + "\":\nParameter must be \"y\" or \"n\", e.g. --overwrite:y." + howHelp);
                 }
-            } else if (sw.startsWith("--delete:")) {
+            } else if (args.containsKey("delete")) {
                 /* delete unmatched target files/directories? */
-                if (syncMode != syncMode.DIRECTORY) {
+                String sw = args.get("delete");
+                if (syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --delete can be used for only DIRECTORY synchronization." + howHelp);
                 }
-
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --delete parameter:\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
                 }
 
-                if ("y".equals(a)) {
-                    Sync.defaultActionOnDeleteUnmatched = 'Y';
-                } else if ("n".equals(a)) {
-                    Sync.defaultActionOnDeleteUnmatched = 'N';
-                } else {
-                    throw new TerminatingException("Invalid --delete parameter \"" + a + "\":\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
+                switch (sw) {
+                    case "y":
+                        Sync.defaultActionOnDeleteUnmatched = 'Y';
+                        break;
+                    case "n":
+                        Sync.defaultActionOnDeleteUnmatched = 'N';
+                        break;
+                    default:
+                        throw new TerminatingException("Invalid --delete parameter \"" + sw + "\":\nParameter must be \"y\" or \"n\", e.g. --delete:y." + howHelp);
                 }
-            } else if ("--force".equals(sw)) {
+            } else if (args.containsKey("force")) {
                 /* equivalent to the combination: "--rename:y --synctime:y --overwrite:y --delete:y" */
                 Sync.defaultActionOnRenameMatched = 'Y';
                 Sync.defaultActionOnTimeSyncMatched = 'Y';
                 Sync.defaultActionOnOverwrite = 'Y';
                 Sync.defaultActionOnDeleteUnmatched = 'Y';
-            } else if ("--path".equals(sw) || "-p".equals(sw)) {
+            } else if (args.containsKey("path") || args.containsKey("p")) {
                 /* filter relative pathnames instead of filenames (e.g. "work\report\jan.txt" instead of "jan.txt") */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --path can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
                 Sync.filterRelativePathname = true;
-            } else if ("--lower".equals(sw) || "-w".equals(sw)) {
+            } else if (args.containsKey("lower") || args.containsKey("w")) {
                 /* use lower case names for filtering (e.g. "HelloWorld2007.JPG" ---> "helloworld2007.jpg") */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --lower can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
                 Sync.filterLowerCase = true;
-            } else if ("--regex".equals(sw)) {
+            } else if (args.containsKey("regex")) {
                 /* use REGEX instead of GLOB filename filters */
                 regexFilter = true;
-            } else if (sw.startsWith("--include:") || sw.startsWith("-i:")) {
+            } else if (args.containsKey("customInclude") || args.containsKey("ci")) {
                 /* include source and target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customInclude")) {
+                    sw = args.get("customInclude");
+                } else {
+                    sw = args.get("ci");
+                }
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --include can be used for only DIRECTORY synchronization." + howHelp);
                 }
-
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --include parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --include:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                includeSource.add(a);
-                includeTarget.add(a);
-            } else if (sw.startsWith("--exclude:") || sw.startsWith("-x:")) {
+                includeSource.add(sw);
+                includeTarget.add(sw);
+            } else if (args.containsKey("customExclude") || args.containsKey("cx")) {
                 /* exclude source and target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customExclude")) {
+                    sw = args.get("customExclude");
+                } else {
+                    sw = args.get("cx");
+                }
+
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --exclude can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --exclude parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --exclude:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                excludeSource.add(a);
-                excludeTarget.add(a);
-            } else if (sw.startsWith("--includesource:") || sw.startsWith("-is:")) {
+                excludeSource.add(sw);
+                excludeTarget.add(sw);
+            } else if (args.containsKey("customIncludesource") || args.containsKey("is")) {
                 /* include source files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customIncludesource")) {
+                    sw = args.get("customIncludesource");
+                } else {
+                    sw = args.get("is");
+                }
+
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --includesource can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --includesource parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --includesource:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                includeSource.add(a);
-            } else if (sw.startsWith("--excludesource:") || sw.startsWith("-xs:")) {
+                includeSource.add(sw);
+            } else if (args.containsKey("customExcludesource") || args.containsKey("xs")) {
                 /* exclude source files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customExcludesource")) {
+                    sw = args.get("customExcludesource");
+                } else {
+                    sw = args.get("xs");
+                }
+
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --excludesource can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --excludesource parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --excludesource:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                excludeSource.add(a);
-            } else if (sw.startsWith("--includetarget:") || sw.startsWith("-it:")) {
+                excludeSource.add(sw);
+            } else if (args.containsKey("customIncludetarget") || args.containsKey("it")) {
                 /* include target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customIncludetarget")) {
+                    sw = args.get("customIncludetarget");
+                } else {
+                    sw = args.get("it");
+                }
+
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --includetarget can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --includetarget parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --includetarget:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                includeTarget.add(a);
-            } else if (sw.startsWith("--excludetarget:") || sw.startsWith("-xt:")) {
+                includeTarget.add(sw);
+            } else if (args.containsKey("customExcludetarget") || args.containsKey("xt")) {
                 /* exclude target files/directories with names matching specified GLOB/REGEX expression */
-                if (Sync.syncMode != Sync.syncMode.DIRECTORY) {
+                String sw;
+                if (args.containsKey("customExcludetarget")) {
+                    sw = args.get("customExcludetarget");
+                } else {
+                    sw = args.get("xt");
+                }
+
+                if (Sync.syncMode != SyncMode.DIRECTORY) {
                     throw new TerminatingException("Switch --excludetarget can be used for only DIRECTORY synchronization." + howHelp);
                 }
 
-                final String a = sw.substring(sw.indexOf(':') + 1);
-
-                if (a.isEmpty()) {
+                if (sw.isEmpty()) {
                     throw new TerminatingException("Empty --excludetarget parameter:\nA GLOB (or REGEX) expression must be specified, e.g. --excludetarget:\"*.{mp3,jpg}\"." + howHelp);
                 }
 
-                excludeTarget.add(a);
+                excludeTarget.add(sw);
             } else {
                 /* invalid switch */
-                throw new TerminatingException("\"" + sw + "\" is not a valid switch." + howHelp);
+                StringBuilder sw = new StringBuilder();
+                Set<String> keySet = args.keySet();
+                for (String str : keySet) {
+                    sw.append(str).append(" ");
+                }
+
+                throw new TerminatingException("\"" + sw.toString() + "\" is not a valid switch." + howHelp);
             }
         }
 
@@ -1410,13 +1520,13 @@ public class Sync {
         if (Sync.logName != null) {
             try {
                 Sync.log = new PrintWriter(Sync.logName);
-            } catch (Exception e) {
+            } catch (FileNotFoundException e) {
                 throw new TerminatingException("Failed to create log file \"" + Sync.logName + "\":\n" + getExceptionMessage(e) + howHelp);
             }
         }
 
         /* disable filename matching for FILE synchronization */
-        if (Sync.syncMode == Sync.syncMode.FILE) {
+        if (Sync.syncMode == SyncMode.FILE) {
             Sync.matchName = false;
         }
 
@@ -1453,32 +1563,30 @@ public class Sync {
 
         /* display log file, if any */
         if (Sync.log != null) {
-            s.append("\n\nLog file: \"" + Sync.logName + "\"");
+            s.append("\n\nLog file: \"").append(Sync.logName).append("\"");
         }
 
         /* display source and target directories */
-        s.append("\n\nSource directory: \"" + Sync.sourceName + "\""
-                + "\nTarget directory: \"" + Sync.targetName + "\"\n");
+        s.append("\n\nSource directory: \"").append(Sync.sourceName).append("\"" + "\nTarget directory: \"").append(Sync.targetName).append("\"\n");
 
         /* display file-matching attributes */
-        s.append("\nFile-matching attributes: " + Sync.matchNstcString + "\n");
+        s.append("\nFile-matching attributes: ").append(Sync.matchNstcString).append("\n");
 
         if (Sync.matchTimeTolerance > 0L) {
-            s.append(", with " + Sync.matchTimeTolerance + "-millisecond time-tolerance\n");
+            s.append(", with ").append(Sync.matchTimeTolerance).append("-millisecond time-tolerance\n");
         }
 
         /* display source and target file/directorry filters, if any */
         if (Sync.sourceFilter != null) {
-            s.append("\nSource file/directory filter: " + Sync.sourceFilter.toString());
+            s.append("\nSource file/directory filter: ").append(Sync.sourceFilter.toString());
         }
 
         if (Sync.targetFilter != null) {
-            s.append("\nTarget file/directory filter: " + Sync.targetFilter.toString());
+            s.append("\nTarget file/directory filter: ").append(Sync.targetFilter.toString());
         }
 
         if ((Sync.sourceFilter != null) || (Sync.targetFilter != null)) {
-            s.append("\nFilter mode: " + (Sync.filterLowerCase ? "lower-case " : "")
-                    + (Sync.filterRelativePathname ? "relative pathname" : "filename") + "\n");
+            s.append("\nFilter mode: ").append(Sync.filterLowerCase ? "lower-case " : "").append(Sync.filterRelativePathname ? "relative pathname" : "filename").append("\n");
         }
 
         SyncIO.printFlush(s.toString());
@@ -1520,8 +1628,8 @@ public class Sync {
         /* - contentStack contains directories whose contents are to be synced   */
         /* - timeStack contains directories whose time should be synced after    */
         /*   processing all their contents                                       */
-        final Deque<FilePair> contentStack = new ArrayDeque<FilePair>();
-        final Deque<FilePair> timeStack = new ArrayDeque<FilePair>();
+        final Deque<FilePair> contentStack = new ArrayDeque<>();
+        final Deque<FilePair> timeStack = new ArrayDeque<>();
 
         final FilePair marker = new FilePair(null, null); // special marker
 
@@ -1636,8 +1744,8 @@ public class Sync {
                 continue SyncNextDirectory;
             }
 
-            final List<FileUnit> sFiles = new ArrayList<FileUnit>();
-            final List<FileUnit> sDirs = new ArrayList<FileUnit>();
+            final List<FileUnit> sFiles = new ArrayList<>();
+            final List<FileUnit> sDirs = new ArrayList<>();
 
             for (File f : sFileList) {
                 final FileUnit u = new FileUnit(f);
@@ -1679,8 +1787,8 @@ public class Sync {
              */
 
             /* get target files and subdirectories */
-            final List<FileUnit> tFiles = new ArrayList<FileUnit>();
-            final List<FileUnit> tDirs = new ArrayList<FileUnit>();
+            final List<FileUnit> tFiles = new ArrayList<>();
+            final List<FileUnit> tDirs = new ArrayList<>();
 
             if (targetDir.isDirectory()) {
                 /* target subdirectory already exists; get its contents */
@@ -1824,13 +1932,13 @@ public class Sync {
             final boolean uniqueMatching = performSourceTargetFileMatching(sFiles, tFiles);
 
             /* matched source files, to be time-synced or renamed if necessary */
-            final List<FileUnit> sFilesMatched = new ArrayList<FileUnit>();
+            final List<FileUnit> sFilesMatched = new ArrayList<>();
 
             /* unmatched source files, to be copied */
-            final List<FileUnit> sFilesUnmatched = new ArrayList<FileUnit>();
+            final List<FileUnit> sFilesUnmatched = new ArrayList<>();
 
             /* unmatched target files and subdirectories, to be deleted */
-            final Map<File, FileUnit> tFilesDirsUnmatched = new TreeMap<File, FileUnit>();
+            final Map<File, FileUnit> tFilesDirsUnmatched = new TreeMap<>();
 
             /* process source files */
             for (FileUnit u : sFiles) {
@@ -2011,7 +2119,7 @@ public class Sync {
 
                 if (syncName) {
                     /* determine actual file renaming operations */
-                    final List<FilePair> renamePairs = new ArrayList<FilePair>();
+                    final List<FilePair> renamePairs = new ArrayList<>();
 
                     /* get desired source-target rename pair */
                     for (FileUnit u : sFilesMatched) {
@@ -2106,7 +2214,7 @@ public class Sync {
 
                                 try {
                                     pathname = u.file.getCanonicalPath();
-                                } catch (Exception e) {
+                                } catch (IOException e) {
                                     pathname = null;
                                 }
 
@@ -2197,30 +2305,22 @@ public class Sync {
         report.append("\n\nSYNCHRONIZATION REPORT");
 
         if (Sync.reportNumWarnings > 0) {
-            report.append("\n " + Sync.reportNumWarnings + ((Sync.reportNumWarnings == 1) ? " warning" : " warnings") + " encountered.");
+            report.append("\n ").append(Sync.reportNumWarnings).append((Sync.reportNumWarnings == 1) ? " warning" : " warnings").append(" encountered.");
         }
 
-        report.append(
-                "\n No. of source subdirectories scanned          : " + reportNumSourceDirsScanned
-                + "\n No. of source files scanned                   : " + reportNumSourceFilesScanned
-                + "\n No. of target files scanned                   : " + reportNumTargetFilesScanned
-                + "\n No. of source files matched [M]               : " + reportNumSourceFilesMatched);
+        report.append("\n No. of source subdirectories scanned          : ").append(reportNumSourceDirsScanned).append("\n No. of source files scanned                   : ").append(reportNumSourceFilesScanned).append("\n No. of target files scanned                   : ").append(reportNumTargetFilesScanned).append("\n No. of source files matched [M]               : ").append(
+                reportNumSourceFilesMatched);
 
         if (reportNumSyncTime > 0) {
-            report.append("\n No. of successful time-sync operations [T]    : "
-                    + reportNumSyncTimeSuccess + " of " + reportNumSyncTime);
+            report.append("\n No. of successful time-sync operations [T]    : ").append(reportNumSyncTimeSuccess).append(" of ").append(reportNumSyncTime);
         }
 
         if (reportNumRenameOperations > 0) {
-            report.append("\n No. of successful file rename operations [R]  : "
-                    + reportNumRenameOperationsSuccess + " of " + reportNumRenameOperations);
+            report.append("\n No. of successful file rename operations [R]  : ").append(reportNumRenameOperationsSuccess).append(" of ").append(reportNumRenameOperations);
         }
 
-        report.append(
-                "\n No. of unmatched source files [C]             : " + reportNumUnmatchedSourceFiles
-                + " (" + reportNumUnmatchedSourceFilesCopied + " copied)"
-                + "\n No. of unmatched target files/directories [D] : " + reportNumUnmatchedTargetFilesDirs
-                + " (" + reportNumUnmatchedTargetFilesDirsDeleted + " deleted)");
+        report.append("\n No. of unmatched source files [C]             : ").append(reportNumUnmatchedSourceFiles).append(" (").append(reportNumUnmatchedSourceFilesCopied).append(" copied)" + "\n No. of unmatched target files/directories [D] : ").append(reportNumUnmatchedTargetFilesDirs).append(" (").append(reportNumUnmatchedTargetFilesDirsDeleted).append(
+                " deleted)");
 
         SyncIO.print(report.toString());
     }
@@ -2240,18 +2340,17 @@ public class Sync {
 
         /* display log file, if any */
         if (Sync.log != null) {
-            s.append("\n\nLog file: \"" + Sync.logName + "\"");
+            s.append("\n\nLog file: \"").append(Sync.logName).append("\"");
         }
 
         /* display source and target directories */
-        s.append("\n\nSource file: \"" + Sync.sourceName + "\""
-                + "\nTarget file: \"" + Sync.targetName + "\"\n");
+        s.append("\n\nSource file: \"").append(Sync.sourceName).append("\"" + "\nTarget file: \"").append(Sync.targetName).append("\"\n");
 
         /* display file-matching attributes */
-        s.append("\nFile-matching attributes: " + Sync.matchNstcString);
+        s.append("\nFile-matching attributes: ").append(Sync.matchNstcString);
 
         if (Sync.matchTimeTolerance > 0L) {
-            s.append(",\n with " + Sync.matchTimeTolerance + "-millisecond time-tolerance");
+            s.append(",\n with ").append(Sync.matchTimeTolerance).append("-millisecond time-tolerance");
         }
 
         SyncIO.printFlush(s.toString());
@@ -2569,7 +2668,7 @@ public class Sync {
     private static List<FilePair> getRenameOperations(
             final List<FilePair> renamePairs) {
         /* determine target files, check validity, and detect clashes */
-        final Map<File, FilePair> targetMap = new TreeMap<File, FilePair>();
+        final Map<File, FilePair> targetMap = new TreeMap<>();
 
         for (FilePair p : renamePairs) {
             /* check for clash (i.e. nonunique target filenames) */
@@ -2585,8 +2684,8 @@ public class Sync {
         }
 
         /* determine actual renaming sequence */
-        final Map<File, LinkedList<FilePair>> sequenceHeads = new TreeMap<File, LinkedList<FilePair>>();
-        final Map<File, LinkedList<FilePair>> sequenceTails = new TreeMap<File, LinkedList<FilePair>>();
+        final Map<File, LinkedList<FilePair>> sequenceHeads = new TreeMap<>();
+        final Map<File, LinkedList<FilePair>> sequenceTails = new TreeMap<>();
 
         for (FilePair p : renamePairs) {
             /* look for a sequence head with source = this target */
@@ -2597,7 +2696,7 @@ public class Sync {
 
             if ((headSequence == null) && (tailSequence == null)) {
                 /* add this file rename pair as a new sequence */
-                final LinkedList<FilePair> s = new LinkedList<FilePair>();
+                final LinkedList<FilePair> s = new LinkedList<>();
                 s.add(p);
                 sequenceHeads.put(p.source, s);
                 sequenceTails.put(p.target, s);
@@ -2665,7 +2764,7 @@ public class Sync {
         }
 
         /* prepare return value */
-        final List<FilePair> renameOperations = new ArrayList<FilePair>();
+        final List<FilePair> renameOperations = new ArrayList<>();
 
         for (LinkedList<FilePair> s : sequenceHeads.values()) {
             /* get reversed order of rename file pairs within the sequence */
@@ -2737,8 +2836,7 @@ public class Sync {
             final Exception e) {
         final StringBuilder s = new StringBuilder();
 
-        s.append("\nJava exception information (" + e.getClass()
-                + "):\n\"" + e.getMessage() + "\"");
+        s.append("\nJava exception information (").append(e.getClass()).append("):\n\"").append(e.getMessage()).append("\"");
 
         for (StackTraceElement t : e.getStackTrace()) {
             s.append("\n  at ");
