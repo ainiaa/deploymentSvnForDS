@@ -11,13 +11,19 @@
  */
 package com.coding91;
 
-import org.tmatesoft.svn.examples.wc.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -36,8 +42,9 @@ import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.tmatesoft.svn.examples.wc.*;
 
-public class WorkingCopyImprove {
+public final class WorkingCopyImprove {
 
     private static SVNClientManager ourClientManager;
     private static ISVNEventHandler myCommitEventHandler;
@@ -56,19 +63,123 @@ public class WorkingCopyImprove {
         }
     }
 
+    public Map<String, Map<String, String>> conf;
+
+    public Map<String, String> getConfByEnv(String env) {
+        if (env.isEmpty()) {
+            env = "en_us";
+        }
+        String[] keyArray = new String[]{"svn.localPath", "svn.username", "svn.password", "svn.url"};
+        if (conf == null || !conf.containsKey(env)) {
+            Map<String, String> currentConf = new HashMap<>();
+            Properties prop = getProperties();
+            if (conf == null) {
+                conf = new HashMap();
+            }
+//            String[] keyArray = prop.stringPropertyNames();
+            for (String key : keyArray) {
+                try {
+                    String realKey = buildPropKey(env, key);
+                    String value = new String(prop.getProperty(realKey).getBytes("ISO-8859-1"), "UTF-8");
+                    currentConf.put(key, value);
+//                    System.out.println(realKey + ":" + value);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            conf.put(env, currentConf);
+        }
+        return conf.get(env);
+    }
+
+    public void buildConf() {
+        if (conf == null) {
+            Map<String, String> currentConf;
+            Properties prop = getProperties();
+            if (conf == null) {
+                conf = new HashMap();
+            }
+//            String[] keyArray = prop.stringPropertyNames();
+            Set<String> names = prop.stringPropertyNames();
+            Iterator<String> it = names.iterator();
+            String lang = prop.getProperty("langList");
+            System.out.println("lang:" + lang);
+            while (it.hasNext()) {
+                String str = it.next();
+                int dotPosIndex = str.indexOf(".");
+                if (dotPosIndex < 0) {
+                    dotPosIndex = 0;
+                }
+//                System.out.println("str:" + str + "   dotPosIndex:" + dotPosIndex);
+                String env = str.substring(0, dotPosIndex);
+                String key;
+                if (lang.contains(env)) {
+                    try {
+                        key = str.substring(dotPosIndex + 1);
+                        String value = new String(prop.getProperty(str).getBytes("ISO-8859-1"), "UTF-8");
+                        if (conf.containsKey(env)) {
+                            currentConf = conf.get(env);
+                        } else {
+                            currentConf = new HashMap<>();
+                        }
+                        currentConf.put(key, value);
+                        conf.put(env, currentConf);
+//                        System.out.println("env:" + env + "   " + key + " => " + value);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    try {
+                        String value = new String(prop.getProperty(str).getBytes("ISO-8859-1"), "UTF-8");
+                        if (conf.containsKey("common")) {
+                            currentConf = conf.get("common");
+                        } else {
+                            currentConf = new HashMap<>();
+                        }
+                        currentConf.put(str, value);
+                        conf.put("common", currentConf);
+//                        System.out.println("common:" + "   " + str + " => " + value);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+//                System.out.println(str);
+            }
+        }
+    }
+
+    public Properties getProperties() {
+        InputStream fis = getClass().getClassLoader().getResourceAsStream("resources/images/conf.properties");
+        Properties prop = new Properties();
+        try {
+            prop.load(fis);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(-1);
+        }
+
+        return prop;
+    }
+
+    public String buildPropKey(String env, String key) {
+        return env + "." + key;
+    }
+
     public SVNClientManager initSVNClientManager(String env) {
         if (SVNClientManagerMap == null) {
             SVNClientManagerMap = new HashMap();
         }
         if (SVNClientManagerMap.isEmpty() || SVNClientManagerMap.containsKey(env)) {
+            Map<String, String> currentConf = new HashMap<>();
+            currentConf = getConfByEnv(env);
             SVNURL repositoryURL = null;
             try {
-                repositoryURL = SVNURL.parseURIEncoded("svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/");
+                repositoryURL = SVNURL.parseURIEncoded(currentConf.get("svn.url"));
             } catch (SVNException e) {
                 //
             }
-            String name = "liuwenyuan";
-            String password = "RD56FGvderqpH";
+            String name = currentConf.get("svn.username");
+            String password = currentConf.get("svn.password");
 
             if (myCommitEventHandler == null) {
                 myCommitEventHandler = new CommitEventHandler();
@@ -103,7 +214,12 @@ public class WorkingCopyImprove {
          * itself)
          */
         setupLibrary();
+        buildConf();
         clientManager = initSVNClientManager(env);
+    }
+
+    public WorkingCopyImprove() {
+
     }
 
     /*
@@ -226,29 +342,15 @@ public class WorkingCopyImprove {
      * directory;
      */
 
-    private SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage)
+    public SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage, boolean recurse)
             throws SVNException {
         /*
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
          */
-        return clientManager.getCommitClient().doCommit(new File[]{wcPath}, keepLocks,
-                commitMessage, false, true);
-    }
-
-    private SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage, boolean recurse)
-            throws SVNException {
-        /*
-         * Returns SVNCommitInfo containing information on the new revision committed 
-         * (revision number, etc.) 
-         */
-        //doCommit(java.io.File[] paths, boolean keepLocks, java.lang.String commitMessage, SVNProperties revisionProperties, java.lang.String[] changelists, boolean keepChangelist, boolean force, SVNDepth depth)
-        //doCommit(SVNCommitPacket[] commitPackets, boolean keepLocks, java.lang.String commitMessage)
         return clientManager.getCommitClient().doCommit(
                 new File[]{wcPath}, keepLocks, commitMessage, null,
-                null, false, false, SVNDepth.fromRecurse(true));
-//        return clientManager.getCommitClient().doCommit(new File[]{wcPath}, keepLocks,
-//                commitMessage, false, true);
+                null, false, false, SVNDepth.fromRecurse(recurse));
     }
 
     /*
@@ -378,6 +480,37 @@ public class WorkingCopyImprove {
          * returns the number of the revision wcPath was updated to
          */
         return updateClient.doUpdate(wcPath, updateToRevision, depth, allowUnversionedObstructions, depthIsSticky);
+    }
+
+    /**
+     *
+     * @param localPathKey
+     * @param env
+     * @param updateToRevision
+     * @param depth
+     * @param allowUnversionedObstructions
+     * @param depthIsSticky
+     * @return
+     * @throws SVNException
+     */
+    public long updateToLocalByEnvConf(String localPathKey, String env,
+            SVNRevision updateToRevision, SVNDepth depth, boolean allowUnversionedObstructions, boolean depthIsSticky)
+            throws SVNException {
+
+        String localPath = getConfByEnv(env).get(localPathKey);
+        File wcPath = new File(localPath);
+        SVNUpdateClient updateClient = clientManager.getUpdateClient();
+        /*
+         * sets externals not to be ignored during the update
+         */
+        updateClient.setIgnoreExternals(false);
+        /*
+         * returns the number of the revision wcPath was updated to
+         */
+        System.out.println("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  start=================");
+        long version = updateClient.doUpdate(wcPath, updateToRevision, depth, allowUnversionedObstructions, depthIsSticky);
+        System.out.println("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  end=================");
+        return version;
     }
 
     /*
@@ -599,28 +732,47 @@ public class WorkingCopyImprove {
      * committed to a repository.
      */
     public SVNCommitInfo copy(SVNURL srcURL, SVNURL dstURL,
-            boolean isMove, String commitMessage) throws SVNException {
+            boolean isMove, String commitMessage) {
         /*
          * SVNRevision.HEAD means the latest revision.
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
          */
-//        SVNRevision svnr = null;
-//        SVNCopySource svncs = new SVNCopySource(svnr, SVNRevision.HEAD, srcURL);
-//        SVNCopySource[] svncse = new SVNCopySource[1];
-//        svncse[0] = svncs;
-//        dstURL.getPath();
-//        //doCopy(SVNCopySource[],SVNURL, boolean isMove, boolean makeParents, boolean failWhenDstExists, String commitMessage, SVNProperties revisionProperties)
-//        //此变量用来存放要查看的文件的属性名/属性值列表。 
-//        SVNProperties fileProperties = new SVNProperties();
-//        return clientManager.getCopyClient().doCopy(svncse, dstURL, isMove, true, false, commitMessage, fileProperties);
-
-//        origin code of svnkit example 
-//        return clientManager.getCopyClient().doCopy(srcURL,  SVNRevision.HEAD,
-//                dstURL, isMove, commitMessage);
         SVNCopyClient copyClient = clientManager.getCopyClient();
         SVNCopySource[] sources = new SVNCopySource[]{new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, srcURL)};
-        return copyClient.doCopy(sources, dstURL, isMove, isMove, isMove, commitMessage, null);
+        System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  start=================");
+        SVNCommitInfo commitInfo;
+        try {
+            commitInfo = copyClient.doCopy(sources, dstURL, isMove, isMove, isMove, commitMessage, null);
+            return commitInfo;
+        } catch (SVNException ex) {
+            System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  error :" + ex.getErrorMessage());
+        }
+        System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  end=================");
+        return null;
+    }
+
+    /**
+     * 根据env 创建 branch/tag
+     *
+     * @param env
+     * @param originTag
+     * @param dstTag
+     * @param commitMessage
+     * @param isOnline
+     * @return
+     * @throws SVNException
+     */
+    public SVNCommitInfo createBranchOrTagByEnvConf(String env, String originTag, String dstTag, String commitMessage, boolean isOnline) throws SVNException {
+        String rootUrl;
+        if (isOnline) {
+            rootUrl = getConfByEnv(env).get("svn.php.onlineUrl");
+        } else {
+            rootUrl = getConfByEnv(env).get("svn.php.localUrl");
+        }
+        SVNURL srcURL = SVNURL.parseURIEncoded(rootUrl + originTag);
+        SVNURL dstURL = SVNURL.parseURIEncoded(rootUrl + dstTag);
+        return copy(srcURL, dstURL, false, commitMessage);
     }
 
     /*
@@ -681,4 +833,20 @@ public class WorkingCopyImprove {
             }
         }
     }
+
+//    public static void main(String[] args) {
+//        WorkingCopyImprove wci = new WorkingCopyImprove();
+//        wci.getConfByEnv("en_us");
+//        wci.getConfByEnv("de_de");
+//        wci.getConfByEnv("fr_fr");
+//        Properties prop = wci.getProperties();
+//        Set<String> names = prop.stringPropertyNames();
+//        Iterator<String> it = names.iterator(); 
+//        while (it.hasNext()) {
+//            String str = it.next();
+//            System.out.println(str);
+//        }
+//            String[] keyArray = prop.stringPropertyNames();
+//        wci.buildConf();
+//    }
 }

@@ -292,7 +292,7 @@ public class Replicate {
         Map revProps = svnProps.asMap();
         for (Iterator propNames = revProps.keySet().iterator(); propNames.hasNext();) {
             String propName = (String) propNames.next();
-            String propValue = (String) revProps.get(propName);
+            String propValue = revProps.get(propName).toString();
             SVNPropertyValue svnpv = SVNPropertyValue.create(propValue);
             toRepository.setRevisionPropertyValue(revision, propName, svnpv);
         }
@@ -440,7 +440,7 @@ public class Replicate {
          */
         DAVRepositoryFactory.setup();
         /*
-         * For using over svn:// and svn+xxx://
+         * For using over svn:// and svn+xxx://sync
          */
         SVNRepositoryFactoryImpl.setup();
         /*
