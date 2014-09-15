@@ -43,6 +43,7 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.tmatesoft.svn.examples.wc.*;
+import sync.Sync;
 
 public final class WorkingCopyImprove {
 
@@ -82,7 +83,7 @@ public final class WorkingCopyImprove {
                     String realKey = buildPropKey(env, key);
                     String value = new String(prop.getProperty(realKey).getBytes("ISO-8859-1"), "UTF-8");
                     currentConf.put(key, value);
-//                    System.out.println(realKey + ":" + value);
+//                    Sync.printlnFlush(realKey + ":" + value);
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -103,14 +104,14 @@ public final class WorkingCopyImprove {
             Set<String> names = prop.stringPropertyNames();
             Iterator<String> it = names.iterator();
             String lang = prop.getProperty("langList");
-            System.out.println("lang:" + lang);
+            Sync.printlnFlush("lang:" + lang);
             while (it.hasNext()) {
                 String str = it.next();
                 int dotPosIndex = str.indexOf(".");
                 if (dotPosIndex < 0) {
                     dotPosIndex = 0;
                 }
-//                System.out.println("str:" + str + "   dotPosIndex:" + dotPosIndex);
+//                Sync.printlnFlush("str:" + str + "   dotPosIndex:" + dotPosIndex);
                 String env = str.substring(0, dotPosIndex);
                 String key;
                 if (lang.contains(env)) {
@@ -124,7 +125,7 @@ public final class WorkingCopyImprove {
                         }
                         currentConf.put(key, value);
                         conf.put(env, currentConf);
-//                        System.out.println("env:" + env + "   " + key + " => " + value);
+//                        Sync.printlnFlush("env:" + env + "   " + key + " => " + value);
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -138,12 +139,12 @@ public final class WorkingCopyImprove {
                         }
                         currentConf.put(str, value);
                         conf.put("common", currentConf);
-//                        System.out.println("common:" + "   " + str + " => " + value);
+//                        Sync.printlnFlush("common:" + "   " + str + " => " + value);
                     } catch (UnsupportedEncodingException ex) {
                         Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-//                System.out.println(str);
+//                Sync.printlnFlush(str);
             }
         }
     }
@@ -154,7 +155,7 @@ public final class WorkingCopyImprove {
         try {
             prop.load(fis);
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            Sync.printlnFlush(ex.getMessage());
             System.exit(-1);
         }
 
@@ -498,6 +499,7 @@ public final class WorkingCopyImprove {
             throws SVNException {
 
         String localPath = getConfByEnv(env).get(localPathKey);
+        Sync.printlnFlush("env:" + env + " localPathKey:" + localPathKey + "  localPath:" + localPath);
         File wcPath = new File(localPath);
         SVNUpdateClient updateClient = clientManager.getUpdateClient();
         /*
@@ -507,9 +509,9 @@ public final class WorkingCopyImprove {
         /*
          * returns the number of the revision wcPath was updated to
          */
-        System.out.println("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  start=================");
+        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  start=================");
         long version = updateClient.doUpdate(wcPath, updateToRevision, depth, allowUnversionedObstructions, depthIsSticky);
-        System.out.println("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  end=================");
+        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  end=================");
         return version;
     }
 
@@ -740,15 +742,15 @@ public final class WorkingCopyImprove {
          */
         SVNCopyClient copyClient = clientManager.getCopyClient();
         SVNCopySource[] sources = new SVNCopySource[]{new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD, srcURL)};
-        System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  start=================");
+        Sync.printlnFlush("Copying '" + srcURL + "' to '" + dstURL + "'  start=================");
         SVNCommitInfo commitInfo;
         try {
             commitInfo = copyClient.doCopy(sources, dstURL, isMove, isMove, isMove, commitMessage, null);
             return commitInfo;
         } catch (SVNException ex) {
-            System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  error :" + ex.getErrorMessage());
+            Sync.printlnFlush("Copying '" + srcURL + "' to '" + dstURL + "'  error :" + ex.getErrorMessage());
         }
-        System.out.println("Copying '" + srcURL + "' to '" + dstURL + "'  end=================");
+        Sync.printlnFlush("Copying '" + srcURL + "' to '" + dstURL + "'  end=================");
         return null;
     }
 
@@ -844,7 +846,7 @@ public final class WorkingCopyImprove {
 //        Iterator<String> it = names.iterator(); 
 //        while (it.hasNext()) {
 //            String str = it.next();
-//            System.out.println(str);
+//            Sync.printlnFlush(str);
 //        }
 //            String[] keyArray = prop.stringPropertyNames();
 //        wci.buildConf();

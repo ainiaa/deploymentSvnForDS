@@ -408,6 +408,15 @@ public class Sync {
         System.exit(exitCode);
     }
 
+
+    public static void printlnFlush(final String s) {
+        SyncIO.printFlush(s);
+    }
+    
+    public static void printlnErrorFlush(final String s) {
+        SyncIO.printlnErrorFlush(s);
+    }
+    
     /**
      * Process command-line arguments and configure synchronization parameters.
      *

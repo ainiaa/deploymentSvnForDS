@@ -44,6 +44,13 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 //        ImageIcon iconImage = SwingResourceManager.getIcon(deploymentSvnForDS.class, "/resources/images/sync.png");
 //        this.setIconImage(iconImage.getImage());
         initComponents();
+
+        try {
+            printer();
+        } catch (IOException ex) {
+            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -58,6 +65,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         syncjButton = new javax.swing.JButton();
         syncjScrollPane = new javax.swing.JScrollPane();
         jToolBar1 = new javax.swing.JToolBar();
+        dsjProgressBar = new javax.swing.JProgressBar();
         contentjPanel = new javax.swing.JPanel();
         contentResourcesjCheckBox = new javax.swing.JCheckBox();
         contentFlashjCheckBox = new javax.swing.JCheckBox();
@@ -90,9 +98,9 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         syncjButton.setText("开始同步");
-        syncjButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                syncjButtonMouseClicked(evt);
+        syncjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                syncjButtonActionPerformed(evt);
             }
         });
 
@@ -100,6 +108,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         syncjScrollPane.setAutoscrolls(true);
 
         jToolBar1.setRollover(true);
+        jToolBar1.add(dsjProgressBar);
 
         contentjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "同步内容", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(153, 51, 255))); // NOI18N
 
@@ -243,9 +252,9 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         );
 
         canceljButton.setText("取消同步");
-        canceljButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                canceljButtonMouseClicked(evt);
+        canceljButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                canceljButtonActionPerformed(evt);
             }
         });
 
@@ -314,14 +323,12 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             .addComponent(contentjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(phpTagjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(phpjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addGap(140, 140, 140)
                 .addComponent(syncjButton)
                 .addGap(223, 223, 223)
                 .addComponent(canceljButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(phpjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,14 +355,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void canceljButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canceljButtonMouseClicked
-        int dialogResult = JOptionPane.showConfirmDialog(null, "你确定要取消同步？", "取消同步提示", JOptionPane.YES_NO_OPTION);
-        if (JOptionPane.YES_OPTION == dialogResult) {
-            this.dispose();
-            System.exit(1);
-        }
-    }//GEN-LAST:event_canceljButtonMouseClicked
 
     public List<String> getEnv() {
         List envList = new ArrayList<>();
@@ -390,7 +389,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         if (contentFlashjCheckBox.isSelected()) {//flash
             contentList.add("flash");
         }
-
         return contentList;
     }
 
@@ -432,59 +430,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msg, "错误信息提示", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void syncjButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_syncjButtonMouseClicked
-        List<String> envList = getEnv();
-        List<String> contentList = getContent();
-        Map<String, String> versionTagMap = getPHPTag();
-        Map<String, String> phpSyncMap = getPHPSync();
-        if (0 == envList.size()) {
-            showMessageDialogMessage("请选择需要同步的环境");
-            return;
-        }
-        if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
-            showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
-            return;
-        }
-
-        if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
-            if (versionTagMap.get("online").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
-                return;
-            }
-            if (versionTagMap.get("a").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
-                return;
-            }
-            if (versionTagMap.get("b").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
-                return;
-            }
-        }
-
-        if (phpSyncMap.get("origin").trim().isEmpty()) {
-            showMessageDialogMessage("请输入 '源PHPtag'");
-            return;
-        }
-        if (phpSyncMap.get("dest").trim().isEmpty()) {
-            showMessageDialogMessage("请输入 '目的PHPtag'");
-            return;
-        }
-        syncjButton.setEnabled(false);
-        try {
-            printer();
-        } catch (IOException ex) {
-            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-//        Map<String, String> args = new HashMap<>();
-//        args.put("source", "D:\\www\\framework");
-//        args.put("target", "D:\\www\\frameworkbak");
-//        args.put("force", "y");
-//        Sync.syncMain(args);
-//        createPHPBranch("svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhouse/", "svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhousebak", "en_us");
-//        updatePHPBranchToLocal("en_us", "D:\\www\\dessert\\code\\branches");
-    }//GEN-LAST:event_syncjButtonMouseClicked
-
     /**
      * 创建同步任务
      *
@@ -492,9 +437,8 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      * @param contentList
      * @param versionTagMap
      * @param phpSyncMap
-     * @return
      */
-    public Map buildSyncTask(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
+    public void buildSyncTask(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
         int envCount = envList.size();
         int contentCount = contentList.size();
         String env;
@@ -508,21 +452,22 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
             //b版本
             createPHPBranchByTag(wc, originTag, dstTag, env);//创建 tag  b版本
-            updatePHPBranchToLocal(wc, env, "sysfile.php.bVersionOnlinePath");//将线上代码update到本地 b版本
 
             if (needCreateAVersionOfPHPBranch(env, wc)) {//需要创建 tag  a版本
                 dstTag = aVersionTagjTextField.getText().trim();
                 createPHPBranchByTag(wc, originTag, dstTag, env);//创建 tag  
-                updatePHPBranchToLocal(wc, "en_us", "sysfile.php.aVersionLocalPath");//将线上代码update到本地
             }
+
+            updatePHPBranchToLocal(wc, env, "sysfile.php.onlinePath");//将线上代码update到本地
+            updatePHPBranchToLocal(wc, env, "sysfile.php.localPath");//将本地代码update到本地
 
             //同步 content
             for (int contentNo = 0; contentNo < contentCount; contentNo++) {
                 String content = contentList.get(contentNo);
 
-                String localContentPathKey = "svn." + content + ".localPath";
+                String localContentPathKey = "sysfile." + content + ".localPath";
                 String localContentPath = wc.getConfByEnv(env).get(localContentPathKey);
-                String onlineContentPathKey = "svn." + content + ".onlinePath";
+                String onlineContentPathKey = "sysfile." + content + ".onlinePath";
                 String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
 
                 updatePHPBranchToLocal(wc, env, localContentPathKey);//更新 content  local 
@@ -538,11 +483,9 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 //更新content online svn
                 commitPHPBranch(env, onlineContentPath, "commit by deploymentSvnForDS");
             }
-            
-            //@TODO 同步php 这个还没有实现 
 
+            //@TODO 同步php 这个还没有实现 
         }
-        return new HashMap();
     }
 
     public boolean needCreateAVersionOfPHPBranch(String env, WorkingCopyImprove wc) {
@@ -555,14 +498,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     }
 
     /**
-     * 执行同步任务
-     *
-     * @param taskMap
-     */
-    public void execSyncTask(Map taskMap) {
-    }
-
-    /**
      * 创建PHP分支
      *
      * @param urlStr
@@ -570,7 +505,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      * @param env
      */
     public static void createPHPBranch(String urlStr, String copyURLStr, String env) {
-        System.out.println("Copying '" + urlStr + "' to '" + copyURLStr + "'  start=================");
+        Sync.printlnFlush("Copying '" + urlStr + "' to '" + copyURLStr + "'  start=================");
         try {
             /*
              * makes a branch of url at copyURL - that is URL->URL copying
@@ -584,7 +519,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         } catch (SVNException svne) {
             System.err.println("Copying '" + urlStr + "' to '" + copyURLStr + "  error: -----------" + svne.getErrorMessage());
         }
-        System.out.println("Copying '" + urlStr + "' to '" + copyURLStr + "'  end=================");
+        Sync.printlnFlush("Copying '" + urlStr + "' to '" + copyURLStr + "'  end=================");
     }
 
     /**
@@ -678,6 +613,65 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_needCreatePHPTagjCheckBoxActionPerformed
 
+    private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
+        List<String> envList = getEnv();
+        List<String> contentList = getContent();
+        Map<String, String> versionTagMap = getPHPTag();
+        Map<String, String> phpSyncMap = getPHPSync();
+        if (0 == envList.size()) {
+            showMessageDialogMessage("请选择需要同步的环境");
+            return;
+        }
+        if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
+            showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
+            return;
+        }
+
+        if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
+            if (versionTagMap.get("online").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                return;
+            }
+            if (versionTagMap.get("a").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                return;
+            }
+            if (versionTagMap.get("b").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
+                return;
+            }
+        }
+
+//        if (phpSyncMap.get("origin").trim().isEmpty()) {
+//            showMessageDialogMessage("请输入 '源PHPtag'");
+//            return;
+//        }
+//        if (phpSyncMap.get("dest").trim().isEmpty()) {
+//            showMessageDialogMessage("请输入 '目的PHPtag'");
+//            return;
+//        }
+        syncjButton.setEnabled(false);
+
+        buildSyncTask(envList, contentList, versionTagMap, phpSyncMap);
+        revalidate();
+
+//        Map<String, String> args = new HashMap<>();
+//        args.put("source", "D:\\www\\framework");
+//        args.put("target", "D:\\www\\frameworkbak");
+//        args.put("force", "y");
+//        Sync.syncMain(args);
+//        createPHPBranch("svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhouse/", "svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhousebak", "en_us");
+//        updatePHPBranchToLocal("en_us", "D:\\www\\dessert\\code\\branches");
+    }//GEN-LAST:event_syncjButtonActionPerformed
+
+    private void canceljButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_canceljButtonActionPerformed
+        int dialogResult = JOptionPane.showConfirmDialog(null, "你确定要取消同步？", "取消同步提示", JOptionPane.YES_NO_OPTION);
+        if (JOptionPane.YES_OPTION == dialogResult) {
+            this.dispose();
+            System.exit(1);
+        }
+    }//GEN-LAST:event_canceljButtonActionPerformed
+
     private void printer() throws IOException {
         ConsoleTextArea consoleTextArea = null;
 
@@ -738,6 +732,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JCheckBox contentFlashjCheckBox;
     private javax.swing.JCheckBox contentResourcesjCheckBox;
     private javax.swing.JPanel contentjPanel;
+    private javax.swing.JProgressBar dsjProgressBar;
     private javax.swing.JLabel dstPHPTagjLabel1;
     private javax.swing.JTextField dstPHPTagjTextField;
     private javax.swing.JCheckBox envDEjCheckBox;

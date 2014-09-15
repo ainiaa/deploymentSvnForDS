@@ -21,11 +21,13 @@ package sync;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -422,6 +424,7 @@ class SyncIO {
 
                     if (byteCount == -1) {
                         break; /* reached EOF */
+
                     }
 
                     bos.write(byteBuffer, 0, byteCount);
@@ -520,6 +523,7 @@ class SyncIO {
 
                     if (byteCount == -1) {
                         break; /* reached EOF */
+
                     }
 
                     crc32.update(byteBuffer, 0, byteCount);
@@ -622,13 +626,42 @@ class SyncIO {
      *
      * @param s String to be printed
      */
-    static void printFlush(
-            final String s) {
-        Sync.stdout.print(s);
+    static void printFlush(final String s) {
+        if (Sync.stdout == null) {
+            final Console console = System.console();
+            if (console == null) {
+                Sync.stdout = new PrintWriter(System.out);
+                Sync.stderr = new PrintWriter(System.err);
+            } else {
+                Sync.stdout = console.writer();
+                Sync.stderr = console.writer();
+            }
+        }
+        Sync.stdout.println(s);
         Sync.stdout.flush();
 
         if (Sync.log != null) {
             Sync.log.print(s);
+            Sync.log.flush();
+        }
+    }
+
+    public static void printlnFlush(final String s) {
+        Sync.stdout.println(s);
+        Sync.stdout.flush();
+
+        if (Sync.log != null) {
+            Sync.log.println(s);
+            Sync.log.flush();
+        }
+    }
+
+    public static void printlnErrorFlush(final String s) {
+        Sync.stderr.println(s);
+        Sync.stderr.flush();
+
+        if (Sync.log != null) {
+            Sync.log.println(s);
             Sync.log.flush();
         }
     }

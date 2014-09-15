@@ -46,16 +46,13 @@
           <Component id="contentjPanel" alignment="0" max="32767" attributes="0"/>
           <Component id="phpTagjPanel" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Component id="phpjPanel" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
               <Component id="syncjButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="223" max="-2" attributes="0"/>
               <Component id="canceljButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
+          <Component id="phpjPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -88,7 +85,7 @@
         <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65;"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="syncjButtonMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncjButtonActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="syncjScrollPane">
@@ -115,6 +112,10 @@
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JProgressBar" name="dsjProgressBar">
+        </Component>
+      </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="contentjPanel">
       <Properties>
@@ -364,7 +365,7 @@
         <Property name="text" type="java.lang.String" value="&#x53d6;&#x6d88;&#x540c;&#x6b65;"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="canceljButtonMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="canceljButtonActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="phpjPanel">

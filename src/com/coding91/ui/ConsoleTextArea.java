@@ -24,12 +24,12 @@ public class ConsoleTextArea extends JTextArea {
         PrintStream ps = new PrintStream(ls.getOutputStream());
         System.setOut(ps);
         System.setErr(ps);
-
         startConsoleReaderThread(ls.getInputStream());
-    } // ConsoleTextArea()
 
-    private void startConsoleReaderThread(
-            InputStream inStream) {
+    } // ConsoleTextArea()
+    int currentCaretPosition = 0;
+
+    private void startConsoleReaderThread(InputStream inStream) {
         final BufferedReader br
                 = new BufferedReader(new InputStreamReader(inStream));
         new Thread(new Runnable() {
@@ -39,14 +39,18 @@ public class ConsoleTextArea extends JTextArea {
                 try {
                     String s;
                     Document doc = getDocument();
+                    if (currentCaretPosition == 0) {
+                        currentCaretPosition = doc.getLength();
+                    }
+
                     while ((s = br.readLine()) != null) {
-                        boolean caretAtEnd = false;
-                        caretAtEnd = getCaretPosition() == doc.getLength();
                         sb.setLength(0);
-                        append(sb.append(s).append('\n').toString());
-                        if (caretAtEnd) {
-                            setCaretPosition(doc.getLength());
-                        }
+                        sb.append(s).append('\n');
+                        currentCaretPosition += sb.length();
+                        append(sb.toString());
+                        setCaretPosition(currentCaretPosition);
+//                        paintImmediately(getBounds());//实时显示
+                        paintImmediately(getX(), getY(), getWidth(), getHeight());//实时更新 显示 
                     }
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null,
