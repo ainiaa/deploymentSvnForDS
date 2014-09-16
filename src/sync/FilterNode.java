@@ -41,11 +41,8 @@ class FilterNode {
      */
     static enum LogicType {
 
-        AND,
-        NAND,
-        OR,
-        NOR;
-    }
+        AND, NAND, OR, NOR
+    };
 
     /**
      * logic applied to this node's children (AND, NAND, OR, NOR)
@@ -58,8 +55,8 @@ class FilterNode {
     static enum FilterType {
 
         REGEX,
-        GLOB;
-    }
+        GLOB
+    };
 
     /**
      * compiled Java regex Pattern for this leaf node
@@ -81,8 +78,7 @@ class FilterNode {
      *
      * @param logic Logic applied to this node's children (AND, NAND, OR, NOR)
      */
-    FilterNode(
-            final FilterNode.LogicType logic) {
+    FilterNode(final FilterNode.LogicType logic) {
         this.logic = logic;
         this.children = new ArrayList<>();
         this.pattern = null;
@@ -99,11 +95,7 @@ class FilterNode {
      * @param expression Regex/glob expression to be compiled to an equivalent
      * Java regex pattern
      */
-    FilterNode(
-            final FilterType type,
-            final boolean inverted,
-            final String expression)
-            throws PatternSyntaxException {
+    FilterNode(final FilterType type, final boolean inverted, final String expression) throws PatternSyntaxException {
         this.logic = null;
         this.children = null;
         this.inverted = inverted;
@@ -218,7 +210,7 @@ class FilterNode {
         /* "--" : Base mode (first on the stack)   */
         /* "[]" : Square brackets mode "[...]"     */
         /* "{}" : Curly braces mode "{...}"        */
-        final Deque<String> parserMode = new ArrayDeque<String>();
+        final Deque<String> parserMode = new ArrayDeque<>();
         parserMode.push("--"); // base mode
 
         final int globLength = glob.length();
@@ -233,8 +225,7 @@ class FilterNode {
             if (c == '\\') {
                 /**
                  * *********************
-                 * (1) ESCAPE SEQUENCE *
-				 **********************
+                 * (1) ESCAPE SEQUENCE * *********************
                  */
 
                 if (index == globLength) {
@@ -259,8 +250,7 @@ class FilterNode {
             } else if (c == '*') {
                 /**
                  * **********************
-                 * (2) GLOB PATTERN '*' *
-				 ***********************
+                 * (2) GLOB PATTERN '*' * **********************
                  */
 
                 /* create non-capturing group to match zero or more characters */
@@ -268,8 +258,7 @@ class FilterNode {
             } else if (c == '?') {
                 /**
                  * **********************
-                 * (3) GLOB PATTERN '?' *
-				 ***********************
+                 * (3) GLOB PATTERN '?' * **********************
                  */
 
                 /* create non-capturing group to match exactly one character */
@@ -277,8 +266,7 @@ class FilterNode {
             } else if (c == '[') {
                 /**
                  * **************************
-                 * (4) GLOB PATTERN "[...]" *
-				 ***************************
+                 * (4) GLOB PATTERN "[...]" * **************************
                  */
 
                 /* opening square bracket '[' */
@@ -304,8 +292,7 @@ class FilterNode {
             } else if (c == '{') {
                 /**
                  * **************************
-                 * (5) GLOB PATTERN "{...}" *
-				 ***************************
+                 * (5) GLOB PATTERN "{...}" * **************************
                  */
 
                 /* opening curly brace '{' */
@@ -323,8 +310,7 @@ class FilterNode {
             } else {
                 /**
                  * ***********************
-                 * (6) LITERAL CHARACTER *
-				 ************************
+                 * (6) LITERAL CHARACTER * ***********************
                  */
 
                 /* convert literal character to a regex string */

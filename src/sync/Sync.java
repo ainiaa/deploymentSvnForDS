@@ -409,7 +409,7 @@ public class Sync {
     }
 
     public static void printlnFlush(final String s) {
-        SyncIO.printFlush(s);
+        SyncIO.printlnFlush(s);
     }
 
     public static void printlnErrorFlush(final String s) {

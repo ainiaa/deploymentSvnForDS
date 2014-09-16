@@ -24,8 +24,7 @@ import java.util.Comparator;
 /**
  * Compare two FileUnit objects according to the specified attributes.
  */
-class FileUnitComparator
-        implements Comparator<FileUnit> {
+class FileUnitComparator implements Comparator<FileUnit> {
 
     /**
      * use file/directory name for comparison
@@ -55,11 +54,7 @@ class FileUnitComparator
      * @param time Use file/directory last-modified time for comparison
      * @param crc Use file/directory CRC-32 checksum for comparison
      */
-    FileUnitComparator(
-            final boolean name,
-            final boolean size,
-            final boolean time,
-            final boolean crc) {
+    FileUnitComparator(final boolean name, final boolean size, final boolean time, final boolean crc) {
         this.name = name;
         this.size = size;
         this.time = time;
@@ -70,9 +65,7 @@ class FileUnitComparator
      * Compare the specified FileUnit objects.
      */
     @Override
-    public int compare(
-            final FileUnit u1,
-            final FileUnit u2) {
+    public int compare(final FileUnit u1, final FileUnit u2) {
         if (name) {
             /* compare file/directory names */
             final int i = u1.name.compareTo(u2.name);

@@ -6,7 +6,6 @@
 package com.coding91.ui;
 
 import com.coding91.WorkingCopyImprove;
-import com.coding91.ui.ConsoleTextArea;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -36,8 +33,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      * Creates new form deploymentSvnForDS
      */
     public deploymentSvnForDS() {
-//        ImageIcon iconImage = new ImageIcon("resources/images/sync.png");
-//        this.setIconImage(iconImage.getImage());
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(
                 getClass().getClassLoader().getResource("resources/images/sync.png")));//这个不能以 '/'开头
         //下面的方式可以设置成功
@@ -497,13 +492,15 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         return args;
     }
 
+    /**
+     * 是否需要创建 A 版本分支
+     *
+     * @param env
+     * @param wc
+     * @return
+     */
     public boolean needCreateAVersionOfPHPBranch(String env, WorkingCopyImprove wc) {
-
-        if (wc.getConfByEnv(env).get("withABVersion").equals("1")) {
-            return true;
-        } else {
-            return false;
-        }
+        return wc.getConfByEnv(env).get("withABVersion").equals("1");
     }
 
     /**
@@ -542,7 +539,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     public static void createPHPBranchByTag(WorkingCopyImprove wc, String originTag, String dstTag, String env) {
         try {
             String commitMessage = "remotely copying '" + originTag + "' to '" + dstTag + "'";
-//            wc.copy(url, copyURL, false, commitMessage).getNewRevision();
             wc.createBranchOrTagByEnvConf(env, originTag, dstTag, commitMessage, true);
         } catch (SVNException svne) {
             System.err.println("Copying '" + originTag + "' to '" + dstTag + "  error: -----------" + svne.getErrorMessage());
@@ -554,6 +550,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      *
      * @param env
      * @param localPath
+     * @param b
      */
     public void updatePHPBranchToLocal(String env, String localPath, boolean b) {
         WorkingCopyImprove wc = new WorkingCopyImprove(env);
@@ -591,7 +588,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         WorkingCopyImprove wc = new WorkingCopyImprove(env);
         try {
             wc.commit(new File(wcDir), false, commitMessage, true);
-//            wc.update(new File(localPath), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
         } catch (SVNException ex) {
             Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -619,35 +615,39 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_needCreatePHPTagjCheckBoxActionPerformed
 
-    private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
+    /**
+     * 
+     * @param envList
+     * @param contentList
+     * @param versionTagMap
+     * @param phpSyncMap
+     * @return 
+     */
+    private boolean isSyncValid(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
+        if (0 == envList.size()) {
+            showMessageDialogMessage("请选择需要同步的环境");
+            return false;
+        }
+        if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
+            showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
+            return false;
+        }
 
-            List<String> envList = getEnv();
-            List<String> contentList = getContent();
-            Map<String, String> versionTagMap = getPHPTag();
-            Map<String, String> phpSyncMap = getPHPSync();
-            if (0 == envList.size()) {
-                showMessageDialogMessage("请选择需要同步的环境");
-                return;
+        if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
+            if (versionTagMap.get("online").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                return false;
             }
-            if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
-                showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
-                return;
+            if (versionTagMap.get("a").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                return false;
             }
+            if (versionTagMap.get("b").trim().isEmpty()) {
+                showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
+                return false;
+            }
+        }
 
-            if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
-                if (versionTagMap.get("online").trim().isEmpty()) {
-                    showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
-                    return;
-                }
-                if (versionTagMap.get("a").trim().isEmpty()) {
-                    showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
-                    return;
-                }
-                if (versionTagMap.get("b").trim().isEmpty()) {
-                    showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
-                    return;
-                }
-            }
 //        todo
 //        if (phpSyncMap.get("origin").trim().isEmpty()) {
 //            showMessageDialogMessage("请输入 '源PHPtag'");
@@ -657,10 +657,23 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 //            showMessageDialogMessage("请输入 '目的PHPtag'");
 //            return;
 //        }
-            syncjButton.setEnabled(false);
+        return true;
+    }
 
-            buildSyncTask(envList, contentList, versionTagMap, phpSyncMap);
-            revalidate();
+    private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
+
+        List<String> envList = getEnv();
+        List<String> contentList = getContent();
+        Map<String, String> versionTagMap = getPHPTag();
+        Map<String, String> phpSyncMap = getPHPSync();
+        if (!isSyncValid(envList, contentList, versionTagMap, phpSyncMap)) {
+            return;
+        }
+
+        syncjButton.setEnabled(false);
+
+        buildSyncTask(envList, contentList, versionTagMap, phpSyncMap);
+        revalidate();
 
 //        Map<String, String> args = new HashMap<>();
 //        args.put("source", "D:\\www\\framework");

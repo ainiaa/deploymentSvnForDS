@@ -118,8 +118,7 @@ class FileUnit {
      * @param f File object representing this file/directory (full canonical
      * pathname)
      */
-    FileUnit(
-            final File f) {
+    FileUnit(final File f) {
         this.file = f;
         this.time = f.lastModified();
         this.isDirectory = f.isDirectory();

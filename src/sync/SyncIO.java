@@ -637,7 +637,7 @@ class SyncIO {
                 Sync.stderr = console.writer();
             }
         }
-        Sync.stdout.println(s);
+        Sync.stdout.print(s);
         Sync.stdout.flush();
 
         if (Sync.log != null) {
@@ -647,6 +647,16 @@ class SyncIO {
     }
 
     public static void printlnFlush(final String s) {
+        if (Sync.stdout == null) {
+            final Console console = System.console();
+            if (console == null) {
+                Sync.stdout = new PrintWriter(System.out);
+                Sync.stderr = new PrintWriter(System.err);
+            } else {
+                Sync.stdout = console.writer();
+                Sync.stderr = console.writer();
+            }
+        }
         Sync.stdout.println(s);
         Sync.stdout.flush();
 

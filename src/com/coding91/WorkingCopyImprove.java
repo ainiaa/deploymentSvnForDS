@@ -150,7 +150,7 @@ public final class WorkingCopyImprove {
     }
 
     public Properties getProperties() {
-        InputStream fis = getClass().getClassLoader().getResourceAsStream("resources/images/conf.properties");
+        InputStream fis = getClass().getClassLoader().getResourceAsStream("resources/properties/conf.properties");
         Properties prop = new Properties();
         try {
             prop.load(fis);
