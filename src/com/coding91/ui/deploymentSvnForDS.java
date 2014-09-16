@@ -474,10 +474,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 updatePHPBranchToLocal(wc, env, onlineContentPathKey);//更新 content  online 
 
                 //将 content local 的内容同步到 content online 
-                Map<String, String> args = new HashMap<>();
-                args.put("source", localContentPath);
-                args.put("target", onlineContentPath);
-                args.put("force", "y");
+                Map<String, String> args = buildFileSyncArgs(localContentPath, onlineContentPath);
                 Sync.syncMain(args);
 
                 //更新content online svn
@@ -486,6 +483,18 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
             //@TODO 同步php 这个还没有实现 
         }
+    }
+
+    private Map<String, String> buildFileSyncArgs(String source, String target) {
+        Map<String, String> args = new HashMap<>();
+        args.put("source", source);
+        args.put("target", target);
+        args.put("force", "y");
+        args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
+        args.put("path", "1");
+        Sync.syncMain(args);
+
+        return args;
     }
 
     public boolean needCreateAVersionOfPHPBranch(String env, WorkingCopyImprove wc) {
@@ -595,10 +604,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      * @param dstDir
      */
     public void syncFile(String originDir, String dstDir) {
-        Map<String, String> args = new HashMap<>();
-        args.put("source", originDir);
-        args.put("target", dstDir);
-        args.put("force", "y");
+        Map<String, String> args = buildFileSyncArgs(originDir, dstDir);
         Sync.syncMain(args);
     }
 
@@ -614,34 +620,35 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     }//GEN-LAST:event_needCreatePHPTagjCheckBoxActionPerformed
 
     private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
-        List<String> envList = getEnv();
-        List<String> contentList = getContent();
-        Map<String, String> versionTagMap = getPHPTag();
-        Map<String, String> phpSyncMap = getPHPSync();
-        if (0 == envList.size()) {
-            showMessageDialogMessage("请选择需要同步的环境");
-            return;
-        }
-        if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
-            showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
-            return;
-        }
 
-        if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
-            if (versionTagMap.get("online").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+            List<String> envList = getEnv();
+            List<String> contentList = getContent();
+            Map<String, String> versionTagMap = getPHPTag();
+            Map<String, String> phpSyncMap = getPHPSync();
+            if (0 == envList.size()) {
+                showMessageDialogMessage("请选择需要同步的环境");
                 return;
             }
-            if (versionTagMap.get("a").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+            if (0 == contentList.size() && needSyncContentjCheckBox.isSelected()) {
+                showMessageDialogMessage("请选择需要同步的内容。如果不需要同步内容，请取消 ‘需要同步内容’ 勾选");
                 return;
             }
-            if (versionTagMap.get("b").trim().isEmpty()) {
-                showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
-                return;
-            }
-        }
 
+            if (needCreatePHPTagjCheckBox.isSelected()) {//需要新建php tag 需要要输入a、b tag号
+                if (versionTagMap.get("online").trim().isEmpty()) {
+                    showMessageDialogMessage("请输入 online  tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                    return;
+                }
+                if (versionTagMap.get("a").trim().isEmpty()) {
+                    showMessageDialogMessage("请输入 A 版本tag号。如果不需要新建 php tag 请取消 ‘需要新建 PHP tag’ 勾选");
+                    return;
+                }
+                if (versionTagMap.get("b").trim().isEmpty()) {
+                    showMessageDialogMessage("请输入 B 版本 tag 号。如果不需要新建 php tag 请取消 ‘ 需要新建 PHP tag’ 勾选");
+                    return;
+                }
+            }
+//        todo
 //        if (phpSyncMap.get("origin").trim().isEmpty()) {
 //            showMessageDialogMessage("请输入 '源PHPtag'");
 //            return;
@@ -650,10 +657,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 //            showMessageDialogMessage("请输入 '目的PHPtag'");
 //            return;
 //        }
-        syncjButton.setEnabled(false);
+            syncjButton.setEnabled(false);
 
-        buildSyncTask(envList, contentList, versionTagMap, phpSyncMap);
-        revalidate();
+            buildSyncTask(envList, contentList, versionTagMap, phpSyncMap);
+            revalidate();
 
 //        Map<String, String> args = new HashMap<>();
 //        args.put("source", "D:\\www\\framework");
@@ -662,6 +669,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 //        Sync.syncMain(args);
 //        createPHPBranch("svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhouse/", "svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/dev_greenhousebak", "en_us");
 //        updatePHPBranchToLocal("en_us", "D:\\www\\dessert\\code\\branches");
+
     }//GEN-LAST:event_syncjButtonActionPerformed
 
     private void canceljButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_canceljButtonActionPerformed
