@@ -20,8 +20,11 @@
 package sync;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represent a file or directory.
@@ -72,6 +75,8 @@ class FileUnit {
      * file/directory, if any
      */
     FileUnit match = null;
+
+    boolean isNew = false;
 
     /**
      * true if the corresponding matching target/source file/directory has the
@@ -132,6 +137,16 @@ class FileUnit {
             this.name = f.getName();
             this.size = f.length();
         }
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return this.file.getCanonicalPath() + " " + this.time + " sameName:" + (this.sameName ? "1" : "0") + " sameCrc:" + (this.sameCrc ? "1" : "0") + " sameSize:" + (this.sameSize ? "1" : "0") + " sameTime:" + (this.sameTime ? "1" : "0");
+        } catch (IOException ex) {
+            Logger.getLogger(FileUnit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     /**

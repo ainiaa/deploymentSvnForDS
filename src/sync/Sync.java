@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -293,7 +296,7 @@ public class Sync {
             /* perform synchronization */
             switch (Sync.syncMode) {
                 case DIRECTORY:
-                    syncDirectory();
+                    syncDirectory(false);
                     break;
 
                 case FILE:
@@ -1678,6 +1681,7 @@ public class Sync {
         int reportNumUnmatchedSourceFilesCopied = 0;
         int reportNumUnmatchedTargetFilesDirs = 0;
         int reportNumUnmatchedTargetFilesDirsDeleted = 0;
+        List<FileMatchResult> allModifiedFiles = new ArrayList<>();
 
         /* perform a DFS synchronization of the subdirectories using two stacks: */
         /* - contentStack contains directories whose contents are to be synced   */
@@ -1999,7 +2003,7 @@ public class Sync {
              */
 
             /* perform file-matching */
-            final boolean uniqueMatching = performSourceTargetFileMatching(sFiles, tFiles);
+            final boolean uniqueMatching = performSourceTargetFileMatching(sFiles, tFiles, true);
 
             /* matched source files, to be time-synced or renamed if necessary */
             final List<FileUnit> sFilesMatched = new ArrayList<>();
@@ -2219,6 +2223,11 @@ public class Sync {
                                         + p.target.getPath() + "\":\n" + error);
                             }
                         }
+                        try {
+                            allModifiedFiles.add(new FileMatchResult(p.source.getCanonicalPath(), p.target.getCanonicalPath(), FileMatchResult.matchResultType.RENAMED));
+                        } catch (IOException ex) {
+                            Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
             }
@@ -2238,10 +2247,9 @@ public class Sync {
                     reportNumUnmatchedSourceFiles++;
                     SyncIO.printFlush("\n [C" + reportNumUnmatchedSourceFiles + "] \""
                             + u.name + "\" (" + u.getSizeString() + ")");
-
+                    final File targetFile = new File(targetDir, u.name);
                     if (!Sync.simulateOnly) {
                         /* desired target file for copy operation */
-                        final File targetFile = new File(targetDir, u.name);
 
                         final String error = SyncIO.copyFile(u.file, targetFile);
 
@@ -2254,6 +2262,16 @@ public class Sync {
                                     + u.file.getPath() + "\" ---> \""
                                     + targetFile.getPath() + "\":\n" + error);
                         }
+                    }
+                    try {
+                        if (u.sameName) {
+                            allModifiedFiles.add(new FileMatchResult(u.file.getCanonicalPath(), targetFile.getCanonicalPath(), FileMatchResult.matchResultType.MODIFIED));
+                        } else {
+                            allModifiedFiles.add(new FileMatchResult(u.file.getCanonicalPath(), targetFile.getCanonicalPath(), FileMatchResult.matchResultType.ADDED));
+                        }
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -2333,6 +2351,11 @@ public class Sync {
                                                     + "\":\n" + error);
                                         }
                                     }
+                                    try {
+                                        allModifiedFiles.add(new FileMatchResult("", u.file.getCanonicalPath(), FileMatchResult.matchResultType.DELETED));
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
                                 }
                             } else {
                                 /* file/directory does not exist anymore */
@@ -2367,6 +2390,12 @@ public class Sync {
             }
         }
 
+        System.out.println("start allNeedCopiedFiles ...................................");
+        for (FileMatchResult sf : allModifiedFiles) {
+            System.out.println(sf);
+        }
+        System.out.println("end allNeedCopiedFiles ...................................");
+
         /**
          * *******************
          * REPORT STATISTICS * *******************
@@ -2393,6 +2422,824 @@ public class Sync {
                 " deleted)");
 
         SyncIO.print(report.toString());
+    }
+
+    /**
+     * Perform DIRECTORY synchronization from Sync.source to Sync.target. The
+     * source must be an existing directory; the target must be a directory if
+     * it exists.
+     */
+    private static void syncDirectory(boolean improve) {
+        final StringBuilder s = new StringBuilder();
+
+        s.append("\n\nDIRECTORY SYNCHRONIZATION");
+
+        if (Sync.simulateOnly) {
+            s.append(" (SIMULATION MODE)");
+        }
+
+        /* display log file, if any */
+        if (Sync.log != null) {
+            s.append("\n\nLog file: \"").append(Sync.logName).append("\"");
+        }
+
+        /* display source and target directories */
+        s.append("\n\nSource directory: \"").append(Sync.sourceName).append("\"" + "\nTarget directory: \"").append(Sync.targetName).append("\"\n");
+
+        /* display file-matching attributes */
+        s.append("\nFile-matching attributes: ").append(Sync.matchNstcString).append("\n");
+
+        if (Sync.matchTimeTolerance > 0L) {
+            s.append(", with ").append(Sync.matchTimeTolerance).append("-millisecond time-tolerance\n");
+        }
+
+        /* display source and target file/directorry filters, if any */
+        if (Sync.sourceFilter != null) {
+            s.append("\nSource file/directory filter: ").append(Sync.sourceFilter.toString());
+        }
+
+        if (Sync.targetFilter != null) {
+            s.append("\nTarget file/directory filter: ").append(Sync.targetFilter.toString());
+        }
+
+        if ((Sync.sourceFilter != null) || (Sync.targetFilter != null)) {
+            s.append("\nFilter mode: ").append(Sync.filterLowerCase ? "lower-case " : "").append(Sync.filterRelativePathname ? "relative pathname" : "filename").append("\n");
+        }
+
+        SyncIO.printFlush(s.toString());
+
+        /* validate source and target */
+        if (Sync.source.equals(Sync.target)) {
+            throw new TerminatingException("The source directory \"" + Sync.sourceName
+                    + "\" cannot be the same as the target directory \"" + Sync.targetName + "\".");
+        }
+
+        if (Sync.sourceName.startsWith(Sync.targetName)) {
+            throw new TerminatingException("The source directory \"" + Sync.sourceName
+                    + "\" cannot be a subdirectory of the target directory \"" + Sync.targetName + "\".");
+        }
+
+        if (Sync.targetName.startsWith(Sync.sourceName)) {
+            throw new TerminatingException("The target directory \"" + Sync.targetName
+                    + "\" cannot be a subdirectory of the source directory \"" + Sync.sourceName + "\".");
+        }
+
+        final int sourceNameLength = Sync.sourceName.length();
+        final int targetNameLength = Sync.targetName.length();
+
+        /* report statistics */
+        int reportNumSourceDirsScanned = 0;
+        int reportNumSourceFilesScanned = 0;
+        int reportNumTargetFilesScanned = 0;
+        int reportNumSourceFilesMatched = 0;
+        int reportNumSyncTime = 0;
+        int reportNumSyncTimeSuccess = 0;
+        int reportNumRenameOperations = 0;
+        int reportNumRenameOperationsSuccess = 0;
+        int reportNumUnmatchedSourceFiles = 0;
+        int reportNumUnmatchedSourceFilesCopied = 0;
+        int reportNumUnmatchedTargetFilesDirs = 0;
+        int reportNumUnmatchedTargetFilesDirsDeleted = 0;
+        List<FileMatchResult> allModifiedFiles = new ArrayList<>();
+
+        /* perform a DFS synchronization of the subdirectories using two stacks: */
+        /* - contentStack contains directories whose contents are to be synced   */
+        /* - timeStack contains directories whose time should be synced after    */
+        /*   processing all their contents                                       */
+        final Deque<FilePair> contentStack = new ArrayDeque<>();
+        final Deque<FilePair> timeStack = new ArrayDeque<>();
+
+        final FilePair marker = new FilePair(null, null); // special marker
+
+        contentStack.push(new FilePair(Sync.source, Sync.target));
+
+        SyncNextDirectory:
+        while (!contentStack.isEmpty()) {
+            /* get subdirectory-pair for synchronizing contents */
+            final FilePair pair = contentStack.pop();
+
+            /* check for special marker */
+            if (pair == marker) {
+                /**
+                 * ************************************************
+                 * SYNC LAST-MODIFIED TIME OF TARGET SUBDIRECTORY *
+                 * ************************************************
+                 */
+
+                final FilePair timePair = timeStack.pop();
+
+                final File timeSourceDir = timePair.source;
+                final File timeTargetDir = timePair.target;
+
+                if (timeSourceDir.isDirectory() && timeTargetDir.isDirectory()) {
+                    final long sourceTime = timeSourceDir.lastModified();
+                    final long targetTime = timeTargetDir.lastModified();
+
+                    /* create the target subdirectory only if the times are different, and */
+                    /* the target's name matches the filter (if specified)                 */
+                    boolean syncTime = false;
+
+                    if (targetTime != sourceTime) {
+                        if (Sync.sourceFilter == null) {
+                            syncTime = true;
+                        } else {
+                            final String timeTargetDirName = SyncIO.trimTrailingSeparator(timeTargetDir.getPath()) + File.separatorChar;
+
+                            String name = null;
+
+                            if (timeTargetDirName.length() == targetNameLength) {
+                                /* this is the base target directory */
+                                name = "";
+                            } else {
+                                name = Sync.filterRelativePathname
+                                        ? timeTargetDirName.substring(targetNameLength)
+                                        : (SyncIO.trimTrailingSeparator(timeTargetDir.getName()) + File.separatorChar);
+                            }
+
+                            if (Sync.filterLowerCase) {
+                                name = name.toLowerCase(Locale.ENGLISH);
+                            }
+
+                            if (Sync.sourceFilter.matches(name)) {
+                                syncTime = true;
+                            }
+                        }
+                    }
+
+                    if (syncTime) {
+                        if (!Sync.simulateOnly) {
+                            final boolean success = timeTargetDir.setLastModified(sourceTime);
+
+                            if (!success) {
+                                reportWarning("Failed to set last-modified time of target subdirectory \""
+                                        + SyncIO.trimTrailingSeparator(timeTargetDir.getPath()) + File.separatorChar
+                                        + "\":\n " + String.format(Locale.ENGLISH, Sync.TIME_FORMAT_STRING, new Date(targetTime))
+                                        + " ---> " + String.format(Locale.ENGLISH, Sync.TIME_FORMAT_STRING, new Date(sourceTime)) + ".");
+                            }
+                        }
+                    }
+                }
+
+                continue;
+            }
+
+            /**
+             * *******************************
+             * (1) DISPLAY RELATIVE PATHNAME * *******************************
+             */
+
+            /* source subdirectory */
+            final File sourceDir = pair.source;
+            final String sourceDirName = SyncIO.trimTrailingSeparator(sourceDir.getPath()) + File.separatorChar;
+
+            /* target subdirectory */
+            final File targetDir = pair.target;
+            final String targetDirName = SyncIO.trimTrailingSeparator(targetDir.getPath()) + File.separatorChar;
+
+            /* relative pathname of the subdirectory */
+            final String relativePathname = sourceDirName.substring(sourceNameLength);
+
+//            SyncIO.printFlush("\n\nSUBDIRECTORY: \"" + (relativePathname.isEmpty() ? ("." + File.separatorChar) : relativePathname) + "\"");
+            if (targetDir.exists() && !targetDir.isDirectory()) {
+                reportWarning("The target \"" + targetDir.getPath()
+                        + "\" already exists but is not a directory; could it be a file?\nThis subdirectory will be ignored.");
+                continue;
+            }
+
+            /**
+             * *****************************************
+             * (2) GET CONTENTS OF SOURCE SUBDIRECTORY *
+             * *****************************************
+             */
+
+            /* get source files (filtered if necessary) and subdirectories */
+            final File[] sFileList = sourceDir.listFiles();
+
+            if (sFileList == null) {
+                reportWarning("Failed to get contents of source subdirectory \""
+                        + sourceDirName + "\".\nThis subdirectory will be ignored.");
+                continue;
+            }
+
+            final List<FileUnit> sFiles = new ArrayList<>();
+            final List<FileUnit> sDirs = new ArrayList<>();
+
+            for (File f : sFileList) {
+                final FileUnit u = new FileUnit(f);
+
+                if (u.isDirectory) {
+                    if (Sync.sourceFilter == null) {
+                        sDirs.add(u);
+                    } else {
+                        String name = Sync.filterRelativePathname
+                                ? u.file.getPath().substring(sourceNameLength) : u.name;
+                        if (Sync.filterLowerCase) {
+                            name = name.toLowerCase(Locale.ENGLISH);
+                        }
+
+                        if (Sync.sourceFilter.matches(name)) {
+                            sDirs.add(u);
+                        }
+                    }
+                } else {
+                    /* apply filter on file, if necessary */
+                    boolean addFile = false;
+
+                    if (Sync.sourceFilter == null) {
+                        addFile = true;
+                    } else {
+                        String name = Sync.filterRelativePathname
+                                ? u.file.getPath().substring(sourceNameLength) : u.name;
+                        if (Sync.filterLowerCase) {
+                            name = name.toLowerCase(Locale.ENGLISH);
+                        }
+
+                        if (Sync.sourceFilter.matches(name)) {
+                            addFile = true;
+                        }
+                    }
+
+                    if (addFile) {
+                        sFiles.add(u);
+                    }
+                }
+            }
+
+            reportNumSourceDirsScanned++;
+            reportNumSourceFilesScanned += sFiles.size();
+
+            /**
+             * *****************************************
+             * (3) GET CONTENTS OF TARGET SUBDIRECTORY *
+             * *****************************************
+             */
+
+            /* get target files and subdirectories */
+            final List<FileUnit> tFiles = new ArrayList<>();
+            final List<FileUnit> tDirs = new ArrayList<>();
+
+            if (targetDir.isDirectory()) {
+                /* target subdirectory already exists; get its contents */
+                final File[] tFileList = targetDir.listFiles();
+
+                if (tFileList == null) {
+                    reportWarning("Failed to get contents of target subdirectory \""
+                            + targetDirName + "\".\nThis subdirectory will be ignored.");
+                    continue;
+                }
+
+                for (File f : tFileList) {
+                    final FileUnit u = new FileUnit(f);
+
+                    if (u.isDirectory) {
+                        tDirs.add(u);
+                    } else {
+                        /* apply filter on file, if necessary */
+                        boolean addFile = false;
+
+                        if (Sync.targetFilter == null) {
+                            addFile = true;
+                        } else {
+                            String name = Sync.filterRelativePathname
+                                    ? u.file.getPath().substring(targetNameLength) : u.name;
+
+                            if (Sync.filterLowerCase) {
+                                name = name.toLowerCase(Locale.ENGLISH);
+                            }
+
+                            if (Sync.targetFilter.matches(name)) {
+                                addFile = true;
+                            }
+                        }
+
+                        if (addFile) {
+                            tFiles.add(u);
+                        }
+                    }
+                }
+            } else if (targetDir.exists()) {
+                /* target already exists, but is not a directory */
+                reportWarning("Target \"" + targetDir.getPath()
+                        + "\" already exists but is not a directory; could it be a file?"
+                        + "\nThis subdirectory will be ignored.");
+                continue;
+            } else {
+                /* target subdirectory does not exist;                                     */
+                /* proceed to create it only if its name matches the filter (if specified) */
+                boolean createDir = false;
+
+                if (Sync.sourceFilter == null) {
+                    createDir = true;
+                } else {
+                    String name = null;
+
+                    if (targetDirName.length() == targetNameLength) {
+                        /* this is the base target directory */
+                        name = "";
+                    } else {
+                        name = Sync.filterRelativePathname
+                                ? targetDirName.substring(targetNameLength)
+                                : (SyncIO.trimTrailingSeparator(targetDir.getName()) + File.separatorChar);
+                    }
+
+                    if (Sync.filterLowerCase) {
+                        name = name.toLowerCase(Locale.ENGLISH);
+                    }
+
+                    if (Sync.sourceFilter.matches(name)) {
+                        createDir = true;
+                    }
+                }
+
+                if (createDir) {
+                    if (!Sync.simulateOnly) {
+                        targetDir.mkdirs();
+
+                        if (!targetDir.isDirectory()) {
+                            reportWarning("Failed to create target subdirectory \""
+                                    + targetDirName + "\".\nThis subdirectory will be ignored.");
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            reportNumTargetFilesScanned += tFiles.size();
+
+            /**
+             * ************************************************************
+             * (4) CHECK FOR FILE-MATCHING KEY CLASHES AMONG SOURCE FILES *
+             * ************************************************************
+             */
+
+            /* sort source files by file-matching attributes */
+            Collections.sort(sFiles, Sync.matchFileUnitComparator);
+
+            FileUnit w = null;
+            for (FileUnit u : sFiles) {
+                /* check if consecutive files have the same file-matching attributes */
+                if ((w != null) && (Sync.matchFileUnitComparator.compare(u, w) == 0)) {
+                    reportWarning("File-matching key clash in source subdirectory \"" + sourceDirName
+                            + "\":\nThe following source files have the same " + Sync.matchNstcString + ":"
+                            + "\n [1] \"" + u.file.getPath() + "\""
+                            + "\n [2] \"" + w.file.getPath() + "\""
+                            + "\nThe files in this subdirectory will be ignored.");
+
+                    /* recurse into subdirectories:                                    */
+                    /* (this block of code should be identical to the one below)       */
+                    /* push subdirectory-pair onto time-stack for subsequent time-sync */
+                    timeStack.push(new FilePair(sourceDir, targetDir));
+                    contentStack.push(marker); // special marker
+
+                    if (!Sync.noRecurse) {
+                        for (int i = sDirs.size() - 1; i >= 0; i--) {
+                            /* source subdirectory */
+                            final File sDir = sDirs.get(i).file;
+
+                            /* corresponding target subdirectory */
+                            final File tDir = new File(targetDir, sDir.getName());
+
+                            /* push subdirectory-pair onto content-stack for subsequent content-sync */
+                            contentStack.push(new FilePair(sDir, tDir));
+                        }
+                    }
+
+                    continue SyncNextDirectory;
+                }
+
+                w = u;
+            }
+
+            /**
+             * ***********************************************************
+             * (5) PERFORM FILE-MATCHING BETWEEN SOURCE AND TARGET FILES *
+             * ***********************************************************
+             */
+
+            /* perform file-matching */
+            final boolean uniqueMatching = performSourceTargetFileMatching(sFiles, tFiles, true);
+
+            /* matched source files, to be time-synced or renamed if necessary */
+            final List<FileUnit> sFilesMatched = new ArrayList<>();
+
+            /* unmatched source files, to be copied */
+            final List<FileUnit> sFilesUnmatched = new ArrayList<>();
+
+            /* unmatched target files and subdirectories, to be deleted */
+            final Map<File, FileUnit> tFilesDirsUnmatched = new TreeMap<>();
+
+            /* process source files */
+            for (FileUnit u : sFiles) {
+                if (u.match == null) {
+                    /* this is an unmatched source file, to be copied */
+                    sFilesUnmatched.add(u);
+                } else {
+                    /* this is a matched source file */
+                    sFilesMatched.add(u);
+                }
+            }
+
+            /* process target files */
+            for (FileUnit u : tFiles) {
+                if (u.match == null) {
+                    /* this is an unmatched target file, to be deleted */
+                    tFilesDirsUnmatched.put(u.file, u);
+                }
+            }
+
+            /* perform directory-matching (matching by name only) */
+            performSourceTargetDirMatching(sDirs, tDirs);
+
+            /* process target directories */
+            for (FileUnit u : tDirs) {
+                if (u.match == null) {
+                    /* this is an unmatched target subdirectory, to be deleted */
+                    tFilesDirsUnmatched.put(u.file, u);
+                }
+            }
+
+            /**
+             * *****************************************
+             * (6) DISPLAY MATCHED SOURCE-TARGET FILES *
+             * *****************************************
+             */
+
+            /* number of matched target files to time-sync and rename */
+            int numSyncTime = 0;
+            int numSyncName = 0;
+
+            if (!sFiles.isEmpty()) {
+                final int numSourceFilesMatched = sFilesMatched.size();
+
+//                SyncIO.print("\n\n No. of source files matched: " + numSourceFilesMatched + " of " + sFiles.size());
+                for (FileUnit u : sFilesMatched) {
+                    reportNumSourceFilesMatched++;
+
+                    /* display matched source-target pair and matching attributes */
+//                    SyncIO.print("\n [M" + reportNumSourceFilesMatched + ":"
+//                            + (u.sameName ? "n" : " ")
+//                            + (u.sameSize ? "s" : " ")
+//                            + (u.sameTime ? "t" : " ")
+//                            + (Sync.matchCrc ? (u.sameCrc ? "c" : " ") : "")
+//                            + "] \"" + u.name + "\""
+//                            + (u.sameName ? "" : (" <---> \"" + u.match.name + "\"")));
+
+                    /* need to sync filename of matched target file? */
+                    if (!u.sameName) {
+                        numSyncName++;
+                    }
+
+                    /* need to sync time of matched target file? */
+                    if (!u.sameTime) {
+                        numSyncTime++;
+                    }
+                    try {
+                        allModifiedFiles.add(new FileMatchResult(u.file.getCanonicalPath(), u.match.file.getCanonicalPath(), FileMatchResult.matchResultType.MATCHED));
+                    } catch (IOException ex) {
+                        Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                /* warn on poor file-matching */
+                if (!uniqueMatching) {
+                    reportWarning("Matching between files in source subdirectory \"" + sourceDirName
+                            + "\" and target subdirectory \"" + targetDirName + "\" involves arbitrarily broken ties.");
+                }
+            }
+
+            /**
+             * ***************************************
+             * (7) SYNC TIME OF MATCHED TARGET FILES *
+             * ***************************************
+             */
+            if (numSyncTime > 0) {
+                boolean syncTime = false;
+
+                if (Sync.defaultActionOnTimeSyncMatched == 'Y') {
+//                    SyncIO.print("\n\n Synchronizing last-modified time of "
+//                            + numSyncTime + " matched target "
+//                            + ((numSyncTime == 1) ? "file:" : "files:"));
+                    syncTime = true;
+                } else if (Sync.defaultActionOnTimeSyncMatched == 'N') {
+//                    SyncIO.print("\n\n Skipping last-modified time synchronization of "
+//                            + numSyncTime + " matched target "
+//                            + ((numSyncTime == 1) ? "file" : "files"));
+                } else if (Sync.defaultActionOnTimeSyncMatched == '\0') {
+//                    SyncIO.print("\n\n Synchronize last-modified time of "
+//                            + numSyncTime + " matched target "
+//                            + ((numSyncTime == 1) ? "file" : "files") + "?\n");
+
+                    final char choice = SyncIO.userCharPrompt(
+                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+                            "YNAR");
+
+                    if (choice == 'Y') {
+                        syncTime = true;
+                    } else if (choice == 'A') {
+                        Sync.defaultActionOnTimeSyncMatched = 'Y';
+                        syncTime = true;
+                    } else if (choice == 'R') {
+                        Sync.defaultActionOnTimeSyncMatched = 'N';
+                    }
+                }
+
+                if (syncTime) {
+                    /* proceed to synchronize time of matched target files */
+                    for (FileUnit u : sFilesMatched) {
+                        final FileUnit t = u.match;
+
+                        if (!t.sameTime) {
+                            /* set last-modified time of the matched target file to that of the source file */
+
+                            reportNumSyncTime++;
+                            SyncIO.printFlush("\n [T" + reportNumSyncTime + "] \""
+                                    + t.name + "\"\n  " + t.getTimeString() + " ---> " + u.getTimeString());
+
+                            if (!Sync.simulateOnly) {
+                                final String error = SyncIO.setFileTime(t.file, u.time);
+
+                                if (error == null) {
+                                    /* last-modified time of file was successfully set */
+                                    reportNumSyncTimeSuccess++;
+                                } else if (!error.isEmpty()) {
+                                    reportWarning("Failed to set last-modified time of matched target file \""
+                                            + t.file.getPath() + "\":\n " + t.getTimeString() + " ---> " + u.getTimeString()
+                                            + ":\n" + error);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * *********************************
+             * (8) RENAME MATCHED TARGET FILES *
+             * *********************************
+             */
+            if (numSyncName > 0) {
+                boolean syncName = false;
+
+                if (Sync.defaultActionOnRenameMatched == 'Y') {
+//                    SyncIO.print("\n\n Renaming "
+//                            + numSyncName + " matched target "
+//                            + ((numSyncName == 1) ? "file:" : "files:"));
+                    syncName = true;
+                } else if (Sync.defaultActionOnRenameMatched == 'N') {
+//                    SyncIO.print("\n\n Skipping renaming of "
+//                            + numSyncName + " matched target "
+//                            + ((numSyncName == 1) ? "file" : "files"));
+                } else if (Sync.defaultActionOnRenameMatched == '\0') {
+//                    SyncIO.print("\n\n Rename "
+//                            + numSyncName + " matched target "
+//                            + ((numSyncName == 1) ? "file" : "files")
+//                            + "?\n");
+
+                    final char choice = SyncIO.userCharPrompt(
+                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+                            "YNAR");
+
+                    if (choice == 'Y') {
+                        syncName = true;
+                    } else if (choice == 'A') {
+                        Sync.defaultActionOnRenameMatched = 'Y';
+                        syncName = true;
+                    } else if (choice == 'R') {
+                        Sync.defaultActionOnRenameMatched = 'N';
+                    }
+                }
+
+                if (syncName) {
+                    /* determine actual file renaming operations */
+                    final List<FilePair> renamePairs = new ArrayList<>();
+
+                    /* get desired source-target rename pair */
+                    for (FileUnit u : sFilesMatched) {
+                        if (!u.sameName) {
+                            renamePairs.add(new FilePair(u.match.file, new File(targetDir, u.name)));
+                        }
+                    }
+
+                    final List<FilePair> renameOperations = getRenameOperations(renamePairs);
+
+                    /* proceed to rename matched target file */
+                    for (FilePair p : renameOperations) {
+                        reportNumRenameOperations++;
+//                        SyncIO.printFlush("\n [R" + reportNumRenameOperations + "] \""
+//                                + p.source.getName() + "\" ---> \"" + p.target.getName() + "\"");
+
+                        if (!Sync.simulateOnly) {
+                            final String error = SyncIO.renameFile(p.source, p.target);
+
+                            if (error == null) {
+                                /* file was successfully renamed */
+                                reportNumRenameOperationsSuccess++;
+                                tFilesDirsUnmatched.remove(p.target);
+                            } else if (!error.isEmpty()) {
+                                reportWarning("Failed to rename matched target file \""
+                                        + p.source.getPath() + "\" ---> \""
+                                        + p.target.getPath() + "\":\n" + error);
+                            }
+                        }
+                        try {
+                            allModifiedFiles.add(new FileMatchResult(p.source.getCanonicalPath(), p.target.getCanonicalPath(), FileMatchResult.matchResultType.RENAMED));
+                        } catch (IOException ex) {
+                            Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+
+            /**
+             * *********************************
+             * (9) COPY UNMATCHED SOURCE FILES *
+             * *********************************
+             */
+            if (!sFilesUnmatched.isEmpty()) {
+                final int numUnmatchedSourceFiles = sFilesUnmatched.size();
+
+                /* display unmatched source files to be copied to the target subdirectory */
+//                SyncIO.print("\n\n No. of unmatched source files to be copied: " + numUnmatchedSourceFiles);
+                for (FileUnit u : sFilesUnmatched) {
+                    reportNumUnmatchedSourceFiles++;
+//                    SyncIO.printFlush("\n [C" + reportNumUnmatchedSourceFiles + "] \""
+//                            + u.name + "\" (" + u.getSizeString() + ")");
+
+                    final File targetFile = new File(targetDir, u.name);
+                    if (!Sync.simulateOnly) {
+                        /* desired target file for copy operation */
+
+                        final String error = SyncIO.copyFile(u.file, targetFile);
+
+                        if (error == null) {
+                            /* file was successfully copied */
+                            reportNumUnmatchedSourceFilesCopied++;
+                            tFilesDirsUnmatched.remove(targetFile);
+                        } else if (!error.isEmpty()) {
+                            Sync.reportWarning("Failed to copy unmatched source file \""
+                                    + u.file.getPath() + "\" ---> \""
+                                    + targetFile.getPath() + "\":\n" + error);
+                        }
+                    }
+                    try {
+                        if (u.sameName) {
+                            allModifiedFiles.add(new FileMatchResult(u.file.getCanonicalPath(), targetFile.getCanonicalPath(), FileMatchResult.matchResultType.MODIFIED));
+                        } else {
+                            allModifiedFiles.add(new FileMatchResult(u.file.getCanonicalPath(), targetFile.getCanonicalPath(), FileMatchResult.matchResultType.ADDED));
+                        }
+
+                    } catch (IOException ex) {
+                        Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+
+            /**
+             * ************************************************
+             * (10) DELETE UNMATCHED TARGET FILES/DIRECTORIES *
+             * ************************************************
+             */
+            if (!tFilesDirsUnmatched.isEmpty()) {
+                final int numUnmatchedTargetFilesDirs = tFilesDirsUnmatched.size();
+
+//                SyncIO.print("\n\n No. of unmatched target files/directories to be deleted: " + numUnmatchedTargetFilesDirs);
+
+                /* delete unmatched target files (first pass), and subdirectories (second pass) */
+                for (boolean isDirectory : new boolean[]{false, true}) {
+                    for (FileUnit u : tFilesDirsUnmatched.values()) {
+                        if (u.isDirectory == isDirectory) {
+                            reportNumUnmatchedTargetFilesDirs++;
+//                            SyncIO.print("\n [D" + reportNumUnmatchedTargetFilesDirs + "] ");
+
+                            boolean stillExists = false;
+
+                            if (u.file.exists()
+                                    && (u.file.isDirectory() == u.isDirectory)) {
+                                /* proceed to check full canonical pathname */
+                                String pathname = null;
+
+                                try {
+                                    pathname = u.file.getCanonicalPath();
+                                } catch (IOException e) {
+                                    pathname = null;
+                                }
+
+                                if ((pathname != null) && pathname.equals(u.file.getPath())) {
+                                    stillExists = true;
+                                }
+                            }
+
+                            if (stillExists) {
+                                boolean deleteFileDir = false;
+
+                                if (Sync.defaultActionOnDeleteUnmatched == 'Y') {
+//                                    SyncIO.printFlush("\"" + u.name + "\"");
+                                    deleteFileDir = true;
+                                } else if (Sync.defaultActionOnDeleteUnmatched == 'N') {
+//                                    SyncIO.printFlush("Skipping \"" + u.name + "\"");
+                                } else if (Sync.defaultActionOnDeleteUnmatched == '\0') {
+//                                    SyncIO.print("Delete \"" + u.name + "\"?\n");
+
+                                    final char choice = SyncIO.userCharPrompt(
+                                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+                                            "YNAR");
+
+                                    if (choice == 'Y') {
+                                        deleteFileDir = true;
+                                    } else if (choice == 'A') {
+                                        Sync.defaultActionOnDeleteUnmatched = 'Y';
+                                        deleteFileDir = true;
+                                    } else if (choice == 'R') {
+                                        Sync.defaultActionOnDeleteUnmatched = 'N';
+                                    }
+                                }
+
+                                if (deleteFileDir) {
+                                    if (!Sync.simulateOnly) {
+                                        final String error = SyncIO.deleteFileDir(u.file);
+
+                                        if (error == null) {
+                                            /* file/directory was successfully deleted */
+                                            reportNumUnmatchedTargetFilesDirsDeleted++;
+                                        } else if (!error.isEmpty()) {
+                                            Sync.reportWarning("Failed to delete unmatched target "
+                                                    + (u.isDirectory ? "directory" : "file") + " \""
+                                                    + SyncIO.trimTrailingSeparator(u.file.getPath())
+                                                    + (u.isDirectory ? File.separatorChar : "")
+                                                    + "\":\n" + error);
+                                        }
+                                    }
+                                    try {
+                                        allModifiedFiles.add(new FileMatchResult("", u.file.getCanonicalPath(), FileMatchResult.matchResultType.DELETED));
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Sync.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            } else {
+                                /* file/directory does not exist anymore */
+//                                SyncIO.printFlush("\"" + u.name + "\" does not exist anymore");
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * **********************************
+             * (11) RECURSE INTO SUBDIRECTORIES *
+             * **********************************
+             */
+
+            /* push subdirectory-pair onto time-stack for subsequent time-sync */
+            timeStack.push(new FilePair(sourceDir, targetDir));
+            contentStack.push(marker); // special marker
+
+            if (!Sync.noRecurse) {
+                for (int i = sDirs.size() - 1; i >= 0; i--) {
+                    /* source subdirectory */
+                    final File sDir = sDirs.get(i).file;
+
+                    /* corresponding target subdirectory */
+                    final File tDir = new File(targetDir, sDir.getName());
+
+                    /* push subdirectory-pair onto content-stack for subsequent content-sync */
+                    contentStack.push(new FilePair(sDir, tDir));
+                }
+            }
+        }
+
+        System.out.println("start allNeedCopiedFiles ...................................");
+        for (FileMatchResult sf : allModifiedFiles) {
+            System.out.println(sf);
+        }
+        System.out.println("end allNeedCopiedFiles ...................................");
+
+        /**
+         * *******************
+         * REPORT STATISTICS * *******************
+         */
+//        final StringBuilder report = new StringBuilder();
+//        report.append("\n\nSYNCHRONIZATION REPORT");
+//
+//        if (Sync.reportNumWarnings > 0) {
+//            report.append("\n ").append(Sync.reportNumWarnings).append((Sync.reportNumWarnings == 1) ? " warning" : " warnings").append(" encountered.");
+//        }
+//
+//        report.append("\n No. of source subdirectories scanned          : ").append(reportNumSourceDirsScanned).append("\n No. of source files scanned                   : ").append(reportNumSourceFilesScanned).append("\n No. of target files scanned                   : ").append(reportNumTargetFilesScanned).append("\n No. of source files matched [M]               : ").append(
+//                reportNumSourceFilesMatched);
+//
+//        if (reportNumSyncTime > 0) {
+//            report.append("\n No. of successful time-sync operations [T]    : ").append(reportNumSyncTimeSuccess).append(" of ").append(reportNumSyncTime);
+//        }
+//
+//        if (reportNumRenameOperations > 0) {
+//            report.append("\n No. of successful file rename operations [R]  : ").append(reportNumRenameOperationsSuccess).append(" of ").append(reportNumRenameOperations);
+//        }
+//
+//        report.append("\n No. of unmatched source files [C]             : ").append(reportNumUnmatchedSourceFiles).append(" (").append(reportNumUnmatchedSourceFilesCopied).append(" copied)" + "\n No. of unmatched target files/directories [D] : ").append(reportNumUnmatchedTargetFilesDirs).append(" (").append(reportNumUnmatchedTargetFilesDirsDeleted).append(
+//                " deleted)");
+//
+//        SyncIO.print(report.toString());
     }
 
     /**
@@ -2592,6 +3439,53 @@ public class Sync {
         if (Sync.reportNumWarnings > 0) {
             SyncIO.print("\n\n" + Sync.reportNumWarnings + ((Sync.reportNumWarnings == 1) ? " warning" : " warnings") + " encountered.");
         }
+    }
+
+    /**
+     * Perform source-target file-matching.
+     *
+     * @param sFiles Source files to be matched
+     * @param tFiles Target files (candidate matches)
+     * @return True if matching is unique; false otherwise
+     */
+    private static boolean performSourceTargetFileMatching(
+            final List<FileUnit> sFiles,
+            final List<FileUnit> tFiles, boolean improve) {
+        /* return value */
+        boolean uniqueMatching = true;
+
+        /* no source files to be matched? */
+        if (sFiles.isEmpty()) {
+            return uniqueMatching;
+        }
+
+        /* sort target files by "search" attributes for file-matching */
+        Collections.sort(tFiles, Sync.searchFileUnitComparator);
+
+        final List<String> tFileNameList = new ArrayList<>();
+        for (FileUnit s : tFiles) {
+            tFileNameList.add(s.file.getName());
+        }
+
+        for (FileUnit currSourceFile : sFiles) {
+            if (tFileNameList.contains(currSourceFile.file.getName())) {
+                FileUnit currTargetFile = tFiles.get(tFileNameList.indexOf(currSourceFile.file.getName()));
+                currSourceFile.sameName = true;
+                currSourceFile.sameCrc = (currSourceFile.getCrc() == currTargetFile.getCrc());
+                currSourceFile.sameSize = (currSourceFile.size == currTargetFile.size);
+                currSourceFile.sameTime = (currSourceFile.time == currTargetFile.time);
+                if (currSourceFile.sameCrc && currSourceFile.sameCrc && currSourceFile.sameTime) {
+                    currSourceFile.match = currTargetFile;
+                    currTargetFile.match = currSourceFile;
+                }
+            } else {//新增 或者 target对应文件已被删除
+                currSourceFile.sameName = false;
+                currSourceFile.sameCrc = false;
+                currSourceFile.sameSize = false;
+                currSourceFile.sameTime = false;
+            }
+        }
+        return uniqueMatching;
     }
 
     /**

@@ -107,8 +107,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
         contentjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "同步内容", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(153, 51, 255))); // NOI18N
 
+        contentResourcesjCheckBox.setSelected(true);
         contentResourcesjCheckBox.setText("resources");
 
+        contentFlashjCheckBox.setSelected(true);
         contentFlashjCheckBox.setText("flash");
 
         needSyncContentjCheckBox.setSelected(true);
@@ -139,10 +141,13 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
         environmentjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "同步环境", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(51, 51, 255))); // NOI18N
 
+        envENjCheckBox.setSelected(true);
         envENjCheckBox.setText("英语");
 
+        envFRjCheckBox.setSelected(true);
         envFRjCheckBox.setText("法语");
 
+        envDEjCheckBox.setSelected(true);
         envDEjCheckBox.setText("德语");
 
         envSPjCheckBox.setText("西班牙语");
@@ -670,10 +675,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
     private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
 
-//        if (true) {
-//            syncFile("D:\\www\\framework", "D:\\www\\frameworkbak", true);
-//            return;
-//        }
+        if (true) {
+            syncFile("D:\\www\\framework", "D:\\www\\frameworkbak", true);
+            return;
+        }
         
         List<String> envList = getEnv();
         List<String> contentList = getContent();

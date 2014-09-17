@@ -18,7 +18,7 @@ public class Test {
         File f = new File("D:\\www\\framework");
         File[] ff = f.listFiles();
         for (File cf : ff) {
-            System.out.println(cf.getAbsoluteFile() + " " + cf.getCanonicalFile());
+            System.out.println(cf.getAbsoluteFile() + " " + cf.getCanonicalFile() + " " + cf.getName());
         }
     }
 }

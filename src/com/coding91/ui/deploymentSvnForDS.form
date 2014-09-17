@@ -159,11 +159,13 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="contentResourcesjCheckBox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="resources"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="contentFlashjCheckBox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="flash"/>
           </Properties>
         </Component>
@@ -223,16 +225,19 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="envENjCheckBox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x82f1;&#x8bed;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envFRjCheckBox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x6cd5;&#x8bed;"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envDEjCheckBox">
           <Properties>
+            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x5fb7;&#x8bed;"/>
           </Properties>
         </Component>
