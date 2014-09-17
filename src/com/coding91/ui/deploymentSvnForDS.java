@@ -487,8 +487,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         args.put("force", "y");
         args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
         args.put("path", "1");
-        Sync.syncMain(args);
-
         return args;
     }
 
@@ -603,6 +601,16 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         Map<String, String> args = buildFileSyncArgs(originDir, dstDir);
         Sync.syncMain(args);
     }
+    
+    public void syncFile(String originDir, String dstDir, boolean simulateOnly) {
+        Map<String, String> args = buildFileSyncArgs(originDir, dstDir);
+        
+        if (simulateOnly) {
+            args.put("simulate", "1");
+            args.remove("force");
+        }
+        Sync.syncMain(args);
+    }
 
 
     private void originPHPTagjTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_originPHPTagjTextFieldFocusGained
@@ -662,6 +670,11 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
     private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
 
+//        if (true) {
+//            syncFile("D:\\www\\framework", "D:\\www\\frameworkbak", true);
+//            return;
+//        }
+        
         List<String> envList = getEnv();
         List<String> contentList = getContent();
         Map<String, String> versionTagMap = getPHPTag();

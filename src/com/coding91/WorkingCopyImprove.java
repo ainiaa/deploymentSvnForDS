@@ -11,6 +11,11 @@
  */
 package com.coding91;
 
+import deployment.reference.tmatesoftexampleswc.WCEventHandler;
+import deployment.reference.tmatesoftexampleswc.StatusHandler;
+import deployment.reference.tmatesoftexampleswc.InfoHandler;
+import deployment.reference.tmatesoftexampleswc.CommitEventHandler;
+import deployment.reference.tmatesoftexampleswc.UpdateEventHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,7 +47,6 @@ import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
-import org.tmatesoft.svn.examples.wc.*;
 import sync.Sync;
 
 public final class WorkingCopyImprove {

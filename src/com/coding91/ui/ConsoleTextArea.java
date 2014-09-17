@@ -4,6 +4,7 @@
  */
 package com.coding91.ui;
 
+import com.coding91.LoopedStreams;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
