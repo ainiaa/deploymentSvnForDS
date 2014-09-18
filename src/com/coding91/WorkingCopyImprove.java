@@ -11,26 +11,34 @@
  */
 package com.coding91;
 
-import deployment.reference.tmatesoftexampleswc.WCEventHandler;
-import deployment.reference.tmatesoftexampleswc.StatusHandler;
-import deployment.reference.tmatesoftexampleswc.InfoHandler;
+import com.coding91.utility.MapUtil;
 import deployment.reference.tmatesoftexampleswc.CommitEventHandler;
+import deployment.reference.tmatesoftexampleswc.InfoHandler;
+import deployment.reference.tmatesoftexampleswc.StatusHandler;
 import deployment.reference.tmatesoftexampleswc.UpdateEventHandler;
+import deployment.reference.tmatesoftexampleswc.WCEventHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.tmatesoft.svn.core.ISVNDirEntryHandler;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
+import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
@@ -44,6 +52,7 @@ import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNCopyClient;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
+import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
@@ -74,25 +83,26 @@ public final class WorkingCopyImprove {
         if (env.isEmpty()) {
             env = "en_us";
         }
-        String[] keyArray = new String[]{"svn.localPath", "svn.username", "svn.password", "svn.url"};
+//        String[] keyArray = new String[]{"svn.localPath", "svn.username", "svn.password", "svn.url"};
         if (conf == null || !conf.containsKey(env)) {
-            Map<String, String> currentConf = new HashMap<>();
-            Properties prop = getProperties();
-            if (conf == null) {
-                conf = new HashMap();
-            }
-//            String[] keyArray = prop.stringPropertyNames();
-            for (String key : keyArray) {
-                try {
-                    String realKey = buildPropKey(env, key);
-                    String value = new String(prop.getProperty(realKey).getBytes("ISO-8859-1"), "UTF-8");
-                    currentConf.put(key, value);
-//                    Sync.printlnFlush(realKey + ":" + value);
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            conf.put(env, currentConf);
+//            Map<String, String> currentConf = new HashMap<>();
+//            Properties prop = getProperties();
+//            if (conf == null) {
+//                conf = new HashMap();
+//            }
+//            String[] keyArray = (String[])prop.stringPropertyNames().toArray();
+//            for (String key : keyArray) {
+//                try {
+//                    String realKey = buildPropKey(env, key);
+//                    String value = new String(prop.getProperty(realKey).getBytes("ISO-8859-1"), "UTF-8");
+//                    currentConf.put(key, value);
+////                    Sync.printlnFlush(realKey + ":" + value);
+//                } catch (UnsupportedEncodingException ex) {
+//                    Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            conf.put(env, currentConf);
+            buildConf();
         }
         return conf.get(env);
     }
@@ -150,6 +160,8 @@ public final class WorkingCopyImprove {
                 }
 //                Sync.printlnFlush(str);
             }
+
+            System.out.println(conf.toString());
         }
     }
 
@@ -455,6 +467,125 @@ public final class WorkingCopyImprove {
          */
 
         return updateClient.doUpdate(wcPath, updateToRevision, isRecursive);
+    }
+
+    public Map<Date, String> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
+        String rootUrl;
+        if (isOnline) {
+            rootUrl = getConfByEnv(env).get("svn.php.onlineUrl");
+        } else {
+            rootUrl = getConfByEnv(env).get("svn.php.localUrl");
+        }
+        SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
+        return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
+    }
+
+    public Map<Date, String> list(SVNURL url,
+            SVNRevision pegRevision,
+            SVNRevision revision,
+            boolean fetchLocks,
+            boolean recursive) {
+        return list(url, SVNRevision.HEAD, SVNRevision.HEAD, false, false, false);
+    }
+
+    public Map<Date, String> list(SVNURL url,
+            SVNRevision pegRevision,
+            SVNRevision revision,
+            boolean fetchLocks,
+            boolean recursive,
+            final boolean isGetLatest) {
+        final Map<Date, String> branchListMap = new HashMap<>();
+
+        list(url, pegRevision, revision, fetchLocks, recursive,
+                new ISVNDirEntryHandler() {
+                    @Override
+                    public void handleDirEntry(SVNDirEntry dirEntry) throws SVNException {
+//                        System.out.println("tag: relativePath:" + dirEntry.getRelativePath() + " name:" + dirEntry.getName() + " author:" + dirEntry.getAuthor() + " url:" + dirEntry.getURL() + " date:" +dirEntry.getDate());
+                        if (!dirEntry.getRelativePath().isEmpty()) {
+                            branchListMap.put(dirEntry.getDate(), dirEntry.getName());
+                        }
+                    }
+                });
+        if (isGetLatest) {
+            Map<Date, String> needSortedMap = new HashMap<>(branchListMap);
+            needSortedMap = MapUtil.sortByKey(needSortedMap, MapUtil.SortingOrder.DESCENDING);
+            for (Entry<Date, String> entry : needSortedMap.entrySet()) {
+                Map<Date, String> tmpMap = new HashMap<>();
+                tmpMap.put(entry.getKey(), entry.getValue());
+                return tmpMap;
+            }
+            return needSortedMap;
+        } else {
+            return branchListMap;
+        }
+
+    }
+
+    public Map<Date, String> getLatestBranchOrTagByEnvConf(String env, boolean isOnline) throws SVNException {
+        String rootUrl;
+        if (isOnline) {
+            rootUrl = getConfByEnv(env).get("svn.php.onlineUrl");
+        } else {
+            rootUrl = getConfByEnv(env).get("svn.php.localUrl");
+        }
+        SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
+        return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false, true);
+    }
+
+    private void list(SVNURL url,
+            SVNRevision pegRevision,
+            SVNRevision revision,
+            boolean fetchLocks,
+            boolean recursive,
+            ISVNDirEntryHandler handler) {
+        SVNLogClient logClient = clientManager.getLogClient();
+        /*
+         * sets externals not to be ignored during the update
+         */
+        logClient.setIgnoreExternals(false);
+
+        try {
+            logClient.doList(url, pegRevision, revision, fetchLocks, recursive, handler);
+        } catch (SVNException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void list(java.io.File path,
+            SVNRevision pegRevision,
+            SVNRevision revision,
+            boolean fetchLocks,
+            SVNDepth depth,
+            int entryFields) {
+        list(path, pegRevision, revision, fetchLocks, depth, entryFields,
+                new ISVNDirEntryHandler() {
+                    @Override
+                    public void handleDirEntry(SVNDirEntry dirEntry) throws SVNException {
+                        System.out.println("tag: "
+                                + dirEntry.getRelativePath());
+                    }
+                });
+    }
+
+    private void list(java.io.File path,
+            SVNRevision pegRevision,
+            SVNRevision revision,
+            boolean fetchLocks,
+            SVNDepth depth,
+            int entryFields,
+            ISVNDirEntryHandler handler) {
+
+        SVNLogClient logClient = clientManager.getLogClient();
+        /*
+         * sets externals not to be ignored during the update
+         */
+        logClient.setIgnoreExternals(false);
+
+        try {
+            logClient.doList(path, pegRevision, revision, fetchLocks, depth, entryFields, handler);
+        } catch (SVNException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private long update(File wcPath,
@@ -769,12 +900,30 @@ public final class WorkingCopyImprove {
      * @return
      * @throws SVNException
      */
-    public SVNCommitInfo createBranchOrTagByEnvConf(String env, String originTag, String dstTag, String commitMessage, boolean isOnline) throws SVNException {
+    public SVNCommitInfo createBranchOrTagByEnvConf(String env, String originTag, String dstTag, String commitMessage, boolean isOnline, int version) throws SVNException {
         String rootUrl;
+
+        String svnKey;
+
         if (isOnline) {
-            rootUrl = getConfByEnv(env).get("svn.php.onlineUrl");
+            if (version == 0) {//a版本
+                svnKey = "svn.php.aOnlineUrl";
+            } else if (version == 1) {//b版本
+                svnKey = "svn.php.bOnlineUrl";
+            } else {//其他
+                svnKey = "svn.php.onlineUrl";
+            }
+            rootUrl = getConfByEnv(env).get(svnKey);
+
         } else {
-            rootUrl = getConfByEnv(env).get("svn.php.localUrl");
+            if (version == 0) {//a版本
+                svnKey = "svn.php.aLocalUrl";
+            } else if (version == 1) {//b版本
+                svnKey = "svn.php.baLocalUrl";
+            } else {//其他
+                svnKey = "svn.php.onlineUrl";
+            }
+            rootUrl = getConfByEnv(env).get(svnKey);
         }
         SVNURL srcURL = SVNURL.parseURIEncoded(rootUrl + originTag);
         SVNURL dstURL = SVNURL.parseURIEncoded(rootUrl + dstTag);

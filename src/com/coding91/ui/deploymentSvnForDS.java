@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -430,6 +431,24 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msg, "错误信息提示", JOptionPane.ERROR_MESSAGE);
     }
 
+    private String getLocalPathKey(int version, boolean isOnline) {
+
+        if (isOnline) {
+            if (version == 0) {//a版本
+                return "sysfile.php.aOnlinePath";
+            } else if (version == 1) {//b版本
+                return "sysfile.php.bOnlinePath";
+            }
+        } else {
+            if (version == 0) {//a版本
+                return "sysfile.php.aLocalPath";
+            } else if (version == 1) {//b版本
+                return "sysfile.php.bLocalPath";
+            }
+        }
+        return "";
+    }
+
     /**
      * 创建同步任务
      *
@@ -449,17 +468,21 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             String dstTag = bVersionTagjTextField.getText().trim();
 
             WorkingCopyImprove wc = new WorkingCopyImprove(env);
+//            getBranchOrTagListByEnvConf(wc, env, true);
+//            if (true) {
+//                return;
+//            }
 
             //b版本
-            createPHPBranchByTag(wc, originTag, dstTag, env);//创建 tag  b版本
+            createPHPBranchByTag(wc, originTag, dstTag, env, 1);//创建 tag  b版本
 
             if (needCreateAVersionOfPHPBranch(env, wc)) {//需要创建 tag  a版本
                 dstTag = aVersionTagjTextField.getText().trim();
-                createPHPBranchByTag(wc, originTag, dstTag, env);//创建 tag  
+                createPHPBranchByTag(wc, originTag, dstTag, env, 0);//创建 tag  
             }
 
-            updatePHPBranchToLocal(wc, env, "sysfile.php.onlinePath");//将线上代码update到本地
-            updatePHPBranchToLocal(wc, env, "sysfile.php.localPath");//将本地代码update到本地
+            updatePHPBranchToLocal(wc, env, getLocalPathKey(1, true));//将线上代码update到本地
+            updatePHPBranchToLocal(wc, env, getLocalPathKey(1, false));//将本地代码update到本地
 
             //同步 content
             for (int contentNo = 0; contentNo < contentCount; contentNo++) {
@@ -539,13 +562,42 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      * @param dstTag
      * @param env
      */
-    public static void createPHPBranchByTag(WorkingCopyImprove wc, String originTag, String dstTag, String env) {
+    public static void createPHPBranchByTag(WorkingCopyImprove wc, String originTag, String dstTag, String env, int version) {
         try {
             String commitMessage = "remotely copying '" + originTag + "' to '" + dstTag + "'";
-            wc.createBranchOrTagByEnvConf(env, originTag, dstTag, commitMessage, true);
+            wc.createBranchOrTagByEnvConf(env, originTag, dstTag, commitMessage, true, version);
         } catch (SVNException svne) {
             System.err.println("Copying '" + originTag + "' to '" + dstTag + "  error: -----------" + svne.getErrorMessage());
         }
+    }
+
+    public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
+        try {
+            List<String> branchList = new ArrayList<>();
+            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
+                branchList.add(entry.getValue());
+                System.out.println("getBranchOrTagListByEnvConf:" + entry.getValue());
+            }
+            return branchList;
+        } catch (SVNException svne) {
+            System.err.println("getBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
+        }
+
+        return null;
+    }
+
+    public static String getLatestBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
+        try {
+            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
+                return entry.getValue();
+            }
+        } catch (SVNException svne) {
+            System.err.println("getLatestBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
+        }
+
+        return null;
     }
 
     /**
@@ -606,10 +658,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         Map<String, String> args = buildFileSyncArgs(originDir, dstDir);
         Sync.syncMain(args);
     }
-    
+
     public void syncFile(String originDir, String dstDir, boolean simulateOnly) {
         Map<String, String> args = buildFileSyncArgs(originDir, dstDir);
-        
+
         if (simulateOnly) {
             args.put("simulate", "1");
             args.remove("force");
@@ -629,12 +681,12 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     }//GEN-LAST:event_needCreatePHPTagjCheckBoxActionPerformed
 
     /**
-     * 
+     *
      * @param envList
      * @param contentList
      * @param versionTagMap
      * @param phpSyncMap
-     * @return 
+     * @return
      */
     private boolean isSyncValid(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
         if (0 == envList.size()) {
@@ -675,11 +727,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
     private void syncjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncjButtonActionPerformed
 
-        if (true) {
-            syncFile("D:\\www\\framework", "D:\\www\\frameworkbak", true);
-            return;
-        }
-        
+//        if (true) {
+//            syncFile("D:\\www\\framework", "D:\\www\\frameworkbak", true);
+//            return;
+//        }
         List<String> envList = getEnv();
         List<String> contentList = getContent();
         Map<String, String> versionTagMap = getPHPTag();

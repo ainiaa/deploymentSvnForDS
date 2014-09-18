@@ -1,0 +1,135 @@
+conf.properties
+
+langList=en_us,fr_fr,de_de
+
+project.svn.path=D:\\www\\dessert\\code\\branches
+
+##svn settings
+svn.username=liuwenyuan
+svn.password=RD56FGvderqpH
+
+#en_us setting
+en_us.svn.localPath=D:\\www\\dessert\\code\\branches
+en_us.withABVersion=1
+en_us.defaultVersion=b
+##svn settings
+en_us.svn.username=liuwenyuan
+en_us.svn.password=RD56FGvderqpH
+#en_us.svn.url=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+
+#en_us resources conf
+en_us.svn.resources.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesLocal
+en_us.svn.resources.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesOnline
+en_us.sysfile.resources.localPath=D:\\www\\dessert\\code\\branches\\resourcesLocal
+en_us.sysfile.resources.onlinePath=D:\\www\\dessert\\code\\branches\\resourcesOnline
+
+#en_us flash conf
+en_us.svn.flash.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashLocal
+en_us.svn.flash.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashOnline
+en_us.sysfile.flash.localPath=D:\\www\\dessert\\code\\branches\\flashLocal
+en_us.sysfile.flash.onlinePath=D:\\www\\dessert\\code\\branches\\flashOnline
+
+#en_us php a version conf
+en_us.svn.php.aLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.svn.php.aOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.sysfile.php.aLocalPath=D:\\www\\dessert\\code\\branches
+en_us.sysfile.php.aOnlinePath=D:\\www\\dessert\\code\\branches
+
+#en_us php b version conf
+en_us.svn.php.bLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.svn.php.bOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.sysfile.php.bLocalPath=D:\\www\\dessert\\code\\branches
+en_us.sysfile.php.bOnlinePath=D:\\www\\dessert\\code\\branches
+
+#en_us php conf
+en_us.svn.php.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.svn.php.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+en_us.sysfile.php.localPath=D:\\www\\dessert\\code\\branches
+en_us.sysfile.php.onlinePath=D:\\www\\dessert\\code\\branches
+en_us.sysfile.php.aVersionLocalPath=D:\\www\\dessert\\code\\branches
+en_us.sysfile.php.bVersionOnlinePath=D:\\www\\dessert\\code\\branches
+
+
+
+#fr_fr setting
+fr_fr.svn.localPath=D:\\www\\dessert\\code\\branches
+fr_fr.withABVersion=1
+fr_fr.defaultVersion=b
+##svn settings
+fr_fr.svn.username=liuwenyuan
+fr_fr.svn.password=RD56FGvderqpH
+#fr_fr.svn.url=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+
+#fr_fr resources conf
+fr_fr.svn.resources.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesLocal
+fr_fr.svn.resources.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesOnline
+fr_fr.sysfile.resources.localPath=D:\\www\\dessert\\code\\branches\\resourcesLocal
+fr_fr.sysfile.resources.onlinePath=D:\\www\\dessert\\code\\branches\\resourcesOnline
+
+#fr_fr flash conf
+fr_fr.svn.flash.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashLocal
+fr_fr.svn.flash.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashOnline
+fr_fr.sysfile.flash.localPath=D:\\www\\dessert\\code\\branches\\flashLocal
+fr_fr.sysfile.flash.onlinePath=D:\\www\\dessert\\code\\branches\\flashOnline
+
+#fr_fr php a version conf
+fr_fr.svn.php.aLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.svn.php.aOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.sysfile.php.aLocalPath=D:\\www\\dessert\\code\\branches
+fr_fr.sysfile.php.aOnlinePath=D:\\www\\dessert\\code\\branches
+
+#fr_fr php b version conf
+fr_fr.svn.php.bLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.svn.php.bOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.sysfile.php.bLocalPath=D:\\www\\dessert\\code\\branches
+fr_fr.sysfile.php.bOnlinePath=D:\\www\\dessert\\code\\branches
+
+#fr_fr php conf
+fr_fr.svn.php.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.svn.php.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+fr_fr.sysfile.php.localPath=D:\\www\\dessert\\code\\branches
+fr_fr.sysfile.php.onlinePath=D:\\www\\dessert\\code\\branches
+fr_fr.sysfile.php.aVersionLocalPath=D:\\www\\dessert\\code\\branches
+fr_fr.sysfile.php.bVersionOnlinePath=D:\\www\\dessert\\code\\branches
+
+
+#de_de setting
+de_de.svn.localPath=D:\\www\\dessert\\code\\branches
+de_de.withABVersion=1
+de_de.defaultVersion=b
+##svn settings
+de_de.svn.username=liuwenyuan
+de_de.svn.password=RD56FGvderqpH
+#de_de.svn.url=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+
+#de_de resources conf
+de_de.svn.resources.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesLocal
+de_de.svn.resources.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/resourcesOnline
+de_de.sysfile.resources.localPath=D:\\www\\dessert\\code\\branches\\resourcesLocal
+de_de.sysfile.resources.onlinePath=D:\\www\\dessert\\code\\branches\\resourcesOnline
+
+#de_de flash conf
+de_de.svn.flash.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashLocal
+de_de.svn.flash.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/flashOnline
+de_de.sysfile.flash.localPath=D:\\www\\dessert\\code\\branches\\flashLocal
+de_de.sysfile.flash.onlinePath=D:\\www\\dessert\\code\\branches\\flashOnline
+
+#de_de php a version conf
+de_de.svn.php.aLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.svn.php.aOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.sysfile.php.aLocalPath=D:\\www\\dessert\\code\\branches
+de_de.sysfile.php.aOnlinePath=D:\\www\\dessert\\code\\branches
+
+#de_de php b version conf
+de_de.svn.php.bLocalUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.svn.php.bOnlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.sysfile.php.bLocalPath=D:\\www\\dessert\\code\\branches
+de_de.sysfile.php.bOnlinePath=D:\\www\\dessert\\code\\branches
+
+#de_de php conf
+de_de.svn.php.localUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.svn.php.onlineUrl=svn://svndev.shinezone.com/dev/Dessert_Shop/facebook/branches/
+de_de.sysfile.php.localPath=D:\\www\\dessert\\code\\branches
+de_de.sysfile.php.onlinePath=D:\\www\\dessert\\code\\branches
+de_de.sysfile.php.aVersionLocalPath=D:\\www\\dessert\\code\\branches
+de_de.sysfile.php.bVersionOnlinePath=D:\\www\\dessert\\code\\branches
