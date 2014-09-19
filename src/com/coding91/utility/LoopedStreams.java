@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.coding91;
+package com.coding91.utility;
 
 import java.io.*;
 
@@ -59,7 +54,7 @@ public class LoopedStreams {
                 while (keepRunning) {
                     // check the number of bytes in the stream
                     if (byteArrayOS.size() > 0) {
-                        byte[] buffer = null;
+                        byte[] buffer;
                         synchronized (byteArrayOS) {
                             buffer = byteArrayOS.toByteArray();
                             byteArrayOS.reset(); // clear the buffer
@@ -67,18 +62,16 @@ public class LoopedStreams {
                         try {
                             // send the data to PipedOutputStream
                             pipedOS.write(buffer, 0, buffer.length);
+                            pipedOS.flush();
                         } catch (IOException e) {
-                            // record the err or other things
-                            // for simple, we just exit here
-                            System.exit(1);
+                            System.exit(-1);
                         }
-                    } else // no data to read, then the thread go to sleep
-                    {
-//                        try {
-//                            // check the ByteArrayOutputStream for new data every one second
-//                            Thread.sleep(50);
-//                        } catch (InterruptedException e) {
-//                        }
+                    } else {// no data to read, then the thread go to sleep
+                        try {
+                            // check the ByteArrayOutputStream for new data every one second
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                        }
                     }
                 }
             }

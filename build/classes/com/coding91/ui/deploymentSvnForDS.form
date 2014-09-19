@@ -2,17 +2,49 @@
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+    <Menu class="javax.swing.JMenuBar" name="jMenuBar">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="filejMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="File"/>
+            <Property name="text" type="java.lang.String" value="&#x6587;&#x4ef6;"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="createPHPTagjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x521b;&#x5efa;PHPTag"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncResourcesjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;resources"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncFlashjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;flash"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncPHPjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;PHP"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
         </Menu>
-        <Menu class="javax.swing.JMenu" name="jMenu2">
+        <Menu class="javax.swing.JMenu" name="editjMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
+            <Property name="text" type="java.lang.String" value="&#x7f16;&#x8f91;"/>
           </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="editConfjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>
@@ -21,7 +53,7 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
@@ -45,13 +77,6 @@
           <Component id="environmentjPanel" alignment="0" max="32767" attributes="0"/>
           <Component id="contentjPanel" alignment="0" max="32767" attributes="0"/>
           <Component id="phpTagjPanel" max="32767" attributes="0"/>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
-              <Component id="syncjButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="223" max="-2" attributes="0"/>
-              <Component id="canceljButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
           <Component id="phpjPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -62,17 +87,12 @@
               <Component id="environmentjPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="contentjPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="phpTagjPanel" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="phpTagjPanel" min="-2" pref="114" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="phpjPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="canceljButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="syncjButton" alignment="1" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="syncjScrollPane" min="-2" pref="218" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="syncjScrollPane" pref="265" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
@@ -80,14 +100,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="syncjButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65;"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncjButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Container class="javax.swing.JScrollPane" name="syncjScrollPane">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -133,12 +145,10 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="contentResourcesjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="contentFlashjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="needSyncContentjCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                  <Component id="syncResourcesjButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                  <Component id="syncFlashjButton" min="-2" pref="133" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -146,34 +156,33 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace pref="9" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="contentResourcesjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="contentFlashjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="needSyncContentjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="syncResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="syncFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="contentResourcesjCheckBox">
+        <Component class="javax.swing.JButton" name="syncResourcesjButton">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="resources"/>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; resources"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncResourcesjButtonActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="contentFlashjCheckBox">
+        <Component class="javax.swing.JButton" name="syncFlashjButton">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="flash"/>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; flash"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="needSyncContentjCheckBox">
-          <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value=" &#x540c;&#x6b65;&#x5185;&#x5bb9;"/>
-          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -225,21 +234,27 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="envENjCheckBox">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x82f1;&#x8bed;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="envENjCheckBoxActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envFRjCheckBox">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x6cd5;&#x8bed;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="envFRjCheckBoxActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envDEjCheckBox">
           <Properties>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="&#x5fb7;&#x8bed;"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="envDEjCheckBoxActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envSPjCheckBox">
           <Properties>
@@ -271,62 +286,69 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="onlineTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="bVersionTagjLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="bVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="onlineAVersionTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="onlineTagjLabel1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="onlineBVersionTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="bVersionTagjLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="newBVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="aVersionTagjLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="newAVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="aOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                              <Component id="bOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="aVersionTagjLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="aVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="235" max="-2" attributes="0"/>
+                          <Component id="creatPHPTagjButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="needCreatePHPTagjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="234" max="32767" attributes="0"/>
+                  <EmptySpace pref="182" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="aVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="aVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="bVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="bVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="onlineTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="onlineTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="needCreatePHPTagjCheckBox" min="-2" pref="48" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="aVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="newAVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineAVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="aOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="bVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="newBVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineTagjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineBVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="creatPHPTagjButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -335,44 +357,65 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="aVersionTagjLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="A&#x7248;&#x672c;tag&#xff1a;"/>
+            <Property name="text" type="java.lang.String" value="&#x65b0;&#x5efa;A&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="aVersionTagjTextField">
+        <Component class="javax.swing.JTextField" name="newAVersionTagjTextField">
         </Component>
         <Component class="javax.swing.JLabel" name="bVersionTagjLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="B&#x7248;&#x672c;tag&#xff1a;"/>
+            <Property name="text" type="java.lang.String" value="&#x65b0;&#x5efa;B&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="bVersionTagjTextField">
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="needCreatePHPTagjCheckBox">
-          <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value=" &#x9700;&#x8981;&#x65b0;&#x5efa; PHP tag"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="needCreatePHPTagjCheckBoxActionPerformed"/>
-          </Events>
+        <Component class="javax.swing.JTextField" name="newBVersionTagjTextField">
         </Component>
         <Component class="javax.swing.JLabel" name="onlineTagjLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="online tag&#xff1a;"/>
+            <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;A&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="onlineTagjTextField">
+        <Component class="javax.swing.JTextField" name="onlineAVersionTagjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineTagjLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;B&#x7248;&#x672c; TAG&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineBVersionTagjTextField">
+        </Component>
+        <Component class="javax.swing.JButton" name="creatPHPTagjButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x521b;&#x5efa; PHP TAG"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="creatPHPTagjButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="aOnlineTAGjComboBox">
+          <Properties>
+            <Property name="editable" type="boolean" value="true"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aOnlineTAGjComboBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="bOnlineTAGjComboBox">
+          <Properties>
+            <Property name="editable" type="boolean" value="true"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bOnlineTAGjComboBoxActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="canceljButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="&#x53d6;&#x6d88;&#x540c;&#x6b65;"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="canceljButtonActionPerformed"/>
-      </Events>
-    </Component>
     <Container class="javax.swing.JPanel" name="phpjPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -397,9 +440,9 @@
                   <Component id="dstPHPTagjLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="dstPHPTagjTextField" min="-2" pref="95" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                  <Component id="needSyncPHPjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                  <Component id="syncPHPjButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="320" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -411,9 +454,9 @@
                       <Component id="originPHPTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="dstPHPTagjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="dstPHPTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="needSyncPHPjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="syncPHPjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="11" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -442,9 +485,9 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="needSyncPHPjCheckBox">
+        <Component class="javax.swing.JButton" name="syncPHPjButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value=" &#x540c;&#x6b65;PHP"/>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; PHP"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>

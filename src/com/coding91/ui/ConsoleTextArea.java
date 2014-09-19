@@ -4,9 +4,8 @@
  */
 package com.coding91.ui;
 
-import com.coding91.LoopedStreams;
+import com.coding91.utility.LoopedStreams;
 import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
@@ -28,11 +27,11 @@ public class ConsoleTextArea extends JTextArea {
         startConsoleReaderThread(ls.getInputStream());
 
     } // ConsoleTextArea()
+    
     int currentCaretPosition = 0;
 
     private void startConsoleReaderThread(InputStream inStream) {
-        final BufferedReader br
-                = new BufferedReader(new InputStreamReader(inStream));
+        final BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -50,7 +49,7 @@ public class ConsoleTextArea extends JTextArea {
                         currentCaretPosition += sb.length();
                         append(sb.toString());
                         setCaretPosition(currentCaretPosition);
-//                        paintImmediately(getBounds());//实时显示
+                        paintImmediately(getBounds());//实时显示
                         paintImmediately(getX(), getY(), getWidth(), getHeight());//实时更新 显示 
                     }
                 } catch (IOException e) {
