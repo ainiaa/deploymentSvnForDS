@@ -5,6 +5,7 @@
  */
 package com.coding91.ui;
 
+import com.coding91.utility.ControllerJFrame;
 import com.coding91.utility.WorkingCopyImprove;
 import java.awt.Toolkit;
 import java.io.File;
@@ -28,23 +29,30 @@ import sync.Sync;
  *
  * @author Administrator
  */
-public class deploymentSvnForDS extends javax.swing.JFrame {
+public class DeploymentSvnForDS extends javax.swing.JFrame {
 
     /**
      * Creates new form deploymentSvnForDS
      */
-    public deploymentSvnForDS() {
+    public DeploymentSvnForDS() {
+        
+        try {
+            javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(
                 getClass().getClassLoader().getResource("resources/images/sync.png")));//这个不能以 '/'开头
         //下面的方式可以设置成功
-//        ImageIcon iconImage = SwingResourceManager.getIcon(deploymentSvnForDS.class, "/resources/images/sync.png");
+//        ImageIcon iconImage = SwingResourceManager.getIcon(DeploymentSvnForDS.class, "/resources/images/sync.png");
 //        this.setIconImage(iconImage.getImage());
         initComponents();
 
         try {
             printer();
         } catch (IOException ex) {
-            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         new Thread(new Runnable() {
@@ -54,7 +62,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 String content = "php";
                 String env = "en_us";
                 WorkingCopyImprove wc = new WorkingCopyImprove(env, special, content);
-                List<String> branchList = getBranchOrTagListByEnvConf(wc, env, true);
+                List<String> branchList = getBranchOrTagListByEnvConf(wc, env, content, true);
                 List<String> aBranchList = new ArrayList<>();
                 List<String> bBranchList = new ArrayList<>();
                 for (String branch : branchList) {
@@ -80,6 +88,26 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
                 newAVersionTagjTextField.setText(aOnlineTAGjComboBox.getSelectedItem().toString());
                 newBVersionTagjTextField.setText(bOnlineTAGjComboBox.getSelectedItem().toString());
+
+                bBranchList = null;
+                aBranchList = null;
+                branchList = null;
+
+                //#########
+                content = "flash";
+                wc = new WorkingCopyImprove(env, special, content);
+                List<String> flashList = getBranchOrTagListByEnvConf(wc, env, content, false);
+                List<String> finalFlashList = new ArrayList<>();
+                for (String branch : flashList) {
+                    if (branch.startsWith("v")) {
+                        finalFlashList.add(branch);
+                    }
+                }
+                if (flashList.size() > 0) {
+                    flashVersionjComboBox.setModel(new DefaultComboBoxModel(finalFlashList.toArray()));
+                }
+                flashList = null;
+
             }
         }).start();
     }
@@ -99,6 +127,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         contentjPanel = new javax.swing.JPanel();
         syncResourcesjButton = new javax.swing.JButton();
         syncFlashjButton = new javax.swing.JButton();
+        commitResourcesjButton = new javax.swing.JButton();
+        commitFlashjButton = new javax.swing.JButton();
+        flashVersionjLabel = new javax.swing.JLabel();
+        flashVersionjComboBox = new javax.swing.JComboBox();
         environmentjPanel = new javax.swing.JPanel();
         envENjCheckBox = new javax.swing.JCheckBox();
         envFRjCheckBox = new javax.swing.JCheckBox();
@@ -123,10 +155,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         syncPHPjButton = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         filejMenu = new javax.swing.JMenu();
-        createPHPTagjMenuItem = new javax.swing.JMenuItem();
         syncResourcesjMenuItem = new javax.swing.JMenuItem();
-        syncFlashjMenuItem = new javax.swing.JMenuItem();
-        syncPHPjMenuItem = new javax.swing.JMenuItem();
         editjMenu = new javax.swing.JMenu();
         editConfjMenuItem = new javax.swing.JMenuItem();
 
@@ -156,6 +185,26 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             }
         });
 
+        commitResourcesjButton.setText("提交resource到svn");
+        commitResourcesjButton.setEnabled(false);
+        commitResourcesjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commitResourcesjButtonActionPerformed(evt);
+            }
+        });
+
+        commitFlashjButton.setText("提交flash到svn");
+        commitFlashjButton.setEnabled(false);
+        commitFlashjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                commitFlashjButtonActionPerformed(evt);
+            }
+        });
+
+        flashVersionjLabel.setText("flash版本:");
+
+        flashVersionjComboBox.setEditable(true);
+
         javax.swing.GroupLayout contentjPanelLayout = new javax.swing.GroupLayout(contentjPanel);
         contentjPanel.setLayout(contentjPanelLayout);
         contentjPanelLayout.setHorizontalGroup(
@@ -163,8 +212,16 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             .addGroup(contentjPanelLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(syncResourcesjButton)
-                .addGap(55, 55, 55)
+                .addGap(18, 18, 18)
+                .addComponent(commitResourcesjButton)
+                .addGap(33, 33, 33)
+                .addComponent(flashVersionjLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(flashVersionjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
                 .addComponent(syncFlashjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(commitFlashjButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contentjPanelLayout.setVerticalGroup(
@@ -172,8 +229,12 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             .addGroup(contentjPanelLayout.createSequentialGroup()
                 .addGroup(contentjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(syncResourcesjButton)
-                    .addComponent(syncFlashjButton))
-                .addGap(0, 8, Short.MAX_VALUE))
+                    .addComponent(syncFlashjButton)
+                    .addComponent(commitResourcesjButton)
+                    .addComponent(commitFlashjButton)
+                    .addComponent(flashVersionjLabel)
+                    .addComponent(flashVersionjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         environmentjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "同步环境", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(51, 51, 255))); // NOI18N
@@ -366,28 +427,24 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
         filejMenu.setText("文件");
 
-        createPHPTagjMenuItem.setText("创建PHPTag");
-        filejMenu.add(createPHPTagjMenuItem);
-
-        syncResourcesjMenuItem.setText("同步resources");
-        filejMenu.add(syncResourcesjMenuItem);
-
-        syncFlashjMenuItem.setText("同步flash");
-        syncFlashjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        syncResourcesjMenuItem.setText("同步");
+        syncResourcesjMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                syncFlashjMenuItemActionPerformed(evt);
+                syncResourcesjMenuItemActionPerformed(evt);
             }
         });
-        filejMenu.add(syncFlashjMenuItem);
-
-        syncPHPjMenuItem.setText("同步PHP");
-        filejMenu.add(syncPHPjMenuItem);
+        filejMenu.add(syncResourcesjMenuItem);
 
         jMenuBar.add(filejMenu);
 
         editjMenu.setText("编辑");
 
         editConfjMenuItem.setText("修改配置项(EN_US)");
+        editConfjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editConfjMenuItemActionPerformed(evt);
+            }
+        });
         editjMenu.add(editConfjMenuItem);
 
         jMenuBar.add(editjMenu);
@@ -417,7 +474,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(phpjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(syncjScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                .addComponent(syncjScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -495,8 +552,8 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         args.put("source", source);
         args.put("target", target);
 //        args.put("force", "y");//不能删除 
-        args.put("rename", "y");
-        args.put("synctime", "y");
+        args.put("rename", "n");
+        args.put("synctime", "n");
         args.put("overwrite", "y");
         args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
         args.put("path", "1");
@@ -531,6 +588,22 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
             System.err.printf("remotely create PHP Branch/Tag '%s' to '%s'  error: %s\r\n", originTag, dstTag, svne.getErrorMessage());
             System.exit(-1);
         }
+    }
+    
+    public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, String content, boolean isOnline) {
+        try {
+            List<String> branchList = new ArrayList<>();
+            Map<String, Date> branchMap = wc.getBranchOrTagListByEnvConf(env, content, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                branchList.add(entry.getKey());
+            }
+            return branchList;
+        } catch (SVNException svne) {
+            System.err.println("getBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
+            System.exit(-1);
+        }
+
+        return null;
     }
 
     public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
@@ -590,7 +663,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         try {
             wc.commit(new File(wcDir), false, commitMessage, true);
         } catch (SVNException ex) {
-            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("commitPHPBranch '" + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
             System.out.println("commitPHPBranch '" + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
 //            System.exit(-1);
@@ -608,7 +681,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         try {
             wc.commit(new File(wcDir), false, commitMessage, true);
         } catch (SVNException ex) {
-            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("commitPHPBranch '" + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
             System.exit(-1);
         }
@@ -668,15 +741,11 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         return true;
     }
 
-    private void syncFlashjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFlashjMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_syncFlashjMenuItemActionPerformed
-
     private void syncResourcesjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncResourcesjButtonActionPerformed
         syncTemplate("resources", "syncResourcesjButton");
     }//GEN-LAST:event_syncResourcesjButtonActionPerformed
 
-    private void syncTemplate(final String content, String buttonName) {
+    private void syncTemplate(final String content, final String buttonName) {
         disableAllButton();
         new Thread(new Runnable() {
             @Override
@@ -706,20 +775,32 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                     updatePHPBranchToLocal(wc, env, onlineContentPathKey);//更新 content  online 
 
                     //将 content local 的内容同步到 content online 
-                    Map<String, String> args = buildFileSyncArgs(localContentPath, onlineContentPath);
+                    Map<String, String> args;
+                    if ("flash".equals(content)) {
+                        String flash = flashVersionjComboBox.getSelectedItem().toString();
+                        args = buildFileSyncArgs(localContentPath + flash, onlineContentPath);
+                    } else {
+                        args = buildFileSyncArgs(localContentPath, onlineContentPath);
+                    }
+
                     Sync.syncMain(args);
 
                     //更新content online svn
-                    commitPHPBranch(wc, onlineContentPath, "commit by deploymentSvnForDS");
-//            commitPHPBranch(env, onlineContentPath, "commit by deploymentSvnForDS");
+//                    commitPHPBranch(wc, onlineContentPath, "commit by DeploymentSvnForDS");
+//            commitPHPBranch(env, onlineContentPath, "commit by DeploymentSvnForDS");
+                    changeButtonEnableExcept(buttonName);
                 }
             }
         }).start();
-
-        changeButtonEnableExcept(buttonName);
     }
 
+    private int selectedCheckboxCount = 0;
+
     private void syncFlashjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFlashjButtonActionPerformed
+        if (flashVersionjComboBox.getSelectedItem() == null || flashVersionjComboBox.getSelectedItem().toString().isEmpty()) {
+            showMessageDialogMessage("请选择需要同步的flash");
+            return;
+        }
         syncTemplate("flash", "syncFlashjButton");
     }//GEN-LAST:event_syncFlashjButtonActionPerformed
 
@@ -727,25 +808,45 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected());
     }
 
+    private int calcCheckBoxCount() {
+        selectedCheckboxCount = 0;
+        if (envENjCheckBox.isSelected()) {
+            selectedCheckboxCount += 1;
+        }
+        if (envFRjCheckBox.isSelected()) {
+            selectedCheckboxCount += 1;
+        }
+        if (envDEjCheckBox.isSelected()) {
+            selectedCheckboxCount += 1;
+        }
+        return selectedCheckboxCount;
+    }
+
     private void envENjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envENjCheckBoxActionPerformed
+        int calc = calcCheckBoxCount();
         if (isEnvSelected()) {
-            enableAllButton();
+            boolean exceptCommitButton = (calc > 1);
+            enableAllButton(exceptCommitButton);
         } else {
             disableAllButton();
         }
     }//GEN-LAST:event_envENjCheckBoxActionPerformed
 
     private void envFRjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envFRjCheckBoxActionPerformed
+        int calc = calcCheckBoxCount();
         if (isEnvSelected()) {
-            enableAllButton();
+            boolean exceptCommitButton = (calc > 1);
+            enableAllButton(exceptCommitButton);
         } else {
             disableAllButton();
         }
     }//GEN-LAST:event_envFRjCheckBoxActionPerformed
 
     private void envDEjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envDEjCheckBoxActionPerformed
+        int calc = calcCheckBoxCount();
         if (isEnvSelected()) {
-            enableAllButton();
+            boolean exceptCommitButton = (calc > 1);
+            enableAllButton(exceptCommitButton);
         } else {
             disableAllButton();
         }
@@ -816,6 +917,73 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         newBVersionTagjTextField.setText(bOnlineTAGjComboBox.getSelectedItem().toString());
     }//GEN-LAST:event_bOnlineTAGjComboBoxActionPerformed
 
+
+    private void commitResourcesjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitResourcesjButtonActionPerformed
+        disableAllButton();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String special = "online";
+                String content = "resources";
+                List<String> envList = getEnv();
+                String env = envList.get(0);
+                String onlineContentPathKey = String.format("%s.%s.sysfile.path", content, special);
+                WorkingCopyImprove wc;
+                wc = new WorkingCopyImprove(env, special, content);
+                String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
+                try {
+                    Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:commit /path:" + onlineContentPath + " /logmsg:\"commit resource to online env\" /closeonend:2");
+                    int result = process.waitFor();
+                    changeButtonEnableExcept("commitFlashjButton");
+                    if (result == -1) {
+                        System.out.println("commit canceled");
+                    } else if (result == 0) {
+                        System.out.println("commit done!");
+                    }
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
+    }//GEN-LAST:event_commitResourcesjButtonActionPerformed
+
+    private void commitFlashjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitFlashjButtonActionPerformed
+        disableAllButton();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String special = "online";
+                String content = "flash";
+                List<String> envList = getEnv();
+                String env = envList.get(0);
+                String onlineContentPathKey = String.format("%s.%s.sysfile.path", content, special);
+                WorkingCopyImprove wc;
+                wc = new WorkingCopyImprove(env, special, content);
+                String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
+                try {
+                    Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:commit /path:" + onlineContentPath + " /logmsg:\"commit flash to online env\" /closeonend:2");
+                    int result = process.waitFor();
+                    changeButtonEnableExcept("commitResourcesjButton");
+                    if (result == -1) {
+                        System.out.println("commit canceled");
+                    } else if (result == 0) {
+                        System.out.println("commit done!");
+                    }
+                } catch (IOException | InterruptedException ex) {
+                    Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }).start();
+    }//GEN-LAST:event_commitFlashjButtonActionPerformed
+
+    private void editConfjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editConfjMenuItemActionPerformed
+        ControllerJFrame.showEditPropConfJFrame();
+    }//GEN-LAST:event_editConfjMenuItemActionPerformed
+
+    private void syncResourcesjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncResourcesjMenuItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_syncResourcesjMenuItemActionPerformed
+
     private void testCommit() {
         WorkingCopyImprove wc;//new WorkingCopyImprove(env);
 
@@ -827,31 +995,59 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         String localContentPath = wc.getConfByEnv(env).get(localContentPathKey);
         commitPHPBranch(wc, localContentPath, "commit by deploymentSvnForDS local ");
     }
-    
+
     public void changeButtonEnableExcept(String buttonName) {
         switch (buttonName) {
             case "syncFlashjButton":
                 syncResourcesjButton.setEnabled(true);
                 creatPHPTagjButton.setEnabled(true);
+                commitResourcesjButton.setEnabled(true);
+                commitFlashjButton.setEnabled(true);
                 break;
             case "syncResourcesjButton":
                 syncFlashjButton.setEnabled(true);
                 creatPHPTagjButton.setEnabled(true);
+                commitResourcesjButton.setEnabled(true);
+                commitFlashjButton.setEnabled(true);
                 break;
             case "creatPHPTagjButton":
                 syncFlashjButton.setEnabled(true);
                 syncResourcesjButton.setEnabled(true);
+                commitResourcesjButton.setEnabled(true);
+                commitFlashjButton.setEnabled(true);
+                break;
+            case "commitResourcesjButton":
+                syncResourcesjButton.setEnabled(true);
+                creatPHPTagjButton.setEnabled(true);
+                syncFlashjButton.setEnabled(true);
+                commitFlashjButton.setEnabled(true);
+                break;
+            case "commitFlashjButton":
+                syncResourcesjButton.setEnabled(true);
+                creatPHPTagjButton.setEnabled(true);
+                syncFlashjButton.setEnabled(true);
+                commitResourcesjButton.setEnabled(true);
                 break;
         }
     }
 
-    private void enableAllButton() {
+    private void enableAllButton(boolean exceptCommitButton) {
         syncFlashjButton.setEnabled(true);
         syncResourcesjButton.setEnabled(true);
         creatPHPTagjButton.setEnabled(true);
+        if (!exceptCommitButton) {
+            commitResourcesjButton.setEnabled(true);
+            commitFlashjButton.setEnabled(true);
+        } else {
+            commitResourcesjButton.setEnabled(false);
+            commitFlashjButton.setEnabled(false);
+        }
+
     }
 
     private void disableAllButton() {
+        commitResourcesjButton.setEnabled(false);
+        commitFlashjButton.setEnabled(false);
         syncFlashjButton.setEnabled(false);
         syncResourcesjButton.setEnabled(false);
         creatPHPTagjButton.setEnabled(false);
@@ -890,20 +1086,20 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 //            }
             javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new deploymentSvnForDS().setVisible(true);
+                new DeploymentSvnForDS().setVisible(true);
             }
         });
     }
@@ -913,9 +1109,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JLabel aVersionTagjLabel;
     private javax.swing.JComboBox bOnlineTAGjComboBox;
     private javax.swing.JLabel bVersionTagjLabel;
+    private javax.swing.JButton commitFlashjButton;
+    private javax.swing.JButton commitResourcesjButton;
     private javax.swing.JPanel contentjPanel;
     private javax.swing.JButton creatPHPTagjButton;
-    private javax.swing.JMenuItem createPHPTagjMenuItem;
     private javax.swing.JProgressBar dsjProgressBar;
     private javax.swing.JLabel dstPHPTagjLabel1;
     private javax.swing.JTextField dstPHPTagjTextField;
@@ -928,6 +1125,8 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JCheckBox envSPjCheckBox;
     private javax.swing.JPanel environmentjPanel;
     private javax.swing.JMenu filejMenu;
+    private javax.swing.JComboBox flashVersionjComboBox;
+    private javax.swing.JLabel flashVersionjLabel;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField newAVersionTagjTextField;
@@ -939,9 +1138,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JPanel phpTagjPanel;
     private javax.swing.JPanel phpjPanel;
     private javax.swing.JButton syncFlashjButton;
-    private javax.swing.JMenuItem syncFlashjMenuItem;
     private javax.swing.JButton syncPHPjButton;
-    private javax.swing.JMenuItem syncPHPjMenuItem;
     private javax.swing.JButton syncResourcesjButton;
     private javax.swing.JMenuItem syncResourcesjMenuItem;
     private javax.swing.JScrollPane syncjScrollPane;

@@ -5,10 +5,14 @@
  */
 package deployment.test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,13 +21,25 @@ import java.util.List;
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        File f = new File("D:\\www\\framework");
-        File[] ff = f.listFiles();
-        for (File cf : ff) {
-            System.out.println(cf.getAbsoluteFile() + " " + cf.getCanonicalFile() + " " + cf.getName());
-        }
+//        File f = new File("D:\\www\\framework");
+//        File[] ff = f.listFiles();
+//        for (File cf : ff) {
+//            System.out.println(cf.getAbsoluteFile() + " " + cf.getCanonicalFile() + " " + cf.getName());
+//        }
 
-//        List<String> test = new ArrayList<>();
+        String ls_1;
+        Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:commit /path:\"D:\\www\\dessert\\code\\branches\\dev_testsync\\\" /logmsg:\"test log message\" /closeonend:0");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        while ((ls_1 = bufferedReader.readLine()) != null) {
+            System.out.println(ls_1);
+        }
+        try {
+            process.waitFor();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        //        List<String> test = new ArrayList<>();
 //        test.add("V0.8.4.2000");
 //        test.add("V0.8.4.2001");
 //        test.add("V0.8.4.1000");

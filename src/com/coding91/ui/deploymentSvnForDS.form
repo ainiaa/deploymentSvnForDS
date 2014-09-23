@@ -9,28 +9,13 @@
             <Property name="text" type="java.lang.String" value="&#x6587;&#x4ef6;"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="createPHPTagjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x521b;&#x5efa;PHPTag"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="syncResourcesjMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;resources"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="syncFlashjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;flash"/>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjMenuItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncResourcesjMenuItemActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="syncPHPjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;PHP"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -43,6 +28,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;(EN_US)"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editConfjMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -92,7 +80,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="phpjPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="syncjScrollPane" pref="265" max="32767" attributes="0"/>
+              <Component id="syncjScrollPane" pref="253" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
@@ -147,8 +135,16 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                   <Component id="syncResourcesjButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="commitResourcesjButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                  <Component id="flashVersionjLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="flashVersionjComboBox" min="-2" pref="92" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                   <Component id="syncFlashjButton" min="-2" pref="133" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="commitFlashjButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -159,8 +155,12 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="syncResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="syncFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="commitResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="commitFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="flashVersionjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="flashVersionjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -183,6 +183,37 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjButtonActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="commitResourcesjButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x63d0;&#x4ea4;resource&#x5230;svn"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitResourcesjButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="commitFlashjButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x63d0;&#x4ea4;flash&#x5230;svn"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitFlashjButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="flashVersionjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="flash&#x7248;&#x672c;:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="flashVersionjComboBox">
+          <Properties>
+            <Property name="editable" type="boolean" value="true"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

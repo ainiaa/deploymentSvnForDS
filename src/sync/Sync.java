@@ -2111,9 +2111,10 @@ public class Sync {
                             + numSyncTime + " matched target "
                             + ((numSyncTime == 1) ? "file" : "files") + "?\n");
 
-                    final char choice = SyncIO.userCharPrompt(
-                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'Y';
 
                     if (choice == 'Y') {
                         syncTime = true;
@@ -2177,9 +2178,10 @@ public class Sync {
                             + ((numSyncName == 1) ? "file" : "files")
                             + "?\n");
 
-                    final char choice = SyncIO.userCharPrompt(
-                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'Y';
 
                     if (choice == 'Y') {
                         syncName = true;
@@ -2322,9 +2324,10 @@ public class Sync {
                                 } else if (Sync.defaultActionOnDeleteUnmatched == '\0') {
                                     SyncIO.print("Delete \"" + u.name + "\"?\n");
 
-                                    final char choice = SyncIO.userCharPrompt(
-                                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'R';
 
                                     if (choice == 'Y') {
                                         deleteFileDir = true;
@@ -2929,9 +2932,10 @@ public class Sync {
 //                            + numSyncTime + " matched target "
 //                            + ((numSyncTime == 1) ? "file" : "files") + "?\n");
 
-                    final char choice = SyncIO.userCharPrompt(
-                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'Y';
 
                     if (choice == 'Y') {
                         syncTime = true;
@@ -2995,9 +2999,10 @@ public class Sync {
 //                            + ((numSyncName == 1) ? "file" : "files")
 //                            + "?\n");
 
-                    final char choice = SyncIO.userCharPrompt(
-                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'Y';
 
                     if (choice == 'Y') {
                         syncName = true;
@@ -3140,9 +3145,10 @@ public class Sync {
                                 } else if (Sync.defaultActionOnDeleteUnmatched == '\0') {
 //                                    SyncIO.print("Delete \"" + u.name + "\"?\n");
 
-                                    final char choice = SyncIO.userCharPrompt(
-                                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                                            "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'R';
 
                                     if (choice == 'Y') {
                                         deleteFileDir = true;
@@ -3208,7 +3214,7 @@ public class Sync {
             }
         }
 
-        System.out.println("start allNeedCopiedFiles ...................................");
+        System.out.println("\r\nstart allNeedCopiedFiles ...................................");
         for (FileMatchResult sf : allModifiedFiles) {
             System.out.println(sf);
         }

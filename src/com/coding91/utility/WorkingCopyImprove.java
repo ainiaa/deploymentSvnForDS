@@ -460,6 +460,17 @@ public final class WorkingCopyImprove {
         return updateClient.doUpdate(wcPath, updateToRevision, isRecursive);
     }
 
+    public Map<String, Date> getBranchOrTagListByEnvConf(String env, String content, boolean isOnline) throws SVNException {
+        String rootUrl;
+        if (isOnline) {
+            rootUrl = getConfByEnv(env).get(content + ".online.svn.url");
+        } else {
+            rootUrl = getConfByEnv(env).get(content + ".local.svn.url");
+        }
+        SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
+        return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
+    }
+    
     public Map<String, Date> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
@@ -1026,7 +1037,8 @@ public final class WorkingCopyImprove {
                 }
                 if (status == null) {
                     try {
-                        System.out.println(wc.getCanonicalFile());
+                        System.out.println("status is null: " + wc.getCanonicalFile());
+                        addEntry(wc, true);
                     } catch (IOException ex) {
                         Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
                     }

@@ -53,4 +53,17 @@ public class PropertiesUtil {
             System.err.println("Visit " + filePath + " for updating value error");
         }
     }
+    
+    public static Properties getProperties(String env) {
+        String propFile = "resources/properties/" + env + ".conf.properties";
+        InputStream fis = PropertiesUtil.class.getClassLoader().getResourceAsStream(propFile);
+        Properties prop = new Properties();
+        try {
+            prop.load(fis);
+        } catch (IOException ex) {
+            System.exit(-1);
+        }
+
+        return prop;
+    }
 }

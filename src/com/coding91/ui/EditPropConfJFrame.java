@@ -5,8 +5,17 @@
  */
 package com.coding91.ui;
 
+import com.coding91.utility.ControllerJFrame;
+import com.coding91.utility.PropertiesUtil;
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -18,8 +27,138 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
      * Creates new form EditPropConfJFrame
      */
     public EditPropConfJFrame() {
+        
+        try {
+            javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+                getClass().getClassLoader().getResource("resources/images/sync.png")));//这个不能以 '/'开头
         initComponents();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Properties prop = PropertiesUtil.getProperties("en_us");
+                String langStr = (String) prop.getProperty("langList");
+                if (!langStr.isEmpty()) {
+                    String[] langArray = langStr.split(",");
+                    if (langArray.length > 0) {
+                        currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
+                    } else {
+                        langArray = new String[]{"en_us", "fr_fr", "de_de"};
+                        currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
+                    }
+                }
+
+                langListjTextField.setText(prop.getProperty("langList", ""));
+                withABVersionjTextField.setText(prop.getProperty("withABVersion", ""));
+                defaultVersionjTextField.setText(prop.getProperty("defaultVersion", ""));
+                //#### online  resources
+                onlineResourceSvnUrljTextField.setText(prop.getProperty("resources.online.svn.url", ""));
+                onlineResourceSvnNamejTextField.setText(prop.getProperty("resources.online.svn.username", ""));
+                onlineResourceSvnPasswordjTextField.setText(prop.getProperty("resources.online.svn.password", ""));
+                onlineResourceSvnPathjTextField.setText(prop.getProperty("resources.online.sysfile.path", ""));
+
+                //#### develop  resources
+                developResourceSvnUrljTextField.setText(prop.getProperty("resources.local.svn.url", ""));
+                developResourceSvnNamejTextField.setText(prop.getProperty("resources.local.svn.username", ""));
+                developResourceSvnPasswordjTextField.setText(prop.getProperty("resources.local.svn.password", ""));
+                developResourceSvnPathjTextField.setText(prop.getProperty("resources.local.sysfile.path", ""));
+
+                //#### online  flash
+                onlineFlashSvnUrljTextField.setText(prop.getProperty("flash.online.svn.url", ""));
+                onlineFlashSvnNamejTextField.setText(prop.getProperty("flash.online.svn.username", ""));
+                onlineFlashSvnPasswordjTextField.setText(prop.getProperty("flash.online.svn.password", ""));
+                onlineFlashSvnPathjTextField.setText(prop.getProperty("flash.online.sysfile.path", ""));
+
+                //#### develop  flash
+                developFlashSvnUrljTextField.setText(prop.getProperty("flash.local.svn.url", ""));
+                developFlashSvnNamejTextField.setText(prop.getProperty("flash.local.svn.username", ""));
+                developFlashSvnPasswordjTextField.setText(prop.getProperty("flash.local.svn.password", ""));
+                developFlashSvnPathjTextField.setText(prop.getProperty("flash.local.sysfile.path", ""));
+
+                //#### online  php
+                onlinePHPSvnUrljTextField.setText(prop.getProperty("php.online.svn.url", ""));
+                onlinePHPSvnNamejTextField.setText(prop.getProperty("php.online.svn.username", ""));
+                onlinePHPSvnPasswordjTextField.setText(prop.getProperty("php.online.svn.password", ""));
+                onlinePHPSvnPathjTextField.setText(prop.getProperty("php.online.sysfile.path", ""));
+
+                //#### develop  php
+                developPHPSvnUrljTextField.setText(prop.getProperty("php.local.svn.url", ""));
+                developPHPSvnNamejTextField.setText(prop.getProperty("php.local.svn.username", ""));
+                developPHPSvnPasswordjTextField.setText(prop.getProperty("php.local.svn.password", ""));
+                developPHPSvnPathjTextField.setText(prop.getProperty("php.local.sysfile.path", ""));
+            }
+        }).start();
     }
+    
+    /**
+     * Creates new form EditPropConfJFrame
+     */
+    public EditPropConfJFrame(boolean visible) {
+        initComponents();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Properties prop = PropertiesUtil.getProperties("en_us");
+                String langStr = (String) prop.getProperty("langList");
+                if (!langStr.isEmpty()) {
+                    String[] langArray = langStr.split(",");
+                    if (langArray.length > 0) {
+                        currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
+                    } else {
+                        langArray = new String[]{"en_us", "fr_fr", "de_de"};
+                        currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
+                    }
+                }
+
+                langListjTextField.setText(prop.getProperty("langList", ""));
+                withABVersionjTextField.setText(prop.getProperty("withABVersion", ""));
+                defaultVersionjTextField.setText(prop.getProperty("defaultVersion", ""));
+                //#### online  resources
+                onlineResourceSvnUrljTextField.setText(prop.getProperty("resources.online.svn.url", ""));
+                onlineResourceSvnNamejTextField.setText(prop.getProperty("resources.online.svn.username", ""));
+                onlineResourceSvnPasswordjTextField.setText(prop.getProperty("resources.online.svn.password", ""));
+                onlineResourceSvnPathjTextField.setText(prop.getProperty("resources.online.sysfile.path", ""));
+
+                //#### develop  resources
+                developResourceSvnUrljTextField.setText(prop.getProperty("resources.local.svn.url", ""));
+                developResourceSvnNamejTextField.setText(prop.getProperty("resources.local.svn.username", ""));
+                developResourceSvnPasswordjTextField.setText(prop.getProperty("resources.local.svn.password", ""));
+                developResourceSvnPathjTextField.setText(prop.getProperty("resources.local.sysfile.path", ""));
+
+                //#### online  flash
+                onlineFlashSvnUrljTextField.setText(prop.getProperty("flash.online.svn.url", ""));
+                onlineFlashSvnNamejTextField.setText(prop.getProperty("flash.online.svn.username", ""));
+                onlineFlashSvnPasswordjTextField.setText(prop.getProperty("flash.online.svn.password", ""));
+                onlineFlashSvnPathjTextField.setText(prop.getProperty("flash.online.sysfile.path", ""));
+
+                //#### develop  flash
+                developFlashSvnUrljTextField.setText(prop.getProperty("flash.local.svn.url", ""));
+                developFlashSvnNamejTextField.setText(prop.getProperty("flash.local.svn.username", ""));
+                developFlashSvnPasswordjTextField.setText(prop.getProperty("flash.local.svn.password", ""));
+                developFlashSvnPathjTextField.setText(prop.getProperty("flash.local.sysfile.path", ""));
+
+                //#### online  php
+                onlinePHPSvnUrljTextField.setText(prop.getProperty("php.online.svn.url", ""));
+                onlinePHPSvnNamejTextField.setText(prop.getProperty("php.online.svn.username", ""));
+                onlinePHPSvnPasswordjTextField.setText(prop.getProperty("php.online.svn.password", ""));
+                onlinePHPSvnPathjTextField.setText(prop.getProperty("php.online.sysfile.path", ""));
+
+                //#### develop  php
+                developPHPSvnUrljTextField.setText(prop.getProperty("php.local.svn.url", ""));
+                developPHPSvnNamejTextField.setText(prop.getProperty("php.local.svn.username", ""));
+                developPHPSvnPasswordjTextField.setText(prop.getProperty("php.local.svn.password", ""));
+                developPHPSvnPathjTextField.setText(prop.getProperty("php.local.sysfile.path", ""));
+            }
+        }).start();
+        this.setVisible(visible);
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,12 +229,13 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         onlinePHPSvnPathjTextField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        langListjLabel = new javax.swing.JLabel();
+        langListjTextField = new javax.swing.JTextField();
+        currentLangjLabel = new javax.swing.JLabel();
+        currentLangjComboBox = new javax.swing.JComboBox();
         jMenuBar = new javax.swing.JMenuBar();
         filejMenu = new javax.swing.JMenu();
-        createPHPTagjMenuItem = new javax.swing.JMenuItem();
         syncResourcesjMenuItem = new javax.swing.JMenuItem();
-        syncFlashjMenuItem = new javax.swing.JMenuItem();
-        syncPHPjMenuItem = new javax.swing.JMenuItem();
         editjMenu = new javax.swing.JMenu();
         editConfjMenuItem = new javax.swing.JMenuItem();
 
@@ -128,10 +268,10 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     .addComponent(onlineResourceSvnPasswordjLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(onlineResourceSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(onlineResourceSvnNamejTextField)
-                    .addComponent(onlineResourceSvnPasswordjTextField)
-                    .addComponent(onlineResourceSvnPathjTextField))
+                    .addComponent(onlineResourceSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineResourceSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineResourceSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineResourceSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -179,15 +319,15 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                             .addComponent(developResourceSvnPasswordjLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(developResourceSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(developResourceSvnNamejTextField)
-                            .addComponent(developResourceSvnPasswordjTextField)))
+                            .addComponent(developResourceSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developResourceSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developResourceSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(developResourceSvnPathjLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(developResourceSvnPathjTextField)))
-                .addContainerGap(49, Short.MAX_VALUE))
+                        .addComponent(developResourceSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,11 +373,11 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     .addComponent(onlineFlashSvnPasswordjLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(onlineFlashSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(onlineFlashSvnNamejTextField)
-                    .addComponent(onlineFlashSvnPasswordjTextField)
-                    .addComponent(onlineFlashSvnPathjTextField))
-                .addContainerGap(49, Short.MAX_VALUE))
+                    .addComponent(onlineFlashSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineFlashSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineFlashSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlineFlashSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,15 +424,15 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                             .addComponent(developFlashSvnPasswordjLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(developFlashSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(developFlashSvnNamejTextField)
-                            .addComponent(developFlashSvnPasswordjTextField)))
+                            .addComponent(developFlashSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developFlashSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developFlashSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(developFlashSvnPathjLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(developFlashSvnPathjTextField)))
-                .addContainerGap(49, Short.MAX_VALUE))
+                        .addComponent(developFlashSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -309,7 +449,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     .addComponent(developFlashSvnPasswordjLabel)
                     .addComponent(developFlashSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(developFlashSvnPathjLabel)
                     .addComponent(developFlashSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -339,15 +479,15 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                             .addComponent(developPHPSvnPasswordjLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(developPHPSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                            .addComponent(developPHPSvnNamejTextField)
-                            .addComponent(developPHPSvnPasswordjTextField)))
+                            .addComponent(developPHPSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developPHPSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(developPHPSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(developPHPSvnPathjLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(developPHPSvnPathjTextField)))
-                .addContainerGap(49, Short.MAX_VALUE))
+                        .addComponent(developPHPSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -393,11 +533,11 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     .addComponent(onlinePHPSvnPasswordjLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(onlinePHPSvnUrljTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(onlinePHPSvnNamejTextField)
-                    .addComponent(onlinePHPSvnPasswordjTextField)
-                    .addComponent(onlinePHPSvnPathjTextField))
-                .addContainerGap(49, Short.MAX_VALUE))
+                    .addComponent(onlinePHPSvnNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlinePHPSvnPasswordjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlinePHPSvnPathjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(onlinePHPSvnUrljTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,31 +568,36 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         });
 
         jButton2.setText("取消");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        langListjLabel.setText("语言列表：");
+
+        currentLangjLabel.setText("当前语言：");
 
         filejMenu.setText("文件");
 
-        createPHPTagjMenuItem.setText("创建PHPTag");
-        filejMenu.add(createPHPTagjMenuItem);
-
-        syncResourcesjMenuItem.setText("同步resources");
-        filejMenu.add(syncResourcesjMenuItem);
-
-        syncFlashjMenuItem.setText("同步flash");
-        syncFlashjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        syncResourcesjMenuItem.setText("同步");
+        syncResourcesjMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                syncFlashjMenuItemActionPerformed(evt);
+                syncResourcesjMenuItemActionPerformed(evt);
             }
         });
-        filejMenu.add(syncFlashjMenuItem);
-
-        syncPHPjMenuItem.setText("同步PHP");
-        filejMenu.add(syncPHPjMenuItem);
+        filejMenu.add(syncResourcesjMenuItem);
 
         jMenuBar.add(filejMenu);
 
         editjMenu.setText("编辑");
 
         editConfjMenuItem.setText("修改配置项(EN_US)");
+        editConfjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editConfjMenuItemActionPerformed(evt);
+            }
+        });
         editjMenu.add(editConfjMenuItem);
 
         jMenuBar.add(editjMenu);
@@ -467,32 +612,35 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(10, 10, 10))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addComponent(withABVersionjLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(withABVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
-                                .addComponent(defaultVersionjLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(defaultVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(68, 68, 68))))
+                        .addGap(13, 13, 13)
+                        .addComponent(withABVersionjLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(withABVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(defaultVersionjLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(defaultVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(langListjLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(langListjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(currentLangjLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(currentLangjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(21, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(224, 224, 224)
                 .addComponent(jButton1)
@@ -508,20 +656,26 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     .addComponent(withABVersionjLabel)
                     .addComponent(withABVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(defaultVersionjLabel)
-                    .addComponent(defaultVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(defaultVersionjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(langListjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(langListjLabel)
+                    .addComponent(currentLangjLabel)
+                    .addComponent(currentLangjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -531,13 +685,12 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void syncFlashjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFlashjMenuItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_syncFlashjMenuItemActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         Map<String, String> prop = new HashMap<>();
+        if (!langListjTextField.getText().trim().isEmpty()) {
+            prop.put("langList", langListjTextField.getText().trim());
+        }
         if (!withABVersionjTextField.getText().trim().isEmpty()) {
             prop.put("withABVersion", withABVersionjTextField.getText().trim());
         }
@@ -557,7 +710,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         if (!onlineResourceSvnPathjTextField.getText().trim().isEmpty()) {
             prop.put("resources.online.sysfile.path", onlineResourceSvnPathjTextField.getText().trim());
         }
-        
+
         //#### develop  resources
         if (!developResourceSvnUrljTextField.getText().trim().isEmpty()) {
             prop.put("resources.local.svn.url", developResourceSvnUrljTextField.getText().trim());
@@ -571,111 +724,76 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         if (!developResourceSvnPathjTextField.getText().trim().isEmpty()) {
             prop.put("resources.local.sysfile.path", developResourceSvnPathjTextField.getText().trim());
         }
-        
-        
+
         //#### online  flash
         if (!onlineFlashSvnUrljTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.url", onlineFlashSvnUrljTextField.getText().trim());
+            prop.put("flash.online.svn.url", onlineFlashSvnUrljTextField.getText().trim());
         }
         if (!onlineFlashSvnNamejTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.username", onlineFlashSvnNamejTextField.getText().trim());
+            prop.put("flash.online.svn.username", onlineFlashSvnNamejTextField.getText().trim());
         }
         if (!onlineFlashSvnPasswordjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.password", onlineFlashSvnPasswordjTextField.getText().trim());
+            prop.put("flash.online.svn.password", onlineFlashSvnPasswordjTextField.getText().trim());
         }
         if (!onlineFlashSvnPathjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.sysfile.path", onlineFlashSvnPathjTextField.getText().trim());
+            prop.put("flash.online.sysfile.path", onlineFlashSvnPathjTextField.getText().trim());
         }
-        
+
         //#### develop  flash
         if (!developFlashSvnUrljTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.url", developFlashSvnUrljTextField.getText().trim());
+            prop.put("flash.local.svn.url", developFlashSvnUrljTextField.getText().trim());
         }
         if (!developFlashSvnNamejTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.username", developFlashSvnNamejTextField.getText().trim());
+            prop.put("flash.local.svn.username", developFlashSvnNamejTextField.getText().trim());
         }
         if (!developFlashSvnPasswordjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.password", developFlashSvnPasswordjTextField.getText().trim());
+            prop.put("flash.local.svn.password", developFlashSvnPasswordjTextField.getText().trim());
         }
         if (!developFlashSvnPathjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.sysfile.path", developFlashSvnPathjTextField.getText().trim());
+            prop.put("flash.local.sysfile.path", developFlashSvnPathjTextField.getText().trim());
         }
-        
+
         //#### online  php
         if (!onlinePHPSvnUrljTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.url", onlinePHPSvnUrljTextField.getText().trim());
+            prop.put("php.online.svn.url", onlinePHPSvnUrljTextField.getText().trim());
         }
         if (!onlinePHPSvnNamejTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.username", onlinePHPSvnNamejTextField.getText().trim());
+            prop.put("php.online.svn.username", onlinePHPSvnNamejTextField.getText().trim());
         }
         if (!onlinePHPSvnPasswordjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.svn.password", onlinePHPSvnPasswordjTextField.getText().trim());
+            prop.put("php.online.svn.password", onlinePHPSvnPasswordjTextField.getText().trim());
         }
         if (!onlinePHPSvnPathjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.online.sysfile.path", onlinePHPSvnPathjTextField.getText().trim());
+            prop.put("php.online.sysfile.path", onlinePHPSvnPathjTextField.getText().trim());
         }
-        
+
         //#### develop  php
         if (!developPHPSvnUrljTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.url", developPHPSvnUrljTextField.getText().trim());
+            prop.put("php.local.svn.url", developPHPSvnUrljTextField.getText().trim());
         }
         if (!developPHPSvnNamejTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.username", developPHPSvnNamejTextField.getText().trim());
+            prop.put("php.local.svn.username", developPHPSvnNamejTextField.getText().trim());
         }
         if (!developPHPSvnPasswordjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.svn.password", developPHPSvnPasswordjTextField.getText().trim());
+            prop.put("php.local.svn.password", developPHPSvnPasswordjTextField.getText().trim());
         }
         if (!developPHPSvnPathjTextField.getText().trim().isEmpty()) {
-            prop.put("resources.local.sysfile.path", developPHPSvnPathjTextField.getText().trim());
+            prop.put("php.local.sysfile.path", developPHPSvnPathjTextField.getText().trim());
         }
-        
-
-        
-//        langList=en_us,fr_fr,de_de
-//
-//withABVersion=0
-//defaultVersion=b
-//
-//#en_us online resources conf
-//resources.online.svn.url=svn://svndev.shinezone.com/dessertshop/facebook/release/version/source/outresource/
-//resources.online.svn.username=
-//resources.online.svn.password=
-//resources.online.sysfile.path=E:\\=allrelease\\version\\source\\outresource
-//
-//#en_us local resources conf
-//resources.local.svn.url=svn://svn.shinezone.com/JUKE/DessertShop/trunk/flash/project/trunk/outresource/
-//resources.local.svn.username=
-//resources.local.svn.password=
-//resources.local.sysfile.path=E:\\=outresource
-//
-//
-//
-//#en_us online flash conf
-//flash.online.svn.url=svn://svndev.shinezone.com/dessertshop/facebook/release/version/source/flash/
-//flash.online.svn.username=
-//flash.online.svn.password=
-//flash.online.sysfile.path=E:\\=allrelease\\version\\source\\flash
-//
-//#en_us local flash conf
-//flash.local.svn.url=svn://svndev.shinezone.com/dev/docs/Dessert_Shop/Flash/release/
-//flash.local.svn.username=
-//flash.local.svn.password=
-//flash.local.sysfile.path=E:\\=dsflash\\release
-//
-//
-//#en_us online php conf
-//php.online.svn.url=svn://svndev.shinezone.com/dessertshop/facebook/release/version/
-//php.online.svn.username=
-//php.online.svn.password=
-//php.online.sysfile.path=E:\\=allrelease\\version
-//
-//#en_us local php conf
-//php.local.svn.url=svn://svndev.shinezone.com/dev/docs/Dessert_Shop/Flash/release/
-//php.local.svn.username=
-//php.local.svn.password=
-//php.local.sysfile.path=E:\\=tag
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void editConfjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editConfjMenuItemActionPerformed
+        //
+    }//GEN-LAST:event_editConfjMenuItemActionPerformed
+
+    private void syncResourcesjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncResourcesjMenuItemActionPerformed
+        ControllerJFrame.showDeploymentSvnForDSJFrame();
+    }//GEN-LAST:event_syncResourcesjMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -703,6 +821,17 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(EditPropConfJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        try {
+            javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -713,7 +842,8 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem createPHPTagjMenuItem;
+    private javax.swing.JComboBox currentLangjComboBox;
+    private javax.swing.JLabel currentLangjLabel;
     private javax.swing.JLabel defaultVersionjLabel;
     private javax.swing.JTextField defaultVersionjTextField;
     private javax.swing.JLabel developFlashSvnNamejLabel;
@@ -752,6 +882,8 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel langListjLabel;
+    private javax.swing.JTextField langListjTextField;
     private javax.swing.JLabel onlineFlashSvnNamejLabel;
     private javax.swing.JTextField onlineFlashSvnNamejTextField;
     private javax.swing.JLabel onlineFlashSvnPasswordjLabel;
@@ -776,8 +908,6 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField onlineResourceSvnPathjTextField;
     private javax.swing.JLabel onlineResourceSvnUrljLabel;
     private javax.swing.JTextField onlineResourceSvnUrljTextField;
-    private javax.swing.JMenuItem syncFlashjMenuItem;
-    private javax.swing.JMenuItem syncPHPjMenuItem;
     private javax.swing.JMenuItem syncResourcesjMenuItem;
     private javax.swing.JLabel withABVersionjLabel;
     private javax.swing.JTextField withABVersionjTextField;

@@ -100,22 +100,23 @@ class SyncIO {
                     + (existingIsDirectory ? File.separatorChar : "");
 
             if (Sync.defaultActionOnOverwrite == 'Y') {
-                SyncIO.printFlush("\n  Overwriting existing "
-                        + (existingIsDirectory ? "directory" : "file")
-                        + " \"" + existingName + "\"");
+//                SyncIO.printFlush("\n  Overwriting existing "
+//                        + (existingIsDirectory ? "directory" : "file")
+//                        + " \"" + existingName + "\"");
                 renameFile = true;
             } else if (Sync.defaultActionOnOverwrite == 'N') {
-                SyncIO.printFlush("\n  Skipping overwriting of existing "
-                        + (existingIsDirectory ? "directory" : "file")
-                        + " \"" + existingName + "\"");
+//                SyncIO.printFlush("\n  Skipping overwriting of existing "
+//                        + (existingIsDirectory ? "directory" : "file")
+//                        + " \"" + existingName + "\"");
             } else if (Sync.defaultActionOnOverwrite == '\0') {
                 SyncIO.print("\n  Overwrite existing "
                         + (existingIsDirectory ? "directory" : "file")
                         + " \"" + existingName + "\"?\n");
 
-                final char choice = SyncIO.userCharPrompt(
-                        "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                        "YNAR");
+                //                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                final char choice = 'Y';
 
                 if (choice == 'Y') {
                     renameFile = true;
@@ -204,17 +205,18 @@ class SyncIO {
                         + " \"" + existingName + "\"");
                 copyFile = true;
             } else if (Sync.defaultActionOnOverwrite == 'N') {
-                SyncIO.printFlush("\n  Skipping overwriting of existing "
-                        + (existingIsDirectory ? "directory" : "file")
-                        + " \"" + existingName + "\"");
+//                SyncIO.printFlush("\n  Skipping overwriting of existing "
+//                        + (existingIsDirectory ? "directory" : "file")
+//                        + " \"" + existingName + "\"");
             } else if (Sync.defaultActionOnOverwrite == '\0') {
                 SyncIO.print("\n  Overwrite existing "
                         + (existingIsDirectory ? "directory" : "file")
                         + " \"" + existingName + "\"?\n");
 
-                final char choice = SyncIO.userCharPrompt(
-                        "  (Y)es/(N)o/(A)lways/Neve(R): ",
-                        "YNAR");
+//                    final char choice = SyncIO.userCharPrompt(
+//                            "  (Y)es/(N)o/(A)lways/Neve(R): ",
+//                            "YNAR");
+                    final char choice = 'Y';
 
                 if (choice == 'Y') {
                     copyFile = true;
