@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Menu class="javax.swing.JMenuBar" name="jMenuBar">
+      <SubComponents>
+        <Menu class="javax.swing.JMenu" name="filejMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6587;&#x4ef6;"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="createPHPTagjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x521b;&#x5efa;PHPTag"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncResourcesjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;resources"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncFlashjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;flash"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="syncPHPjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;PHP"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="editjMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x7f16;&#x8f91;"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="editConfjMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;(EN_US)"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+      </SubComponents>
+    </Menu>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar"/>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="jPanel3" max="32767" attributes="0"/>
+                                  <Component id="jPanel1" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jPanel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                              <Component id="withABVersionjLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="withABVersionjTextField" min="-2" pref="175" max="-2" attributes="0"/>
+                              <EmptySpace pref="76" max="32767" attributes="0"/>
+                              <Component id="defaultVersionjLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="defaultVersionjTextField" min="-2" pref="168" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="224" max="-2" attributes="0"/>
+              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+              <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="withABVersionjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="withABVersionjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="defaultVersionjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="defaultVersionjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel4" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jPanel5" max="32767" attributes="0"/>
+                  <Component id="jPanel6" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="withABVersionjLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x533a;&#x5206;ab&#x7248;&#x672c;&#xff1a;"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="withABVersionjTextField">
+    </Component>
+    <Component class="javax.swing.JLabel" name="defaultVersionjLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x9ed8;&#x8ba4;&#x7248;&#x672c;&#xff1a;"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="defaultVersionjTextField">
+    </Component>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x7ebf;&#x4e0a;resource">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="onlineResourceSvnPathjLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnNamejLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnUrljLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnPasswordjLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="onlineResourceSvnUrljTextField" pref="171" max="32767" attributes="0"/>
+                      <Component id="onlineResourceSvnNamejTextField" max="32767" attributes="0"/>
+                      <Component id="onlineResourceSvnPasswordjTextField" max="32767" attributes="0"/>
+                      <Component id="onlineResourceSvnPathjTextField" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineResourceSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineResourceSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineResourceSvnPasswordjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="onlineResourceSvnPathjTextField" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineResourceSvnPathjLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="onlineResourceSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineResourceSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineResourceSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineResourceSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineResourceSvnPasswordjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineResourceSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineResourceSvnPathjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineResourceSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel2">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x5f00;&#x53d1;resource">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="developResourceSvnNamejLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developResourceSvnUrljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developResourceSvnPasswordjLabel1" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="developResourceSvnUrljTextField" alignment="0" pref="171" max="32767" attributes="0"/>
+                              <Component id="developResourceSvnNamejTextField" alignment="0" max="32767" attributes="0"/>
+                              <Component id="developResourceSvnPasswordjTextField" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="developResourceSvnPathjLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="developResourceSvnPathjTextField" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developResourceSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developResourceSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developResourceSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developResourceSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developResourceSvnPasswordjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developResourceSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developResourceSvnPathjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developResourceSvnPathjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="developResourceSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developResourceSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developResourceSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developResourceSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developResourceSvnPasswordjLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developResourceSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developResourceSvnPathjLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developResourceSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel3">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x7ebf;&#x4e0a;flash">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="onlineFlashSvnPathjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnNamejLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnUrljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnPasswordjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="onlineFlashSvnUrljTextField" alignment="0" pref="171" max="32767" attributes="0"/>
+                      <Component id="onlineFlashSvnNamejTextField" alignment="0" max="32767" attributes="0"/>
+                      <Component id="onlineFlashSvnPasswordjTextField" alignment="0" max="32767" attributes="0"/>
+                      <Component id="onlineFlashSvnPathjTextField" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineFlashSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineFlashSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlineFlashSvnPasswordjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="onlineFlashSvnPathjTextField" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlineFlashSvnPathjLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="onlineFlashSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineFlashSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineFlashSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineFlashSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineFlashSvnPasswordjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineFlashSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlineFlashSvnPathjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlineFlashSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel4">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x5f00;&#x53d1;flash">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="developFlashSvnNamejLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developFlashSvnUrljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developFlashSvnPasswordjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="developFlashSvnUrljTextField" alignment="0" pref="171" max="32767" attributes="0"/>
+                              <Component id="developFlashSvnNamejTextField" alignment="0" max="32767" attributes="0"/>
+                              <Component id="developFlashSvnPasswordjTextField" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="developFlashSvnPathjLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="developFlashSvnPathjTextField" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developFlashSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developFlashSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developFlashSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developFlashSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developFlashSvnPasswordjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developFlashSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developFlashSvnPathjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developFlashSvnPathjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="developFlashSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developFlashSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developFlashSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developFlashSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developFlashSvnPasswordjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developFlashSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developFlashSvnPathjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developFlashSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel6">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x5f00;&#x53d1;PHP">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="developPHPSvnNamejLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developPHPSvnUrljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="developPHPSvnPasswordjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="developPHPSvnUrljTextField" alignment="0" pref="171" max="32767" attributes="0"/>
+                              <Component id="developPHPSvnNamejTextField" alignment="0" max="32767" attributes="0"/>
+                              <Component id="developPHPSvnPasswordjTextField" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="developPHPSvnPathjLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="developPHPSvnPathjTextField" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developPHPSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developPHPSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developPHPSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developPHPSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developPHPSvnPasswordjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developPHPSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="developPHPSvnPathjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="developPHPSvnPathjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="developPHPSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developPHPSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developPHPSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developPHPSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developPHPSvnPasswordjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developPHPSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="developPHPSvnPathjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="developPHPSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="jPanel5">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x7ebf;&#x4e0a;PHP">
+              <Font PropertyName="font" name="Monospaced" size="12" style="2"/>
+              <Color PropertyName="color" blue="66" green="66" red="ff" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="onlinePHPSvnPathjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnNamejLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnUrljLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnPasswordjLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="onlinePHPSvnUrljTextField" alignment="0" pref="171" max="32767" attributes="0"/>
+                      <Component id="onlinePHPSvnNamejTextField" alignment="0" max="32767" attributes="0"/>
+                      <Component id="onlinePHPSvnPasswordjTextField" alignment="0" max="32767" attributes="0"/>
+                      <Component id="onlinePHPSvnPathjTextField" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlinePHPSvnUrljLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnUrljTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlinePHPSvnNamejLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnNamejTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="onlinePHPSvnPasswordjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnPasswordjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="onlinePHPSvnPathjTextField" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="onlinePHPSvnPathjLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="onlinePHPSvnUrljLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5730;&#x5740;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlinePHPSvnUrljTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlinePHPSvnNamejLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x7528;&#x6237;&#x540d;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlinePHPSvnNamejTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlinePHPSvnPasswordjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="svn&#x5bc6;&#x7801;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlinePHPSvnPasswordjTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="onlinePHPSvnPathjLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x6240;&#x5728;&#x76ee;&#x5f55;&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="onlinePHPSvnPathjTextField">
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JButton" name="jButton1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x4fdd;&#x5b58;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButton2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#x53d6;&#x6d88;"/>
+      </Properties>
+    </Component>
+  </SubComponents>
+</Form>

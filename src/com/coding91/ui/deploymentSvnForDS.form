@@ -41,7 +41,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="editConfjMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;"/>
+                <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;(EN_US)"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -289,16 +289,16 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="onlineAVersionTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="onlineTagjLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="onlineBVersionTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="bOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="aOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -314,18 +314,13 @@
                                   <Component id="newAVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="aOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
-                              <Component id="bOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="235" max="-2" attributes="0"/>
                           <Component id="creatPHPTagjButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="182" max="32767" attributes="0"/>
+                  <EmptySpace pref="325" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -336,7 +331,6 @@
                       <Component id="aVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="newAVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="onlineTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="onlineAVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="aOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -344,7 +338,6 @@
                       <Component id="bVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="newBVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="onlineTagjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="onlineBVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="bOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -374,14 +367,10 @@
             <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;A&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="onlineAVersionTagjTextField">
-        </Component>
         <Component class="javax.swing.JLabel" name="onlineTagjLabel1">
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;B&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="onlineBVersionTagjTextField">
         </Component>
         <Component class="javax.swing.JButton" name="creatPHPTagjButton">
           <Properties>

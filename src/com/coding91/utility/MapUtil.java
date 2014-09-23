@@ -5,12 +5,16 @@
  */
 package com.coding91.utility;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.tmatesoft.svn.core.wc.SVNStatus;
+import org.tmatesoft.svn.core.wc2.SvnStatus;
 
 /**
  *
@@ -75,6 +79,31 @@ public class MapUtil {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;
+    }
+
+    public static void foreach(Map map) {
+        Iterator iterator = map.keySet().iterator();
+        System.out.println("start ====");
+        while (iterator.hasNext()) {
+            String propertyName = (String) iterator.next();
+            String propertyValue = (String) map.get(propertyName);
+            System.out.println(propertyName + "=>" + propertyValue);
+        }
+        System.out.println("end ====");
+    }
+
+    public static void foreach(Map<File, SvnStatus> map, boolean t) {
+        Iterator iterator = map.keySet().iterator();
+        System.out.println("start ====");
+        while (iterator.hasNext()) {
+            File f = (File) iterator.next();
+            String propertyName = f.getName();
+            String propertyValue;
+            SvnStatus svnStatus = (SvnStatus) map.get(f);
+            propertyValue = svnStatus.getNodeStatus().toString();
+            System.out.println(propertyName + "=>" + propertyValue);
+        }
+        System.out.println("end ====");
     }
 
 }

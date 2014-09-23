@@ -1127,7 +1127,7 @@ public class WorkingCopy {
         ourClientManager.getWCClient().doAdd(wcPath, force, mkdir, true, SVNDepth.INFINITY, false, true);
     }
 
-    private static void addEntry(java.io.File wcPath, boolean force) throws SVNException {
+    public static void addEntry(java.io.File wcPath, boolean force) throws SVNException {
         ourClientManager.getWCClient().doAdd(wcPath, force, true, true, SVNDepth.INFINITY, false, true);
     }
 

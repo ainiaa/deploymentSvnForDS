@@ -9,9 +9,8 @@
  * newer version instead, at your option.
  * ====================================================================
  */
-package com.coding91;
+package com.coding91.utility;
 
-import com.coding91.utility.MapUtil;
 import deployment.reference.tmatesoftexampleswc.CommitEventHandler;
 import deployment.reference.tmatesoftexampleswc.InfoHandler;
 import deployment.reference.tmatesoftexampleswc.StatusHandler;
@@ -23,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,6 +48,8 @@ import org.tmatesoft.svn.core.wc.SVNCopyClient;
 import org.tmatesoft.svn.core.wc.SVNCopySource;
 import org.tmatesoft.svn.core.wc.SVNLogClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.tmatesoft.svn.core.wc.SVNStatus;
+import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import sync.Sync;
@@ -337,13 +337,28 @@ public final class WorkingCopyImprove {
 
     public SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage, boolean recurse)
             throws SVNException {
+
+        checkVersiondDirectory(wcPath);
+        try {
+            System.out.println(" commit '" + wcPath.getCanonicalPath() + "' start ====");
+        } catch (IOException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
         /*
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
          */
-        return clientManager.getCommitClient().doCommit(
+        SVNCommitInfo commitInfo = clientManager.getCommitClient().doCommit(
                 new File[]{wcPath}, keepLocks, commitMessage, null,
                 null, false, false, SVNDepth.fromRecurse(recurse));
+
+        try {
+            System.out.println(" At version '" + commitInfo.getNewRevision() + "'");
+            System.out.println(" commit '" + wcPath.getCanonicalPath() + "' end ====");
+        } catch (IOException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return commitInfo;
     }
 
     /*
@@ -445,7 +460,7 @@ public final class WorkingCopyImprove {
         return updateClient.doUpdate(wcPath, updateToRevision, isRecursive);
     }
 
-    public Map<Date, String> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
+    public Map<String, Date> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
             rootUrl = getConfByEnv(env).get("php.online.svn.url");
@@ -456,7 +471,7 @@ public final class WorkingCopyImprove {
         return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
     }
 
-    public Map<Date, String> list(SVNURL url,
+    public Map<String, Date> list(SVNURL url,
             SVNRevision pegRevision,
             SVNRevision revision,
             boolean fetchLocks,
@@ -464,30 +479,30 @@ public final class WorkingCopyImprove {
         return list(url, SVNRevision.HEAD, SVNRevision.HEAD, false, false, false);
     }
 
-    public Map<Date, String> list(SVNURL url,
+    public Map<String, Date> list(SVNURL url,
             SVNRevision pegRevision,
             SVNRevision revision,
             boolean fetchLocks,
             boolean recursive,
             final boolean isGetLatest) {
-        final Map<Date, String> branchListMap = new HashMap<>();
+        final Map<String, Date> branchListMap = new HashMap<>();
 
         list(url, pegRevision, revision, fetchLocks, recursive,
                 new ISVNDirEntryHandler() {
                     @Override
                     public void handleDirEntry(SVNDirEntry dirEntry) throws SVNException {
-                        if (!dirEntry.getRelativePath().isEmpty()) {
-                            branchListMap.put(dirEntry.getDate(), dirEntry.getName());
+                        if (!dirEntry.getRelativePath().isEmpty() && !dirEntry.getRelativePath().equals("source")) {
+                            branchListMap.put(dirEntry.getName(), dirEntry.getDate());
                         }
                     }
                 });
 
-        Map<Date, String> needSortedMap = new HashMap<>(branchListMap);
-        needSortedMap = MapUtil.sortByKey(needSortedMap, MapUtil.SortingOrder.DESCENDING);
-        
+        Map<String, Date> needSortedMap = new HashMap<>(branchListMap);
+        needSortedMap = MapUtil.sortByValue(needSortedMap, MapUtil.SortingOrder.DESCENDING);
+
         if (isGetLatest) {
-            for (Entry<Date, String> entry : needSortedMap.entrySet()) {
-                Map<Date, String> tmpMap = new HashMap<>();
+            for (Entry<String, Date> entry : needSortedMap.entrySet()) {
+                Map<String, Date> tmpMap = new HashMap<>();
                 tmpMap.put(entry.getKey(), entry.getValue());
                 return tmpMap;
             }
@@ -495,7 +510,7 @@ public final class WorkingCopyImprove {
         return needSortedMap;
     }
 
-    public Map<Date, String> getLatestBranchOrTagByEnvConf(String env, boolean isOnline) throws SVNException {
+    public Map<String, Date> getLatestBranchOrTagByEnvConf(String env, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
             rootUrl = getConfByEnv(env).get("php.online.svn.url");
@@ -685,7 +700,7 @@ public final class WorkingCopyImprove {
      * is passed to a handler's handleStatus(SVNStatus status) method where an implementor
      * decides what to do with it.  
      */
-    private void showStatus(File wcPath, boolean isRecursive, boolean isRemote, boolean isReportAll,
+    public void showStatus(File wcPath, boolean isRecursive, boolean isRemote, boolean isReportAll,
             boolean isIncludeIgnored, boolean isCollectParentExternals)
             throws SVNException {
         /*
@@ -694,6 +709,15 @@ public final class WorkingCopyImprove {
          */
         clientManager.getStatusClient().doStatus(wcPath, isRecursive, isRemote, isReportAll,
                 isIncludeIgnored, isCollectParentExternals, new StatusHandler(isRemote));
+    }
+
+    public SVNStatus showStatus(File wcPath, boolean isRemote)
+            throws SVNException {
+        /*
+         * StatusHandler displays status information for each entry in the console (in the 
+         * manner of the native Subversion command line client)
+         */
+        return clientManager.getStatusClient().doStatus(wcPath, isRemote);
     }
 
     /*
@@ -762,8 +786,20 @@ public final class WorkingCopyImprove {
         clientManager.getWCClient().doAdd(wcPath, force, mkdir, true, SVNDepth.INFINITY, false, true);
     }
 
-    private void addEntry(java.io.File wcPath, boolean force) throws SVNException {
-        clientManager.getWCClient().doAdd(wcPath, force, true, true, SVNDepth.INFINITY, false, true);
+    public void addEntry(java.io.File wcPath, boolean force) throws SVNException {
+//        clientManager.getWCClient().doAdd(wcPath, force, true, true, SVNDepth.INFINITY, false, true);
+        try {
+            System.out.println(" addEntry '" + wcPath.getCanonicalPath() + "' start ====");
+        } catch (IOException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clientManager.getWCClient().doAdd(new File[]{wcPath}, force, false, false, SVNDepth.INFINITY, false, false, true);
+        try {
+            System.out.println(" addEntry '" + wcPath.getCanonicalPath() + "' end ====");
+        } catch (IOException ex) {
+            Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /*
@@ -961,6 +997,54 @@ public final class WorkingCopyImprove {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 递归检查不在版本控制的文件，并add到svn
+     *
+     * @param wc
+     */
+    public void checkVersiondDirectory(File wc) {
+        if (wc.getName().equals(".git") || wc.getName().equals(".idea") || wc.getName().equals(".svn") || wc.getName().equals(".settings") || wc.getName().equals(".project") || wc.getName().equals(".buildpath")) {
+            return;
+        }
+        if (wc.isDirectory()) {
+            if (!SVNWCUtil.isVersionedDirectory(wc)) {
+                try {
+                    addEntry(wc, true);
+                } catch (SVNException ex) {
+                    System.out.println(ex.getErrorMessage());
+                }
+            }
+        } else {
+            SVNStatus status;
+            try {
+                status = showStatus(wc, true);
+                if (status != null && status.getContentsStatus() == SVNStatusType.STATUS_UNVERSIONED) {
+                    addEntry(wc, true);
+                }
+                if (status == null) {
+                    try {
+                        System.out.println(wc.getCanonicalFile());
+                    } catch (IOException ex) {
+                        Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            } catch (SVNException ex) {
+                Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (wc.isDirectory()) {
+            for (File sub : wc.listFiles()) {//{.git,.idea,.svn,.settings,.project,.buildpath}
+                if (sub.isDirectory() && (wc.getName().equals(".git") || wc.getName().equals(".idea") || wc.getName().equals(".svn") || wc.getName().equals(".settings") || wc.getName().equals(".project") || wc.getName().equals(".buildpath"))) {
+                    continue;
+                }
+                checkVersiondDirectory(sub);
+            }
+        } else {
+
         }
     }
 

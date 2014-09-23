@@ -5,7 +5,7 @@
  */
 package com.coding91.ui;
 
-import com.coding91.WorkingCopyImprove;
+import com.coding91.utility.WorkingCopyImprove;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -46,13 +46,42 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String special = "online";
-        String content = "php";
-        String env = "en_us";
-        WorkingCopyImprove wc = new WorkingCopyImprove(env, special, content);
-        List<String> branchList = getBranchOrTagListByEnvConf(wc, env, true);
-        aOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
-        bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String special = "online";
+                String content = "php";
+                String env = "en_us";
+                WorkingCopyImprove wc = new WorkingCopyImprove(env, special, content);
+                List<String> branchList = getBranchOrTagListByEnvConf(wc, env, true);
+                List<String> aBranchList = new ArrayList<>();
+                List<String> bBranchList = new ArrayList<>();
+                for (String branch : branchList) {
+                    int dotLatestIndex = branch.lastIndexOf(".");
+                    if (dotLatestIndex > 0) {
+                        if (branch.substring(dotLatestIndex + 1).startsWith("1")) {//a版本
+                            aBranchList.add(branch);
+                        } else if (branch.substring(dotLatestIndex + 1).startsWith("2")) {//b版本
+                            bBranchList.add(branch);
+                        }
+                    }
+                }
+                if (aBranchList.size() > 0) {
+                    aOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(aBranchList.toArray()));
+                } else {
+                    aOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
+                }
+                if (bBranchList.size() > 0) {
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(bBranchList.toArray()));
+                } else {
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
+                }
+
+                newAVersionTagjTextField.setText(aOnlineTAGjComboBox.getSelectedItem().toString());
+                newBVersionTagjTextField.setText(bOnlineTAGjComboBox.getSelectedItem().toString());
+            }
+        }).start();
     }
 
     /**
@@ -82,9 +111,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         bVersionTagjLabel = new javax.swing.JLabel();
         newBVersionTagjTextField = new javax.swing.JTextField();
         onlineTagjLabel = new javax.swing.JLabel();
-        onlineAVersionTagjTextField = new javax.swing.JTextField();
         onlineTagjLabel1 = new javax.swing.JLabel();
-        onlineBVersionTagjTextField = new javax.swing.JTextField();
         creatPHPTagjButton = new javax.swing.JButton();
         aOnlineTAGjComboBox = new javax.swing.JComboBox();
         bOnlineTAGjComboBox = new javax.swing.JComboBox();
@@ -247,15 +274,15 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(phpTagjPanelLayout.createSequentialGroup()
                         .addGap(94, 94, 94)
-                        .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                                .addComponent(onlineTagjLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(onlineAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
                                 .addComponent(onlineTagjLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(onlineBVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                                .addComponent(onlineTagjLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(aOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
@@ -265,15 +292,11 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
                                 .addComponent(aVersionTagjLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(43, 43, 43)
-                        .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(aOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(newAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(phpTagjPanelLayout.createSequentialGroup()
                         .addGap(235, 235, 235)
                         .addComponent(creatPHPTagjButton)))
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(325, Short.MAX_VALUE))
         );
         phpTagjPanelLayout.setVerticalGroup(
             phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,14 +305,12 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                     .addComponent(aVersionTagjLabel)
                     .addComponent(newAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(onlineTagjLabel)
-                    .addComponent(onlineAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(aOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bVersionTagjLabel)
                     .addComponent(newBVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(onlineTagjLabel1)
-                    .addComponent(onlineBVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(creatPHPTagjButton)
@@ -366,7 +387,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
         editjMenu.setText("编辑");
 
-        editConfjMenuItem.setText("修改配置项");
+        editConfjMenuItem.setText("修改配置项(EN_US)");
         editjMenu.add(editConfjMenuItem);
 
         jMenuBar.add(editjMenu);
@@ -431,19 +452,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
      *
      * @return
      */
-    public Map<String, String> getPHPTag() {
-        Map versionTagMap = new HashMap<>();
-        versionTagMap.put("a", newAVersionTagjTextField.getText().trim());//a版本 tag号
-        versionTagMap.put("b", newBVersionTagjTextField.getText().trim());//b版本 tag号
-        versionTagMap.put("online", onlineAVersionTagjTextField.getText().trim());//线上 tag号
-        return versionTagMap;
-    }
-
-    /**
-     * 获得 PHP tag号
-     *
-     * @return
-     */
     public Map<String, String> getPHPSync() {
         Map phpSyncMap = new HashMap<>();
         phpSyncMap.put("origin", originPHPTagjTextField.getText().trim());//源php tag号
@@ -486,7 +494,10 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         Map<String, String> args = new HashMap<>();
         args.put("source", source);
         args.put("target", target);
-        args.put("force", "y");
+//        args.put("force", "y");//不能删除 
+        args.put("rename", "y");
+        args.put("synctime", "y");
+        args.put("overwrite", "y");
         args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
         args.put("path", "1");
         return args;
@@ -525,9 +536,9 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
         try {
             List<String> branchList = new ArrayList<>();
-            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
-            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
-                branchList.add(entry.getValue());
+            Map<String, Date> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                branchList.add(entry.getKey());
             }
             return branchList;
         } catch (SVNException svne) {
@@ -540,9 +551,9 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
 
     public static String getLatestBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
         try {
-            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
-            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
-                return entry.getValue();
+            Map<String, Date> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                return entry.getKey();
             }
         } catch (SVNException svne) {
             System.err.println("getLatestBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
@@ -564,6 +575,25 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         } catch (SVNException ex) {
             System.err.println("updatePHPBranchToLocal '" + env + "': '" + localPathKey + "'  error: -----------" + ex.getErrorMessage());
             System.exit(-1);
+        }
+    }
+
+    /**
+     * 将php分支内容提交到服务器
+     *
+     * @param wc
+     * @param wcDir
+     * @param commitMessage
+     * @param needAdd
+     */
+    public void commitPHPBranch(WorkingCopyImprove wc, String wcDir, String commitMessage, boolean needAdd) {
+        try {
+            wc.commit(new File(wcDir), false, commitMessage, true);
+        } catch (SVNException ex) {
+            Logger.getLogger(deploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("commitPHPBranch '" + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
+            System.out.println("commitPHPBranch '" + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
+//            System.exit(-1);
         }
     }
 
@@ -739,7 +769,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                 String env;
                 for (int envNo = 0; envNo < envCount; envNo++) {
                     env = envList.get(envNo);
-                    String bOriginTag = onlineBVersionTagjTextField.getText().trim();
+                    String bOriginTag = bOnlineTAGjComboBox.getSelectedItem().toString().trim();
                     String bDstTag = newBVersionTagjTextField.getText().trim();
                     if (bOriginTag.isEmpty()) {
                         showMessageDialogMessage("请正确填写 ‘线上B版本 TAG’ 内容");
@@ -756,7 +786,7 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
                     createPHPBranchByTag(wc, bOriginTag, bDstTag, env, 1);//创建 tag  b版本
 
                     if (needCreateAVersionOfPHPBranch(env, wc)) {//需要创建 tag  a版本
-                        String aOriginTag = onlineAVersionTagjTextField.getText().trim();
+                        String aOriginTag = aOnlineTAGjComboBox.getSelectedItem().toString().trim();
                         String aDstTag = newAVersionTagjTextField.getText().trim();
                         if (aOriginTag.isEmpty()) {
                             showMessageDialogMessage("请正确填写 ‘线上A版本 TAG’ 内容");
@@ -786,6 +816,18 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
         newBVersionTagjTextField.setText(bOnlineTAGjComboBox.getSelectedItem().toString());
     }//GEN-LAST:event_bOnlineTAGjComboBoxActionPerformed
 
+    private void testCommit() {
+        WorkingCopyImprove wc;//new WorkingCopyImprove(env);
+
+        String special = "local";
+        String content = "php";
+        String env = "en_us";
+        String localContentPathKey = String.format("%s.%s.sysfile.path", content, special);
+        wc = new WorkingCopyImprove(env, special, content);
+        String localContentPath = wc.getConfByEnv(env).get(localContentPathKey);
+        commitPHPBranch(wc, localContentPath, "commit by deploymentSvnForDS local ");
+    }
+    
     public void changeButtonEnableExcept(String buttonName) {
         switch (buttonName) {
             case "syncFlashjButton":
@@ -890,8 +932,6 @@ public class deploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField newAVersionTagjTextField;
     private javax.swing.JTextField newBVersionTagjTextField;
-    private javax.swing.JTextField onlineAVersionTagjTextField;
-    private javax.swing.JTextField onlineBVersionTagjTextField;
     private javax.swing.JLabel onlineTagjLabel;
     private javax.swing.JLabel onlineTagjLabel1;
     private javax.swing.JLabel originPHPTagjLabel;

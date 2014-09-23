@@ -28,6 +28,17 @@ public class ConsoleTextArea extends JTextArea {
 
     } // ConsoleTextArea()
     
+    public ConsoleTextArea(JScrollPane syncjScrollPane) throws IOException {
+        final LoopedStreams ls = new LoopedStreams();
+
+        // redirect System.out and System.err
+        PrintStream ps = new PrintStream(ls.getOutputStream());
+        System.setOut(ps);
+        System.setErr(ps);
+        startConsoleReaderThread(ls.getInputStream(), syncjScrollPane);
+
+    } // ConsoleTextArea()
+    
     int currentCaretPosition = 0;
 
     private void startConsoleReaderThread(InputStream inStream) {
@@ -59,7 +70,39 @@ public class ConsoleTextArea extends JTextArea {
                 }
             }
         }).start();
-    } // startConsoleReaderThread()
+    }
+    
+    private void startConsoleReaderThread(InputStream inStream, final JScrollPane syncjScrollPane) {
+        final BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                StringBuilder sb = new StringBuilder();
+                try {
+                    String s;
+                    Document doc = getDocument();
+                    if (currentCaretPosition == 0) {
+                        currentCaretPosition = doc.getLength();
+                    }
+
+                    while ((s = br.readLine()) != null) {
+                        sb.setLength(0);
+                        sb.append(s).append('\n');
+                        currentCaretPosition += sb.length();
+                        append(sb.toString());
+                        setCaretPosition(currentCaretPosition);
+                        paintImmediately(getBounds());//实时显示
+//                        paintImmediately(getX(), getY(), getWidth(), getHeight());//实时更新 显示 
+                        syncjScrollPane.paintImmediately(syncjScrollPane.getBounds());
+                    }
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null,
+                            "read from BufferedReader err：" + e);
+                    System.exit(1);
+                }
+            }
+        }).start();
+    }
 
 } // ConsoleTextArea 
 
