@@ -1,9 +1,8 @@
 package deployment.reference.tmatesoftexamplestest;
 
+
 import java.io.File;
-
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;

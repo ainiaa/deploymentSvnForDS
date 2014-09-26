@@ -156,7 +156,7 @@ public class ListTest {
 
             final SVNURL directoryUrl = url.appendPath("directory", false);
 
-            final List<SVNDirEntry> entries = new ArrayList<SVNDirEntry>();
+            final List<SVNDirEntry> entries = new ArrayList<>();
 
             final SvnList list = svnOperationFactory.createList();
             list.setSingleTarget(SvnTarget.fromURL(directoryUrl, SVNRevision.HEAD));

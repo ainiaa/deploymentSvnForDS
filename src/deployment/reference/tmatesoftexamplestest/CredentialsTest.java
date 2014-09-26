@@ -1,6 +1,5 @@
 package deployment.reference.tmatesoftexamplestest;
 
-import junit.framework.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNErrorCode;
@@ -18,6 +17,7 @@ import org.tmatesoft.svn.core.wc2.SvnTarget;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Assert;
 
 public class CredentialsTest {
 

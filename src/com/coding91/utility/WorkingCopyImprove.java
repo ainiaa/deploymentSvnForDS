@@ -88,7 +88,7 @@ public final class WorkingCopyImprove {
             Map<String, String> currentConf = new HashMap<>();
             Properties prop = getProperties(env);
             if (conf == null) {
-                conf = new HashMap();
+                conf = new HashMap<>();
             }
             Set<String> names = prop.stringPropertyNames();
             Iterator<String> it = names.iterator();
@@ -139,7 +139,7 @@ public final class WorkingCopyImprove {
     public SVNClientManager initSVNClientManager(String env, String special, String content) {
 
         if (SVNClientManagerMap == null) {
-            SVNClientManagerMap = new HashMap();
+            SVNClientManagerMap = new HashMap<>();
         }
         String key = env + "." + special + "." + content;
         if (SVNClientManagerMap.isEmpty() || !SVNClientManagerMap.containsKey(env)) {
@@ -177,7 +177,7 @@ public final class WorkingCopyImprove {
 
     public SVNClientManager initSVNClientManager(String env) {
         if (SVNClientManagerMap == null) {
-            SVNClientManagerMap = new HashMap();
+            SVNClientManagerMap = new HashMap<>();
         }
         if (SVNClientManagerMap.isEmpty() || SVNClientManagerMap.containsKey(env)) {
             Map<String, String> currentConf = getConfByEnv(env);

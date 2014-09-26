@@ -1,6 +1,6 @@
 package deployment.reference.tmatesoftexamplestest;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNException;

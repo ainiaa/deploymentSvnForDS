@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 X-COMMENT: Main-Class will be added automatically by build
 Created-By: Jeff Liu 2014-09-15   
-Main-Class: com.coding91.ui.deploymentSvnForDS
+Main-Class: com.coding91.utility.ControllerJFrame
 

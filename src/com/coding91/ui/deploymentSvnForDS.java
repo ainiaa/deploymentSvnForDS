@@ -6,6 +6,7 @@
 package com.coding91.ui;
 
 import com.coding91.utility.ControllerJFrame;
+import com.coding91.utility.MessageUtil;
 import com.coding91.utility.WorkingCopyImprove;
 import java.awt.Toolkit;
 import java.io.File;
@@ -47,6 +48,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         //下面的方式可以设置成功
 //        ImageIcon iconImage = SwingResourceManager.getIcon(DeploymentSvnForDS.class, "/resources/images/sync.png");
 //        this.setIconImage(iconImage.getImage());
+        
         initComponents();
 
         try {
@@ -75,15 +77,22 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                         }
                     }
                 }
+                DefaultComboBoxModel<String> defaultComboBoxModel;
                 if (aBranchList.size() > 0) {
-                    aOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(aBranchList.toArray()));
+                    String[] items = aBranchList.toArray(new String[]{});
+                    defaultComboBoxModel = new DefaultComboBoxModel<>(items);
+                    aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
                 } else {
-                    aOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
+                    String[] items = branchList.toArray(new String[]{});
+                    defaultComboBoxModel = new DefaultComboBoxModel(items);
+                    aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
                 }
                 if (bBranchList.size() > 0) {
-                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(bBranchList.toArray()));
+                    String[] items = bBranchList.toArray(new String[]{});
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
                 } else {
-                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(branchList.toArray()));
+                    String[] items = branchList.toArray(new String[]{});
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
                 }
 
                 newAVersionTagjTextField.setText(aOnlineTAGjComboBox.getSelectedItem().toString());
@@ -104,7 +113,8 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                     }
                 }
                 if (flashList.size() > 0) {
-                    flashVersionjComboBox.setModel(new DefaultComboBoxModel(finalFlashList.toArray()));
+                    String[] items = finalFlashList.toArray(new String[]{});
+                    flashVersionjComboBox.setModel(new DefaultComboBoxModel(items));
                 }
                 flashList = null;
 
@@ -485,7 +495,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public List<String> getEnv() {
-        List envList = new ArrayList<>();
+        List<String> envList = new ArrayList<>();
         if (envENjCheckBox.isSelected()) {//英语
             envList.add("en_us");
         }
@@ -510,7 +520,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
      * @return
      */
     public Map<String, String> getPHPSync() {
-        Map phpSyncMap = new HashMap<>();
+        Map<String, String> phpSyncMap = new HashMap<>();
         phpSyncMap.put("origin", originPHPTagjTextField.getText().trim());//源php tag号
         phpSyncMap.put("dest", dstPHPTagjTextField.getText().trim());//目标 tag号
         return phpSyncMap;
@@ -725,17 +735,17 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
      */
     private boolean isSyncValid(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
         if (0 == envList.size()) {
-            showMessageDialogMessage("请选择需要同步的环境");
+            MessageUtil.showMessageDialogMessage("请选择需要同步的环境");
             return false;
         }
 
 //        todo
 //        if (phpSyncMap.get("origin").trim().isEmpty()) {
-//            showMessageDialogMessage("请输入 '源PHPtag'");
+//            MessageUtil.showMessageDialogMessage("请输入 '源PHPtag'");
 //            return;
 //        }
 //        if (phpSyncMap.get("dest").trim().isEmpty()) {
-//            showMessageDialogMessage("请输入 '目的PHPtag'");
+//            MessageUtil.showMessageDialogMessage("请输入 '目的PHPtag'");
 //            return;
 //        }
         return true;
@@ -754,7 +764,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                 int envCount = envList.size();
                 String env;
                 if (0 == envCount) {
-                    showMessageDialogMessage("请选择需要同步的环境");
+                    MessageUtil.showMessageDialogMessage("请选择需要同步的环境");
                     return;
                 }
 
@@ -798,7 +808,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
 
     private void syncFlashjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFlashjButtonActionPerformed
         if (flashVersionjComboBox.getSelectedItem() == null || flashVersionjComboBox.getSelectedItem().toString().isEmpty()) {
-            showMessageDialogMessage("请选择需要同步的flash");
+            MessageUtil.showMessageDialogMessage("请选择需要同步的flash");
             return;
         }
         syncTemplate("flash", "syncFlashjButton");
@@ -860,7 +870,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         disableAllButton();
         final List<String> envList = getEnv();
         if (0 == envList.size()) {
-            showMessageDialogMessage("请选择需要同步的环境");
+            MessageUtil.showMessageDialogMessage("请选择需要同步的环境");
             return;
         }
         new Thread(new Runnable() {
@@ -873,11 +883,11 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                     String bOriginTag = bOnlineTAGjComboBox.getSelectedItem().toString().trim();
                     String bDstTag = newBVersionTagjTextField.getText().trim();
                     if (bOriginTag.isEmpty()) {
-                        showMessageDialogMessage("请正确填写 ‘线上B版本 TAG’ 内容");
+                        MessageUtil.showMessageDialogMessage("请正确填写 ‘线上B版本 TAG’ 内容");
                         return;
                     }
                     if (bDstTag.isEmpty()) {
-                        showMessageDialogMessage("请正确填写 ‘新建B版本 TAG：’ 内容");
+                        MessageUtil.showMessageDialogMessage("请正确填写 ‘新建B版本 TAG：’ 内容");
                         return;
                     }
                     String special = "online";
@@ -890,11 +900,11 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                         String aOriginTag = aOnlineTAGjComboBox.getSelectedItem().toString().trim();
                         String aDstTag = newAVersionTagjTextField.getText().trim();
                         if (aOriginTag.isEmpty()) {
-                            showMessageDialogMessage("请正确填写 ‘线上A版本 TAG’ 内容");
+                            MessageUtil.showMessageDialogMessage("请正确填写 ‘线上A版本 TAG’ 内容");
                             return;
                         }
                         if (aDstTag.isEmpty()) {
-                            showMessageDialogMessage("请正确填写 ‘新建A版本 TAG：’ 内容");
+                            MessageUtil.showMessageDialogMessage("请正确填写 ‘新建A版本 TAG：’ 内容");
                             return;
                         }
                         createPHPBranchByTag(wc, aOriginTag, aDstTag, env, 0);//创建 tag
@@ -1099,7 +1109,9 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DeploymentSvnForDS().setVisible(true);
+                DeploymentSvnForDS ds = new DeploymentSvnForDS();
+                ds.setLocationRelativeTo(null);
+                ds.setVisible(true);
             }
         });
     }

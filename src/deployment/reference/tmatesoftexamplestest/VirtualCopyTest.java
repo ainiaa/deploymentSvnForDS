@@ -3,7 +3,7 @@ package deployment.reference.tmatesoftexamplestest;
 import java.io.File;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Test;
 import org.tmatesoft.svn.core.SVNErrorCode;
