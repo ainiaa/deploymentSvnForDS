@@ -75,7 +75,7 @@ public class PropertiesUtil {
     }
 
     //写入properties信息
-    public static void writeProperties(String filePath, Map<String, String> properties, String jarFilePath, String newJarFilePath) throws URISyntaxException {
+    public static boolean writeProperties(String filePath, Map<String, String> properties, String jarFilePath, String newJarFilePath) throws URISyntaxException {
         Properties prop = new Properties();
         try {
 //            InputStream fis = new FileInputStream(filePath);
@@ -146,6 +146,8 @@ public class PropertiesUtil {
             System.err.println("Visit " + filePath + " for updating value error:" + e.getMessage());
             MessageUtil.showMessageDialogMessage("Visit " + filePath + " for updating value error:" + e.getMessage());
         }
+        
+        return true;
     }
 
     public static String getPropertyFilePath(String env) {

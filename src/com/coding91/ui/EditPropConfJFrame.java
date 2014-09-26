@@ -59,7 +59,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         Properties prop = PropertiesUtil.getProperties(env);
         String langStr = (String) prop.getProperty("langList");
         if (!langStr.isEmpty() && currentLangjComboBox.getSelectedIndex() == -1) {
-            System.out.println("currentLangjComboBox.getSelectedIndex():xxx" + currentLangjComboBox.getSelectedIndex());
+//            System.out.println("currentLangjComboBox.getSelectedIndex():xxx" + currentLangjComboBox.getSelectedIndex());
             String[] langArray = langStr.split(",");
             if (langArray.length > 0) {
                 currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
@@ -743,15 +743,15 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         if (jarFilePath.isEmpty()) {
             MessageUtil.showMessageDialogMessage("请选择jar文件");
             return;
-        } else if (!jarFilePath.endsWith("DeploymentSvnForDS.jar")) {
-            MessageUtil.showMessageDialogMessage("请选择 DeploymentSvnForDS.jar 所在的正确目录");
-            return;
-        } else {
+        } else if (jarFilePath.endsWith("DeploymentSvnForDS.jar") || jarFilePath.endsWith("deploymentSvnForDS.jar")) {
             File f = new File(jarFilePath);
             if (!f.exists()) {
                 MessageUtil.showMessageDialogMessage("您请选择的‘" + jarFilePath + "’文件不存在");
                 return;
             }
+        } else {
+            MessageUtil.showMessageDialogMessage("请选择 DeploymentSvnForDS.jar 所在的正确目录");
+            return;
         }
         String newJarFilePath = jarFilePath + ".new";
 
@@ -853,7 +853,10 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
         String env = currentLangjComboBox.getSelectedItem().toString();
         String propFile = PropertiesUtil.getPropertyFilePath(env);
         try {
-            PropertiesUtil.writeProperties(propFile, propertiesMap, jarFilePath, newJarFilePath);
+            boolean result = PropertiesUtil.writeProperties(propFile, propertiesMap, jarFilePath, newJarFilePath);
+            if (result) {
+                MessageUtil.showInfoMessageDialog("配置保存成功!");
+            }
         } catch (URISyntaxException ex) {
             Logger.getLogger(EditPropConfJFrame.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtil.showMessageDialogMessage("writeProperties:" + ex.getMessage());

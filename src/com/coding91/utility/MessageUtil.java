@@ -28,4 +28,8 @@ public class MessageUtil {
     public static void showMessageDialogMessage(String msg) {
         JOptionPane.showMessageDialog(null, msg, "错误信息提示", JOptionPane.ERROR_MESSAGE);
     }
+    
+    public static void showInfoMessageDialog(String msg) {
+        JOptionPane.showMessageDialog(null, msg, "信息提示", JOptionPane.INFORMATION_MESSAGE);
+    }
 }
