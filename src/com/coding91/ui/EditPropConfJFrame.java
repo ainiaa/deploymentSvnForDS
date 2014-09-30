@@ -870,6 +870,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
 
     private void canceljButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_canceljButtonActionPerformed
         this.dispose();
+        System.exit(1);
     }//GEN-LAST:event_canceljButtonActionPerformed
 
     private void editConfjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editConfjMenuItemActionPerformed

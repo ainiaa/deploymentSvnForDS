@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.coding91.ui;
 
 import com.coding91.utility.ControllerJFrame;
@@ -157,6 +152,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         creatPHPTagjButton = new javax.swing.JButton();
         aOnlineTAGjComboBox = new javax.swing.JComboBox();
         bOnlineTAGjComboBox = new javax.swing.JComboBox();
+        jButton1 = new javax.swing.JButton();
         phpjPanel = new javax.swing.JPanel();
         originPHPTagjLabel = new javax.swing.JLabel();
         originPHPTagjTextField = new javax.swing.JTextField();
@@ -337,6 +333,13 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("commit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout phpTagjPanelLayout = new javax.swing.GroupLayout(phpTagjPanel);
         phpTagjPanel.setLayout(phpTagjPanelLayout);
         phpTagjPanelLayout.setHorizontalGroup(
@@ -357,13 +360,17 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                                .addComponent(bVersionTagjLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newBVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(phpTagjPanelLayout.createSequentialGroup()
                                 .addComponent(aVersionTagjLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(newAVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                                .addComponent(bVersionTagjLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jButton1))
+                                    .addComponent(newBVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(phpTagjPanelLayout.createSequentialGroup()
                         .addGap(235, 235, 235)
                         .addComponent(creatPHPTagjButton)))
@@ -384,7 +391,9 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                     .addComponent(onlineTagjLabel1)
                     .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(creatPHPTagjButton)
+                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(creatPHPTagjButton)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -994,6 +1003,10 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_syncResourcesjMenuItemActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        testCommit();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void testCommit() {
         WorkingCopyImprove wc;//new WorkingCopyImprove(env);
 
@@ -1139,6 +1152,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JMenu filejMenu;
     private javax.swing.JComboBox flashVersionjComboBox;
     private javax.swing.JLabel flashVersionjLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTextField newAVersionTagjTextField;

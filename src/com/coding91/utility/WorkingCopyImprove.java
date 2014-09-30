@@ -22,9 +22,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -338,7 +340,7 @@ public final class WorkingCopyImprove {
     public SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage, boolean recurse)
             throws SVNException {
 
-        checkVersiondDirectory(wcPath);
+        checkVersiondDirectory(wcPath, true);
         try {
             System.out.println(" commit '" + wcPath.getCanonicalPath() + "' start ====");
         } catch (IOException ex) {
@@ -470,7 +472,7 @@ public final class WorkingCopyImprove {
         SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
         return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
     }
-    
+
     public Map<String, Date> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
@@ -813,6 +815,12 @@ public final class WorkingCopyImprove {
 
     }
 
+    public void addEntry(java.io.File[] wcPath, boolean force) throws SVNException {
+        System.out.println(" addEntry  start ====");
+        clientManager.getWCClient().doAdd(wcPath, force, false, false, SVNDepth.INFINITY, false, false, true);
+        System.out.println(" addEntry  end ====");
+    }
+
     /*
      * Locks working copy paths, so that no other user can commit changes to them.
      * Like 'svn lock PATH' command. It's done by invoking 
@@ -1058,6 +1066,51 @@ public final class WorkingCopyImprove {
         } else {
 
         }
+    }
+
+    public void checkVersiondDirectory(File wc, boolean improvable) {
+        List<File> newFileList = new ArrayList();
+        newFileList = tryAddEntry(wc, newFileList);
+        if (newFileList != null && newFileList.size() > 0) {
+            try {
+                addEntry(newFileList.toArray(new File[newFileList.size()]), true);
+            } catch (SVNException ex) {
+                Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public List<File> tryAddEntry(File wc, List<File> newFileList) {
+        if (wc.getName().equals(".git") || wc.getName().equals(".idea") || wc.getName().equals(".svn") || wc.getName().equals(".settings") || wc.getName().equals(".project") || wc.getName().equals(".buildpath")) {
+            return newFileList;
+        }
+
+        if (wc.isDirectory()) {
+            if (!SVNWCUtil.isVersionedDirectory(wc)) {
+                newFileList.add(wc);
+            }
+        } else {
+            SVNStatus status;
+            try {
+                status = showStatus(wc, false);//如果将 isRemote 设置为true 新添加的文件 会抛异常
+                if (status == null || (status.getContentsStatus() == SVNStatusType.STATUS_UNVERSIONED)) {
+                    newFileList.add(wc);
+                }
+            } catch (SVNException ex) {
+//                Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (wc.isDirectory()) {
+            for (File sub : wc.listFiles()) {//{.git,.idea,.svn,.settings,.project,.buildpath}
+                if (sub.isDirectory() && (wc.getName().equals(".git") || wc.getName().equals(".idea") || wc.getName().equals(".svn") || wc.getName().equals(".settings") || wc.getName().equals(".project") || wc.getName().equals(".buildpath"))) {
+                    continue;
+                }
+                tryAddEntry(sub, newFileList);
+            }
+        }
+
+        return newFileList;
     }
 
 }
