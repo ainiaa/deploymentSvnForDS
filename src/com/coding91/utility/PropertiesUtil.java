@@ -13,12 +13,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
@@ -30,6 +36,8 @@ import net.lingala.zip4j.util.Zip4jConstants;
  */
 public class PropertiesUtil {
 
+    public static Map<String, Map<String, String>> conf;
+    
     //写入properties信息
     public static void writeProperties(String filePath, String parameterName, String parameterValue) {
         Properties prop = new Properties();
@@ -164,6 +172,49 @@ public class PropertiesUtil {
             MessageUtil.showMessageDialogMessage("load " + propFile + " error:" + ex.getMessage());
         }
         return prop;
+    }
+    
+    public static Properties getProperties() {
+        InputStream fis = PropertiesUtil.class.getClassLoader().getResourceAsStream("resources/properties/conf.properties");
+        Properties prop = new Properties();
+        try {
+            prop.load(fis);
+        } catch (IOException ex) {
+            System.exit(-1);
+        }
+        return prop;
+    }
+    
+    public static void buildConf(String env) {
+        if (conf == null || !conf.containsKey(env)) {
+            Map<String, String> currentConf = new HashMap<>();
+            Properties prop = getProperties(env);
+            if (conf == null) {
+                conf = new HashMap<>();
+            }
+            Set<String> names = prop.stringPropertyNames();
+            Iterator<String> it = names.iterator();
+            while (it.hasNext()) {
+                try {
+                    String key = it.next();
+                    String value = new String(prop.getProperty(key).getBytes("ISO-8859-1"), "UTF-8");
+                    currentConf.put(key, value);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            conf.put(env, currentConf);
+        }
+    }
+    
+    public static Map<String, String> getConfByEnv(String env) {
+        if (env.isEmpty()) {
+            env = "en_us";
+        }
+        if (conf == null || !conf.containsKey(env)) {
+            buildConf(env);
+        }
+        return conf.get(env);
     }
 
 }
