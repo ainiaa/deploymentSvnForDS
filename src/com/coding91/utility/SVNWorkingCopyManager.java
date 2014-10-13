@@ -36,9 +36,6 @@ import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
-import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.wc.ISVNEventHandler;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -61,35 +58,27 @@ public final class SVNWorkingCopyManager {
     private static Map<String, SVNClientManager> SVNClientManagerMap;
     private final SVNClientManager clientManager;
 
-    public SVNClientManager getCurrentClientManager(String env) {
-        if (SVNClientManagerMap == null || SVNClientManagerMap.isEmpty() || !SVNClientManagerMap.containsKey(env)) {
-            return initSVNClientManager(env);
-        } else {
-            return SVNClientManagerMap.get(env);
-        }
-    }
-
     public Map<String, Map<String, String>> conf;
 
-    public Properties getProperties(String env) {
-        return PropertiesUtil.getProperties(env);
+    public Properties getProperties(String langEnv) {
+        return PropertiesUtil.getProperties(langEnv);
     }
 
     public Properties getProperties() {
         return PropertiesUtil.getProperties();
     }
 
-    public SVNClientManager initSVNClientManager(String env, String special, String content) {
+    public SVNClientManager initSVNClientManager(String langEnv, String localOrOnline, String contentType) {
 
         if (SVNClientManagerMap == null) {
             SVNClientManagerMap = new HashMap<>();
         }
-        String key = env + "." + special + "." + content;
-        if (SVNClientManagerMap.isEmpty() || !SVNClientManagerMap.containsKey(env)) {
-            Map<String, String> currentConf = PropertiesUtil.getConfByEnv(env);
+        String key = langEnv + "." + localOrOnline + "." + contentType;
+        if (SVNClientManagerMap.isEmpty() || !SVNClientManagerMap.containsKey(langEnv)) {
+            Map<String, String> currentConf = PropertiesUtil.getConfByLangEnv(langEnv);
             String name, password;
-            name = currentConf.get(content + "." + special + ".svn.username");
-            password = currentConf.get(content + "." + special + ".svn.password");
+            name = currentConf.get(contentType + "." + localOrOnline + ".svn.username");
+            password = currentConf.get(contentType + "." + localOrOnline + ".svn.password");
 
             if (myCommitEventHandler == null) {
                 myCommitEventHandler = new CommitEventHandler();
@@ -118,52 +107,16 @@ public final class SVNWorkingCopyManager {
 
     }
 
-    public SVNClientManager initSVNClientManager(String env) {
-        if (SVNClientManagerMap == null) {
-            SVNClientManagerMap = new HashMap<>();
-        }
-        if (SVNClientManagerMap.isEmpty() || SVNClientManagerMap.containsKey(env)) {
-            Map<String, String> currentConf = PropertiesUtil.getConfByEnv(env);
-
-            String name = currentConf.get("svn.username");
-            String password = currentConf.get("svn.password");
-
-            if (myCommitEventHandler == null) {
-                myCommitEventHandler = new CommitEventHandler();
-            }
-            if (myUpdateEventHandler == null) {
-                myUpdateEventHandler = new UpdateEventHandler();
-            }
-
-            if (myWCEventHandler == null) {
-                myWCEventHandler = new WCEventHandler();
-            }
-
-            if (options == null) {
-                options = (DefaultSVNOptions) SVNWCUtil.createDefaultOptions(true);
-            }
-
-            SVNClientManager currentClientManager = SVNClientManager.newInstance(options, name, password);
-            currentClientManager.getCommitClient().setEventHandler(myCommitEventHandler);
-            currentClientManager.getUpdateClient().setEventHandler(myUpdateEventHandler);
-            currentClientManager.getWCClient().setEventHandler(myWCEventHandler);
-            SVNClientManagerMap.put(env, currentClientManager);
-            return currentClientManager;
-        } else {
-            return SVNClientManagerMap.get(env);
-        }
-
+    /**
+     * 
+     * @param langEnv
+     * @param localOrOnline
+     * @param contentType 
+     */
+    public SVNWorkingCopyManager(String langEnv, String localOrOnline, String contentType) {
+        PropertiesUtil.buildConf(langEnv);
+        clientManager = initSVNClientManager(langEnv, localOrOnline, contentType);
     }
-
-    public SVNWorkingCopyManager(String env, String special, String content) {
-        PropertiesUtil.buildConf(env);
-        clientManager = initSVNClientManager(env, special, content);
-    }
-
-    public SVNWorkingCopyManager initWorkingCopyImprove(String env, String special, String content) {
-        return new SVNWorkingCopyManager(env, special, content);
-    }
-
 
     /*
      * Creates a new version controlled directory (doesn't create any intermediate
@@ -179,7 +132,7 @@ public final class SVNWorkingCopyManager {
      * commitMessage - a commit log message since a URL-based directory creation is 
      * immediately committed to a repository.
      */
-    private SVNCommitInfo makeDirectory(SVNURL url, String commitMessage) throws SVNException {
+    public SVNCommitInfo makeDirectory(SVNURL url, String commitMessage) throws SVNException {
         /*
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
@@ -212,15 +165,7 @@ public final class SVNWorkingCopyManager {
      * will be added with all its child subdirictories, otherwise the operation will cover
      * only the directory itself (only those files which are located in the directory).  
      */
-    private SVNCommitInfo importDirectory(File localPath, SVNURL dstURL, String commitMessage, boolean isRecursive) throws SVNException {
-        /*
-         * Returns SVNCommitInfo containing information on the new revision committed 
-         * (revision number, etc.) 
-         */
-        return clientManager.getCommitClient().doImport(localPath, dstURL, commitMessage, isRecursive);
-    }
-
-    private SVNCommitInfo importDirectory(File localPath, SVNURL dstURL, String commitMessage, SVNProperties revisionProperties, boolean useGlobalIgnores, boolean ignoreUnknownNodeTypes, SVNDepth depth) throws SVNException {
+    public SVNCommitInfo importDirectory(File localPath, SVNURL dstURL, String commitMessage, SVNProperties revisionProperties, boolean useGlobalIgnores, boolean ignoreUnknownNodeTypes, SVNDepth depth) throws SVNException {
         /*
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
@@ -228,13 +173,15 @@ public final class SVNWorkingCopyManager {
         return clientManager.getCommitClient().doImport(localPath, dstURL, commitMessage, revisionProperties, useGlobalIgnores, ignoreUnknownNodeTypes, depth);
     }
 
-    private SVNCommitInfo importDirectory(File localPath, SVNURL dstURL, String commitMessage) throws SVNException {
+    public SVNCommitInfo importDirectory(File localPath, SVNURL dstURL, String commitMessage) throws SVNException {
         /*
          * Returns SVNCommitInfo containing information on the new revision committed 
          * (revision number, etc.) 
          */
         return clientManager.getCommitClient().doImport(localPath, dstURL, commitMessage, new SVNProperties(), false, false, SVNDepth.INFINITY);
     }
+    
+    
     /*
      * Committs changes in a working copy to a repository. Like 
      * 'svn commit PATH -m "some comment"' command. It's done by invoking 
@@ -257,7 +204,6 @@ public final class SVNWorkingCopyManager {
      * commits changes for the entire directory, otherwise - only for child entries of the 
      * directory;
      */
-
     public SVNCommitInfo commit(File wcPath, boolean keepLocks, String commitMessage, boolean recurse)
             throws SVNException {
 
@@ -306,22 +252,7 @@ public final class SVNWorkingCopyManager {
      * recursive - if true and url corresponds to a directory then doCheckout(..) recursively 
      * fetches out the entire directory, otherwise - only child entries of the directory;   
      */
-    private long checkout(SVNURL url,
-            SVNRevision revision, File dstPath, boolean isRecursive)
-            throws SVNException {
-
-        SVNUpdateClient updateClient = clientManager.getUpdateClient();
-        /*
-         * sets externals not to be ignored during the checkout
-         */
-        updateClient.setIgnoreExternals(false);
-        /*
-         * returns the number of the revision at which the working copy is 
-         */
-        return updateClient.doCheckout(url, dstPath, revision, revision, isRecursive);
-    }
-
-    private long checkout(SVNURL url, SVNRevision pegRevision,
+    public long checkout(SVNURL url, SVNRevision pegRevision,
             SVNRevision revision, SVNDepth depth, File dstPath, boolean allowUnversionedObstructions)
             throws SVNException {
 
@@ -336,7 +267,7 @@ public final class SVNWorkingCopyManager {
         return updateClient.doCheckout(url, dstPath, pegRevision, revision, depth, allowUnversionedObstructions);
     }
 
-    private long checkout(SVNURL url, SVNRevision revision, File dstPath)
+    public long checkout(SVNURL url, SVNRevision revision, File dstPath)
             throws SVNException {
 
         SVNUpdateClient updateClient = clientManager.getUpdateClient();
@@ -350,7 +281,6 @@ public final class SVNWorkingCopyManager {
         return updateClient.doCheckout(url, dstPath, SVNRevision.UNDEFINED, revision, SVNDepth.INFINITY, false);
     }
 
-//
 
     /*
      * Updates a working copy (brings changes from the repository into the working copy). 
@@ -367,39 +297,23 @@ public final class SVNWorkingCopyManager {
      * recursive - if true and an entry is a directory then doUpdate(..) recursively 
      * updates the entire directory, otherwise - only child entries of the directory;   
      */
-    private long update(File wcPath,
-            SVNRevision updateToRevision, boolean isRecursive)
-            throws SVNException {
-
-        SVNUpdateClient updateClient = clientManager.getUpdateClient();
-        /*
-         * sets externals not to be ignored during the update
-         */
-        updateClient.setIgnoreExternals(false);
-        /*
-         * returns the number of the revision wcPath was updated to
-         */
-
-        return updateClient.doUpdate(wcPath, updateToRevision, isRecursive);
-    }
-
-    public Map<String, Date> getBranchOrTagListByEnvConf(String env, String content, boolean isOnline) throws SVNException {
+    public Map<String, Date> getBranchOrTagListByEnvConf(String langEnv, String contentType, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get(content + ".online.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get(contentType + ".online.svn.url");
         } else {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get(content + ".local.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get(contentType + ".local.svn.url");
         }
         SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
         return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
     }
 
-    public Map<String, Date> getBranchOrTagListByEnvConf(String env, boolean isOnline) throws SVNException {
+    public Map<String, Date> getBranchOrTagListByEnvConf(String langEnv, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get("php.online.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.svn.url");
         } else {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get("php.local.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.svn.url");
         }
         SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
         return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false);
@@ -444,12 +358,12 @@ public final class SVNWorkingCopyManager {
         return needSortedMap;
     }
 
-    public Map<String, Date> getLatestBranchOrTagByEnvConf(String env, boolean isOnline) throws SVNException {
+    public Map<String, Date> getLatestBranchOrTagByEnvConf(String langEnv, boolean isOnline) throws SVNException {
         String rootUrl;
         if (isOnline) {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get("php.online.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.svn.url");
         } else {
-            rootUrl = PropertiesUtil.getConfByEnv(env).get("php.local.svn.url");
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.svn.url");
         }
         SVNURL svnUrl = SVNURL.parseURIEncoded(rootUrl);
         return list(svnUrl, SVNRevision.HEAD, SVNRevision.HEAD, false, false, true);
@@ -511,7 +425,7 @@ public final class SVNWorkingCopyManager {
         }
     }
 
-    private long update(File wcPath,
+    public long update(File wcPath,
             SVNRevision updateToRevision, SVNDepth depth)
             throws SVNException {
 
@@ -544,7 +458,7 @@ public final class SVNWorkingCopyManager {
     /**
      *
      * @param localPathKey
-     * @param env
+     * @param langEnv
      * @param updateToRevision
      * @param depth
      * @param allowUnversionedObstructions
@@ -552,12 +466,12 @@ public final class SVNWorkingCopyManager {
      * @return
      * @throws SVNException
      */
-    public long updateToLocalByEnvConf(String localPathKey, String env,
+    public long updateToLocalByEnvConf(String localPathKey, String langEnv,
             SVNRevision updateToRevision, SVNDepth depth, boolean allowUnversionedObstructions, boolean depthIsSticky)
             throws SVNException {
 
-        String localPath = PropertiesUtil.getConfByEnv(env).get(localPathKey);
-        Sync.printlnFlush("env:" + env + " localPathKey:" + localPathKey + "  localPath:" + localPath + "\r\n");
+        String localPath = PropertiesUtil.getConfByLangEnv(langEnv).get(localPathKey);
+        Sync.printlnFlush("env:" + langEnv + " localPathKey:" + localPathKey + "  localPath:" + localPath + "\r\n");
         File wcPath = new File(localPath);
         SVNUpdateClient updateClient = clientManager.getUpdateClient();
         /*
@@ -567,9 +481,29 @@ public final class SVNWorkingCopyManager {
         /*
          * returns the number of the revision wcPath was updated to
          */
-        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  start=================\r\n");
+        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + langEnv + "' localPath '" + localPath + "'  start=================\r\n");
         long version = updateClient.doUpdate(wcPath, updateToRevision, depth, allowUnversionedObstructions, depthIsSticky);
-        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + env + "' localPath '" + localPath + "'  end=================\r\n");
+        Sync.printlnFlush("updateToLocalByEnvConf  env:'" + langEnv + "' localPath '" + localPath + "'  end=================\r\n");
+        return version;
+    }
+    
+    public long updateToLocalByPath(String path,
+            SVNRevision updateToRevision, SVNDepth depth, boolean allowUnversionedObstructions, boolean depthIsSticky)
+            throws SVNException {
+
+        Sync.printlnFlush("localPath:" + path + "\r\n");
+        File wcPath = new File(path);
+        SVNUpdateClient updateClient = clientManager.getUpdateClient();
+        /*
+         * sets externals not to be ignored during the update
+         */
+        updateClient.setIgnoreExternals(false);
+        /*
+         * returns the number of the revision wcPath was updated to
+         */
+        Sync.printlnFlush("updateToLocalByEnvConf  ' localPath '" + path + "'  start=================\r\n");
+        long version = updateClient.doUpdate(wcPath, updateToRevision, depth, allowUnversionedObstructions, depthIsSticky);
+        Sync.printlnFlush("updateToLocalByEnvConf  ' localPath '" + path + "'  end=================\r\n");
         return version;
     }
 
@@ -708,20 +642,15 @@ public final class SVNWorkingCopyManager {
      * recursive - if true and an entry is a directory then doAdd(..) recursively 
      * schedules all its inner dir entries for addition as well. 
      */
-    private void addEntry(File wcPath) throws SVNException {
-        clientManager.getWCClient().doAdd(wcPath, false, false, false, true);
-    }
-
-    private void addEntry(java.io.File wcPath, boolean force, boolean mkdir, boolean climbUnversionedParents, SVNDepth depth, boolean includeIgnored, boolean makeParents) throws SVNException {
+    public void addEntry(java.io.File wcPath, boolean force, boolean mkdir, boolean climbUnversionedParents, SVNDepth depth, boolean includeIgnored, boolean makeParents) throws SVNException {
         clientManager.getWCClient().doAdd(wcPath, force, mkdir, climbUnversionedParents, depth, includeIgnored, makeParents);
     }
 
-    private void addEntry(java.io.File wcPath, boolean force, boolean mkdir) throws SVNException {
+    public void addEntry(java.io.File wcPath, boolean force, boolean mkdir) throws SVNException {
         clientManager.getWCClient().doAdd(wcPath, force, mkdir, true, SVNDepth.INFINITY, false, true);
     }
 
     public void addEntry(java.io.File wcPath, boolean force) throws SVNException {
-//        clientManager.getWCClient().doAdd(wcPath, force, true, true, SVNDepth.INFINITY, false, true);
         try {
             System.out.println(" addEntry '" + wcPath.getCanonicalPath() + "' start ====");
         } catch (IOException ex) {
@@ -756,11 +685,11 @@ public final class SVNWorkingCopyManager {
      * 
      * lockMessage - an optional lock comment string.
      */
-    private void lock(File wcPath, boolean isStealLock, String lockComment) throws SVNException {
+    public void lock(File wcPath, boolean isStealLock, String lockComment) throws SVNException {
         clientManager.getWCClient().doLock(new File[]{wcPath}, isStealLock, lockComment);
     }
 
-    private void unlock(File wcPath, boolean isStealLock) throws SVNException {
+    public void unlock(File wcPath, boolean isStealLock) throws SVNException {
         clientManager.getWCClient().doUnlock(new File[]{wcPath}, isStealLock);
     }
 
@@ -780,7 +709,7 @@ public final class SVNWorkingCopyManager {
      * dryRun - set to true not to delete an entry but to check if it can be deleted;
      * if false - then it's a deletion itself.  
      */
-    private void delete(File wcPath, boolean force) throws SVNException {
+    public void delete(File wcPath, boolean force) throws SVNException {
         clientManager.getWCClient().doDelete(wcPath, force, false);
     }
 
@@ -842,7 +771,7 @@ public final class SVNWorkingCopyManager {
     /**
      * 根据env 创建 branch/tag
      *
-     * @param env
+     * @param langEnv
      * @param originTag
      * @param dstTag
      * @param commitMessage
@@ -851,7 +780,7 @@ public final class SVNWorkingCopyManager {
      * @return
      * @throws SVNException
      */
-    public SVNCommitInfo createBranchOrTagByEnvConf(String env, String originTag, String dstTag, String commitMessage, boolean isOnline, int version) throws SVNException {
+    public SVNCommitInfo createBranchOrTagByEnvConf(String langEnv, String originTag, String dstTag, String commitMessage, boolean isOnline, int version) throws SVNException {
         String rootUrl;
 
         String svnKey;
@@ -864,7 +793,7 @@ public final class SVNWorkingCopyManager {
             } else {//其他
                 svnKey = "php.online.svn.url";
             }
-            rootUrl = PropertiesUtil.getConfByEnv(env).get(svnKey);
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get(svnKey);
 
         } else {
             if (version == 0) {//a版本
@@ -874,8 +803,24 @@ public final class SVNWorkingCopyManager {
             } else {//其他
                 svnKey = "php.local.svn.url";
             }
-            rootUrl = PropertiesUtil.getConfByEnv(env).get(svnKey);
+            rootUrl = PropertiesUtil.getConfByLangEnv(langEnv).get(svnKey);
         }
+        SVNURL srcURL = SVNURL.parseURIEncoded(rootUrl + originTag);
+        SVNURL dstURL = SVNURL.parseURIEncoded(rootUrl + dstTag);
+        return copy(srcURL, dstURL, false, commitMessage);
+    }
+    
+    /**
+     * 根据env 创建 branch/tag
+     *
+     * @param originTag
+     * @param dstTag
+     * @param commitMessage
+     * @param rootUrl
+     * @return
+     * @throws SVNException
+     */
+    public SVNCommitInfo createBranchOrTag(String originTag, String dstTag, String commitMessage, String rootUrl) throws SVNException {
         SVNURL srcURL = SVNURL.parseURIEncoded(rootUrl + originTag);
         SVNURL dstURL = SVNURL.parseURIEncoded(rootUrl + dstTag);
         return copy(srcURL, dstURL, false, commitMessage);

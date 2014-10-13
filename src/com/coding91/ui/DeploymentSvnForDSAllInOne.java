@@ -5,7 +5,8 @@
  */
 package com.coding91.ui;
 
-import com.coding91.WorkingCopyImprove;
+import com.coding91.utility.PropertiesUtil;
+import com.coding91.utility.SVNWorkingCopyManager;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
@@ -28,12 +29,12 @@ import sync.Sync;
  *
  * @author Administrator
  */
-public class deploymentSvnForDSOLD extends javax.swing.JFrame {
+public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
 
     /**
      * Creates new form deploymentSvnForDSOLD
      */
-    public deploymentSvnForDSOLD() {
+    public DeploymentSvnForDSAllInOne() {
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(
                 getClass().getClassLoader().getResource("resources/images/sync.png")));//这个不能以 '/'开头
         //下面的方式可以设置成功
@@ -44,7 +45,7 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
         try {
             printer();
         } catch (IOException ex) {
-            Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -492,50 +493,63 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
     public void buildSyncTask(List<String> envList, List<String> contentList, Map<String, String> versionTagMap, Map<String, String> phpSyncMap) {
         int envCount = envList.size();
         int contentCount = contentList.size();
-        String env;
+        String langEnv;
         for (int envNo = 0; envNo < envCount; envNo++) {
-            env = envList.get(envNo);
+            langEnv = envList.get(envNo);
             //创建branch
             String originTag = onlineTagjTextField.getText().trim();
             String dstTag = bVersionTagjTextField.getText().trim();
 
-            WorkingCopyImprove wc = new WorkingCopyImprove(env);
+            SVNWorkingCopyManager workinigCopyManager = new SVNWorkingCopyManager(langEnv, "online", "php");
 //            getBranchOrTagListByEnvConf(wc, env, true);
 //            if (true) {
 //                return;
 //            }
 
             //b版本
-            createPHPBranchByTag(wc, originTag, dstTag, env, 1);//创建 tag  b版本
+            String rootUrl = PropertiesUtil.getPHPOnlineSvnUrl(langEnv);
+            createPHPBranchOrTag(workinigCopyManager, originTag, dstTag, rootUrl);//创建 tag  b版本
 
-            if (needCreateAVersionOfPHPBranch(env, wc)) {//需要创建 tag  a版本
+            if (needCreateAVersionOfPHPBranch(langEnv)) {//需要创建 tag  a版本
                 dstTag = aVersionTagjTextField.getText().trim();
-                createPHPBranchByTag(wc, originTag, dstTag, env, 0);//创建 tag  
+                createPHPBranchOrTag(workinigCopyManager, originTag, dstTag, rootUrl);//创建 tag  a版本  
             }
 
-            updatePHPBranchToLocal(wc, env, getLocalPathKey(1, true));//将线上代码update到本地
-            updatePHPBranchToLocal(wc, env, getLocalPathKey(1, false));//将本地代码update到本地
+            String path = PropertiesUtil.getPHPOnlinePath(langEnv);
+            updatePHPBranchToLocal(workinigCopyManager, path);//将线上代码update到本地
+            path = PropertiesUtil.getPHPLocalPath(langEnv);
+            updatePHPBranchToLocal(workinigCopyManager, path);//将本地代码update到本地
 
             //同步 content
             for (int contentNo = 0; contentNo < contentCount; contentNo++) {
                 String content = contentList.get(contentNo);
+                String localPath = null, onlinePath = null;
+                Map<String, String> args = null;
+                switch (content) {
+                    case "flash":
+                        localPath = PropertiesUtil.getFlashLocalPath(langEnv);
+                        onlinePath = PropertiesUtil.getFlashOnlinePath(langEnv);
 
-                String localContentPathKey = "sysfile." + content + ".localPath";
-                String localContentPath = wc.getConfByEnv(env).get(localContentPathKey);
-                String onlineContentPathKey = "sysfile." + content + ".onlinePath";
-                String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
+                        //将 content local 的内容同步到 content online
+                        args = buildFileSyncArgs(localPath, onlinePath);
 
-                updatePHPBranchToLocal(wc, env, localContentPathKey);//更新 content  local 
-                updatePHPBranchToLocal(wc, env, onlineContentPathKey);//更新 content  online 
+                        break;
+                    case "resources":
+                        localPath = PropertiesUtil.getResourcesLocalPath(langEnv);
+                        onlinePath = PropertiesUtil.getResourcesOnlinePath(langEnv);
+                        //将 content local 的内容同步到 content online
+                        args = buildFileSyncArgs(localPath, onlinePath);
+                        break;
+                }
 
-                //将 content local 的内容同步到 content online 
-                Map<String, String> args = buildFileSyncArgs(localContentPath, onlineContentPath);
-                Sync.syncMain(args);
-
-                //更新content online svn
-                commitPHPBranch(env, onlineContentPath, "commit by deploymentSvnForDSOLD");
+                if (localPath != null && onlinePath != null && args != null) {
+                    updatePHPBranchToLocal(workinigCopyManager, localPath);//将本地代码update到本地
+                    updatePHPBranchToLocal(workinigCopyManager, onlinePath);//将本地代码update到本地
+                    Sync.syncMain(args);
+                    //更新content online svn
+                    commitPHPBranch(workinigCopyManager, onlinePath, "commit by DeploymentSvnForDSAllInOne");
+                }
             }
-
             //@TODO 同步php 这个还没有实现 
         }
     }
@@ -545,7 +559,7 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
         args.put("source", source);
         args.put("target", target);
         args.put("force", "y");
-        args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
+        args.put("customExclude", "{.git,.idea,.svn,.settings,.project,.buildpath}");//忽略.git,.idea,.svn,.settings,.project,.buildpath,configs文件      {.git,.idea,*.php} 忽略 .git  .idea 和 .php文件
         args.put("path", "1");
         return args;
     }
@@ -553,63 +567,48 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
     /**
      * 是否需要创建 A 版本分支
      *
-     * @param env
-     * @param wc
+     * @param langEnv
      * @return
      */
-    public boolean needCreateAVersionOfPHPBranch(String env, WorkingCopyImprove wc) {
-        return wc.getConfByEnv(env).get("withABVersion").equals("1");
+    public boolean needCreateAVersionOfPHPBranch(String langEnv) {
+        return PropertiesUtil.needCreateAVersionOfPHPBranch(langEnv);
     }
 
     /**
      * 创建PHP分支
      *
-     * @param urlStr
-     * @param copyURLStr
-     * @param env
-     */
-    public static void createPHPBranch(String urlStr, String copyURLStr, String env) {
-        Sync.printlnFlush("Copying '" + urlStr + "' to '" + copyURLStr + "'  start=================");
-        try {
-            /*
-             * makes a branch of url at copyURL - that is URL->URL copying
-             * with history
-             */
-            SVNURL url = SVNURL.parseURIEncoded(urlStr);
-            SVNURL copyURL = SVNURL.parseURIEncoded(copyURLStr);
-            String commitMessage = "remotely copying '" + url + "' to '" + copyURL + "'";
-            WorkingCopyImprove wc = new WorkingCopyImprove(env);
-            wc.copy(url, copyURL, false, commitMessage).getNewRevision();
-        } catch (SVNException svne) {
-            System.err.println("Copying '" + urlStr + "' to '" + copyURLStr + "  error: -----------" + svne.getErrorMessage());
-        }
-        Sync.printlnFlush("Copying '" + urlStr + "' to '" + copyURLStr + "'  end=================");
-    }
-
-    /**
-     * 创建PHP分支
-     *
-     * @param wc
+     * @param workinigCopyManager
      * @param originTag
      * @param dstTag
      * @param env
+     * @param version
      */
-    public static void createPHPBranchByTag(WorkingCopyImprove wc, String originTag, String dstTag, String env, int version) {
+    public static void createPHPBranchByTag(SVNWorkingCopyManager workinigCopyManager, String originTag, String dstTag, String env, int version) {
         try {
             String commitMessage = "remotely copying '" + originTag + "' to '" + dstTag + "'";
-            wc.createBranchOrTagByEnvConf(env, originTag, dstTag, commitMessage, true, version);
+            workinigCopyManager.createBranchOrTagByEnvConf(env, originTag, dstTag, commitMessage, true, version);
         } catch (SVNException svne) {
             System.err.println("Copying '" + originTag + "' to '" + dstTag + "  error: -----------" + svne.getErrorMessage());
             System.exit(-1);
         }
     }
 
-    public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
+    public static void createPHPBranchOrTag(SVNWorkingCopyManager workinigCopyManager, String originTag, String dstTag, String rootUrl) {
+        try {
+            String commitMessage = "remotely copying '" + originTag + "' to '" + dstTag + "'";
+            workinigCopyManager.createBranchOrTag(originTag, dstTag, commitMessage, rootUrl);
+        } catch (SVNException svne) {
+            System.err.println("Copying '" + originTag + "' to '" + dstTag + "  error: -----------" + svne.getErrorMessage());
+            System.exit(-1);
+        }
+    }
+
+    public static List<String> getBranchOrTagListByEnvConf(SVNWorkingCopyManager workinigCopyManager, String env, boolean isOnline) {
         try {
             List<String> branchList = new ArrayList<>();
-            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
-            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
-                branchList.add(entry.getValue());
+            Map<String, Date> branchMap = workinigCopyManager.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                branchList.add(entry.getKey());
                 System.out.println("getBranchOrTagListByEnvConf:" + entry.getValue());
             }
             return branchList;
@@ -621,11 +620,11 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
         return null;
     }
 
-    public static String getLatestBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, boolean isOnline) {
+    public static String getLatestBranchOrTagListByEnvConf(SVNWorkingCopyManager workinigCopyManager, String env, boolean isOnline) {
         try {
-            Map<Date, String> branchMap = wc.getBranchOrTagListByEnvConf(env, isOnline);
-            for (Map.Entry<Date, String> entry : branchMap.entrySet()) {
-                return entry.getValue();
+            Map<String, Date> branchMap = workinigCopyManager.getBranchOrTagListByEnvConf(env, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                return entry.getKey();
             }
         } catch (SVNException svne) {
             System.err.println("getLatestBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
@@ -637,31 +636,14 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
     /**
      * 将php分支更新到本地
      *
-     * @param env
-     * @param localPath
-     * @param b
+     * @param workingCopyManager
+     * @param path
      */
-    public void updatePHPBranchToLocal(String env, String localPath, boolean b) {
-        WorkingCopyImprove wc = new WorkingCopyImprove(env);
+    public void updatePHPBranchToLocal(SVNWorkingCopyManager workingCopyManager, String path) {
         try {
-            wc.update(new File(localPath), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+            workingCopyManager.updateToLocalByPath(path, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
         } catch (SVNException ex) {
-            Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * 将php分支更新到本地
-     *
-     * @param wc
-     * @param env
-     * @param localPathKey
-     */
-    public void updatePHPBranchToLocal(WorkingCopyImprove wc, String env, String localPathKey) {
-        try {
-            wc.updateToLocalByEnvConf(localPathKey, env, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
-        } catch (SVNException ex) {
-            System.err.println("updatePHPBranchToLocal '" + env + "': '" + localPathKey + "'  error: -----------" + ex.getErrorMessage());
+            System.err.println("updatePHPBranchToLocal '" + path + "'  error: -----------" + ex.getErrorMessage());
             System.exit(-1);
         }
     }
@@ -669,18 +651,17 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
     /**
      * 将php分支内容提交到服务器
      *
-     * @param env
+     * @param workinigCopyManager
      * @param wcDir
      * @param commitMessage
      */
-    public void commitPHPBranch(String env, String wcDir, String commitMessage) {
+    public void commitPHPBranch(SVNWorkingCopyManager workinigCopyManager, String wcDir, String commitMessage) {
 
-        WorkingCopyImprove wc = new WorkingCopyImprove(env);
         try {
-            wc.commit(new File(wcDir), false, commitMessage, true);
+            workinigCopyManager.commit(new File(wcDir), false, commitMessage, true);
         } catch (SVNException ex) {
-            Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(Level.SEVERE, null, ex);
-            System.err.println("commitPHPBranch '" + env + "  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
+            Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("commitPHPBranch  wcDir: " + wcDir + "'  error: -----------" + ex.getErrorMessage());
             System.exit(-1);
         }
     }
@@ -842,20 +823,23 @@ public class deploymentSvnForDSOLD extends javax.swing.JFrame {
 //            }
             javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(deploymentSvnForDSOLD.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new deploymentSvnForDSOLD().setVisible(true);
+                new DeploymentSvnForDSAllInOne().setVisible(true);
             }
         });
     }

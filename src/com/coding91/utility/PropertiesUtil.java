@@ -37,7 +37,7 @@ import net.lingala.zip4j.util.Zip4jConstants;
 public class PropertiesUtil {
 
     public static Map<String, Map<String, String>> conf;
-    
+
     //写入properties信息
     public static void writeProperties(String filePath, String parameterName, String parameterValue) {
         Properties prop = new Properties();
@@ -154,7 +154,7 @@ public class PropertiesUtil {
             System.err.println("Visit " + filePath + " for updating value error:" + e.getMessage());
             MessageUtil.showMessageDialogMessage("Visit " + filePath + " for updating value error:" + e.getMessage());
         }
-        
+
         return true;
     }
 
@@ -173,7 +173,7 @@ public class PropertiesUtil {
         }
         return prop;
     }
-    
+
     public static Properties getProperties() {
         InputStream fis = PropertiesUtil.class.getClassLoader().getResourceAsStream("resources/properties/conf.properties");
         Properties prop = new Properties();
@@ -184,11 +184,11 @@ public class PropertiesUtil {
         }
         return prop;
     }
-    
-    public static void buildConf(String env) {
-        if (conf == null || !conf.containsKey(env)) {
+
+    public static void buildConf(String langEnv) {
+        if (conf == null || !conf.containsKey(langEnv)) {
             Map<String, String> currentConf = new HashMap<>();
-            Properties prop = getProperties(env);
+            Properties prop = getProperties(langEnv);
             if (conf == null) {
                 conf = new HashMap<>();
             }
@@ -203,18 +203,120 @@ public class PropertiesUtil {
                     Logger.getLogger(WorkingCopyImprove.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            conf.put(env, currentConf);
+            conf.put(langEnv, currentConf);
         }
-    }
-    
-    public static Map<String, String> getConfByEnv(String env) {
-        if (env.isEmpty()) {
-            env = "en_us";
-        }
-        if (conf == null || !conf.containsKey(env)) {
-            buildConf(env);
-        }
-        return conf.get(env);
     }
 
+    public static Map<String, String> getConfByLangEnv(String langEnv) {
+        if (langEnv.isEmpty()) {
+            langEnv = "en_us";
+        }
+        if (conf == null || !conf.containsKey(langEnv)) {
+            buildConf(langEnv);
+        }
+        return conf.get(langEnv);
+    }
+
+    public static String getPHPOnlineSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.svn.url");
+    }
+
+    public static String getPHPLocalSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.svn.url");
+    }
+
+    public static String getFlashOnlineSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.online.svn.url");
+    }
+
+    public static String getFlashLocalSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.local.svn.url");
+    }
+
+    public static String getResourcesOnlineSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.online.svn.url");
+    }
+
+    public static String getResourcesLocalSvnUrl(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.local.svn.url");
+    }
+
+    public static String getPHPOnlineSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.svn.username");
+    }
+
+    public static String getPHPLocalSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.svn.username");
+    }
+
+    public static String getFlashOnlineSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.online.svn.username");
+    }
+
+    public static String getFlashLocalSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.local.svn.username");
+    }
+
+    public static String getResourcesOnlineSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.online.svn.username");
+    }
+
+    public static String getResourcesLocalSvnUserName(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.local.svn.username");
+    }
+
+    //start
+
+    public static String getPHPOnlineSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.svn.password");
+    }
+
+    public static String getPHPLocalSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.svn.password");
+    }
+
+    public static String getFlashOnlineSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.online.svn.password");
+    }
+
+    public static String getFlashLocalSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.local.svn.password");
+    }
+
+    public static String getResourcesOnlineSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.online.svn.password");
+    }
+
+    public static String getResourcesLocalSvnPassword(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.local.svn.password");
+    }
+    //end
+
+    public static String getPHPOnlinePath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.online.sysfile.path");
+    }
+
+    public static String getPHPLocalPath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("php.local.sysfile.path");
+    }
+
+    public static String getFlashOnlinePath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.online.sysfile.path");
+    }
+
+    public static String getFlashLocalPath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("flash.local.sysfile.path");
+    }
+
+    public static String getResourcesOnlinePath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.online.sysfile.path");
+    }
+
+    public static String getResourcesLocalPath(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("resources.local.sysfile.path");
+    }
+
+    public static boolean needCreateAVersionOfPHPBranch(String langEnv) {
+        return PropertiesUtil.getConfByLangEnv(langEnv).get("withABVersion").equals("1");
+    }
 }
