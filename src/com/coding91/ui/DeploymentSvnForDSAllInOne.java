@@ -17,11 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import sync.Sync;
 
@@ -47,6 +48,57 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(DeploymentSvnForDSAllInOne.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
+        
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String localOrOnline = "online";
+                String contentType = "php";
+                String langEnv = "en_us";
+                SVNWorkingCopyManager wc = new SVNWorkingCopyManager(langEnv, localOrOnline, contentType);
+                List<String> branchList = getBranchOrTagListByEnvConf(wc, langEnv, contentType, true);
+                List<String> aBranchList = new ArrayList<>();
+                List<String> bBranchList = new ArrayList<>();
+                for (String branch : branchList) {
+                    int dotLatestIndex = branch.lastIndexOf(".");
+                    if (dotLatestIndex > 0) {
+                        if (branch.substring(dotLatestIndex + 1).startsWith("1")) {//a版本
+                            aBranchList.add(branch);
+                        } else if (branch.substring(dotLatestIndex + 1).startsWith("2")) {//b版本
+                            bBranchList.add(branch);
+                        }
+                    }
+                }
+                DefaultComboBoxModel<String> defaultComboBoxModel;
+                if (aBranchList.size() > 0) {
+                    String[] items = aBranchList.toArray(new String[]{});
+                    defaultComboBoxModel = new DefaultComboBoxModel<>(items);
+                    aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
+                } else {
+                    String[] items = branchList.toArray(new String[]{});
+                    defaultComboBoxModel = new DefaultComboBoxModel(items);
+                    aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
+                }
+                if (bBranchList.size() > 0) {
+                    String[] items = bBranchList.toArray(new String[]{});
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
+                } else {
+                    String[] items = branchList.toArray(new String[]{});
+                    bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
+                }
+
+                aVersionTagjTextField.setText(aOnlineTAGjComboBox.getSelectedItem().toString());
+                bVersionTagjTextField.setText(bOnlineTAGjComboBox.getSelectedItem().toString());
+
+                bBranchList = null;
+                aBranchList = null;
+                branchList = null;
+            }
+        }).start();
+        
 
     }
 
@@ -80,7 +132,10 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         bVersionTagjTextField = new javax.swing.JTextField();
         needCreatePHPTagjCheckBox = new javax.swing.JCheckBox();
         onlineTagjLabel = new javax.swing.JLabel();
-        onlineTagjTextField = new javax.swing.JTextField();
+        onlineTagjLabel1 = new javax.swing.JLabel();
+        aOnlineTAGjComboBox = new javax.swing.JComboBox();
+        bOnlineTAGjComboBox = new javax.swing.JComboBox();
+        alwaysUserLatestPHPTagjCheckBox = new javax.swing.JCheckBox();
         canceljButton = new javax.swing.JButton();
         phpjPanel = new javax.swing.JPanel();
         originPHPTagjLabel = new javax.swing.JLabel();
@@ -211,18 +266,39 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
             }
         });
 
-        onlineTagjLabel.setText("online tag：");
+        onlineTagjLabel.setText("线上A版本 TAG：");
+
+        onlineTagjLabel1.setText("线上B版本 TAG：");
+
+        aOnlineTAGjComboBox.setEditable(true);
+
+        bOnlineTAGjComboBox.setEditable(true);
+
+        alwaysUserLatestPHPTagjCheckBox.setSelected(true);
+        alwaysUserLatestPHPTagjCheckBox.setText("总是使用最新的tag");
+        alwaysUserLatestPHPTagjCheckBox.setEnabled(false);
+        alwaysUserLatestPHPTagjCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                alwaysUserLatestPHPTagjCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout phpTagjPanelLayout = new javax.swing.GroupLayout(phpTagjPanel);
         phpTagjPanel.setLayout(phpTagjPanelLayout);
         phpTagjPanelLayout.setHorizontalGroup(
             phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(onlineTagjLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(onlineTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(38, 38, 38)
+                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                        .addComponent(onlineTagjLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                        .addComponent(onlineTagjLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(aOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26)
                 .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(phpTagjPanelLayout.createSequentialGroup()
                         .addComponent(bVersionTagjLabel)
@@ -232,34 +308,41 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
                         .addComponent(aVersionTagjLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(aVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addGap(26, 26, 26)
+                .addComponent(alwaysUserLatestPHPTagjCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(needCreatePHPTagjCheckBox)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
         );
         phpTagjPanelLayout.setVerticalGroup(
             phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, phpTagjPanelLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, phpTagjPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, phpTagjPanelLayout.createSequentialGroup()
                         .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(aVersionTagjLabel)
-                            .addComponent(aVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bVersionTagjLabel)
-                            .addComponent(bVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(needCreatePHPTagjCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(alwaysUserLatestPHPTagjCheckBox))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(phpTagjPanelLayout.createSequentialGroup()
+                        .addGap(0, 4, Short.MAX_VALUE)
                         .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(onlineTagjLabel)
-                                    .addComponent(onlineTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(aOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(onlineTagjLabel1)
+                                    .addComponent(bOnlineTAGjComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(phpTagjPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(needCreatePHPTagjCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(aVersionTagjLabel)
+                                    .addComponent(aVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(phpTagjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(bVersionTagjLabel)
+                                    .addComponent(bVersionTagjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
 
@@ -357,9 +440,9 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
             .addComponent(contentjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(phpTagjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(140, 140, 140)
+                .addGap(198, 198, 198)
                 .addComponent(syncjButton)
-                .addGap(223, 223, 223)
+                .addGap(45, 45, 45)
                 .addComponent(canceljButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(phpjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -376,9 +459,9 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(phpjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(canceljButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(syncjButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(canceljButton)
+                    .addComponent(syncjButton))
                 .addGap(18, 18, 18)
                 .addComponent(syncjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -435,7 +518,17 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         Map versionTagMap = new HashMap<>();
         versionTagMap.put("a", aVersionTagjTextField.getText().trim());//a版本 tag号
         versionTagMap.put("b", bVersionTagjTextField.getText().trim());//b版本 tag号
-        versionTagMap.put("online", onlineTagjTextField.getText().trim());//线上 tag号
+        String bOriginTag, aOriginTag;
+        if (alwaysUserLatestPHPTagjCheckBox.isSelected()) {
+            aOriginTag = "";
+            bOriginTag = "";
+        } else {
+            bOriginTag = bOnlineTAGjComboBox.getSelectedItem().toString().trim();
+            aOriginTag = aOnlineTAGjComboBox.getSelectedItem().toString().trim();
+        }
+
+        versionTagMap.put("aonline", aOriginTag);//线上a版本 tag号
+        versionTagMap.put("bonline", bOriginTag);//线上b版本 tag号
         return versionTagMap;
     }
 
@@ -496,11 +589,17 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         String langEnv;
         for (int envNo = 0; envNo < envCount; envNo++) {
             langEnv = envList.get(envNo);
-            //创建branch
-            String originTag = onlineTagjTextField.getText().trim();
-            String dstTag = bVersionTagjTextField.getText().trim();
+            String bOriginTag,bDstTag,aOriginTag,aDstTag;
+            //创建b branch
+            
+            bDstTag = bVersionTagjTextField.getText().trim();
 
             SVNWorkingCopyManager workinigCopyManager = new SVNWorkingCopyManager(langEnv, "online", "php");
+            if (alwaysUserLatestPHPTagjCheckBox.isSelected()) {//使用线上最新php来创建tag
+                bOriginTag = getLatestBranchOrTagListByEnvConf(workinigCopyManager, langEnv, true);
+            } else {
+                bOriginTag = bOnlineTAGjComboBox.getSelectedItem().toString().trim();
+            }
 //            getBranchOrTagListByEnvConf(wc, env, true);
 //            if (true) {
 //                return;
@@ -508,11 +607,12 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
 
             //b版本
             String rootUrl = PropertiesUtil.getPHPOnlineSvnUrl(langEnv);
-            createPHPBranchOrTag(workinigCopyManager, originTag, dstTag, rootUrl);//创建 tag  b版本
+            createPHPBranchOrTag(workinigCopyManager, bOriginTag, bDstTag, rootUrl);//创建 tag  b版本
 
             if (needCreateAVersionOfPHPBranch(langEnv)) {//需要创建 tag  a版本
-                dstTag = aVersionTagjTextField.getText().trim();
-                createPHPBranchOrTag(workinigCopyManager, originTag, dstTag, rootUrl);//创建 tag  a版本  
+                aDstTag = aVersionTagjTextField.getText().trim();
+                aOriginTag = aOnlineTAGjComboBox.getSelectedItem().toString().trim();
+                createPHPBranchOrTag(workinigCopyManager, aDstTag, aOriginTag, rootUrl);//创建 tag  a版本  
             }
 
             String path = PropertiesUtil.getPHPOnlinePath(langEnv);
@@ -790,6 +890,82 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_needSyncContentjCheckBoxActionPerformed
 
+    private void alwaysUserLatestPHPTagjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alwaysUserLatestPHPTagjCheckBoxActionPerformed
+        JCheckBox thisCheckBox = (JCheckBox) (evt.getSource());
+        if (thisCheckBox.isSelected()) {
+            aOnlineTAGjComboBox.setEnabled(false);
+            bOnlineTAGjComboBox.setEnabled(false);
+        } else {
+            aOnlineTAGjComboBox.setEnabled(true);
+            bOnlineTAGjComboBox.setEnabled(true);
+            if (aOnlineTAGjComboBox.getItemCount() < 1) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String localOrOnline = "online";
+                        String contentType = "php";
+                        String langEnv = "en_us";
+                        SVNWorkingCopyManager workingCopyManager = new SVNWorkingCopyManager(langEnv, localOrOnline, contentType);
+                        List<String> branchList = getBranchOrTagListByEnvConf(workingCopyManager, langEnv, contentType, true);
+                        List<String> aBranchList = new ArrayList<>();
+                        List<String> bBranchList = new ArrayList<>();
+                        for (String branch : branchList) {
+                            int dotLatestIndex = branch.lastIndexOf(".");
+                            if (dotLatestIndex > 0) {
+                                if (branch.substring(dotLatestIndex + 1).startsWith("1")) {//a版本
+                                    aBranchList.add(branch);
+                                } else if (branch.substring(dotLatestIndex + 1).startsWith("2")) {//b版本
+                                    bBranchList.add(branch);
+                                }
+                            }
+                        }
+                        DefaultComboBoxModel<String> defaultComboBoxModel;
+                        if (aBranchList.size() > 0) {
+                            String[] items = aBranchList.toArray(new String[]{});
+                            defaultComboBoxModel = new DefaultComboBoxModel<>(items);
+                            aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
+                        } else {
+                            String[] items = branchList.toArray(new String[]{});
+                            defaultComboBoxModel = new DefaultComboBoxModel(items);
+                            aOnlineTAGjComboBox.setModel(defaultComboBoxModel);
+                        }
+                        if (bBranchList.size() > 0) {
+                            String[] items = bBranchList.toArray(new String[]{});
+                            bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
+                        } else {
+                            String[] items = branchList.toArray(new String[]{});
+                            bOnlineTAGjComboBox.setModel(new DefaultComboBoxModel(items));
+                        }
+
+                        bBranchList = null;
+                        aBranchList = null;
+                        branchList = null;
+                    }
+                }).start();
+            }
+        }
+    }//GEN-LAST:event_alwaysUserLatestPHPTagjCheckBoxActionPerformed
+
+    public static List<String> getBranchOrTagListByEnvConf(SVNWorkingCopyManager workingCopyManager, String langEnv, String contentType, boolean isOnline) {
+        try {
+            List<String> branchList = new ArrayList<>();
+            Map<String, Date> branchMap = workingCopyManager.getBranchOrTagListByEnvConf(langEnv, contentType, isOnline);
+            for (Map.Entry<String, Date> entry : branchMap.entrySet()) {
+                branchList.add(entry.getKey());
+            }
+            return branchList;
+        } catch (SVNException svne) {
+            System.err.println("getBranchOrTagListByEnvConf error: ----------- " + svne.getErrorMessage());
+            System.exit(-1);
+        }
+
+        return null;
+    }
+
+    private boolean isEnvSelected() {
+        return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected());
+    }
+
     private void printer() throws IOException {
         ConsoleTextArea consoleTextArea = null;
 
@@ -845,8 +1021,11 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox aOnlineTAGjComboBox;
     private javax.swing.JLabel aVersionTagjLabel;
     private javax.swing.JTextField aVersionTagjTextField;
+    private javax.swing.JCheckBox alwaysUserLatestPHPTagjCheckBox;
+    private javax.swing.JComboBox bOnlineTAGjComboBox;
     private javax.swing.JLabel bVersionTagjLabel;
     private javax.swing.JTextField bVersionTagjTextField;
     private javax.swing.JButton canceljButton;
@@ -872,7 +1051,7 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
     private javax.swing.JCheckBox needSyncContentjCheckBox;
     private javax.swing.JCheckBox needSyncPHPjCheckBox;
     private javax.swing.JLabel onlineTagjLabel;
-    private javax.swing.JTextField onlineTagjTextField;
+    private javax.swing.JLabel onlineTagjLabel1;
     private javax.swing.JLabel originPHPTagjLabel;
     private javax.swing.JTextField originPHPTagjTextField;
     private javax.swing.JPanel phpTagjPanel;

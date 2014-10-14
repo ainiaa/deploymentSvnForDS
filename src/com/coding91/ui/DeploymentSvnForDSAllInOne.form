@@ -78,9 +78,9 @@
           <Component id="contentjPanel" alignment="0" max="32767" attributes="0"/>
           <Component id="phpTagjPanel" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="140" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="198" max="-2" attributes="0"/>
               <Component id="syncjButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="223" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
               <Component id="canceljButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -99,9 +99,9 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="phpjPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="canceljButton" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Component id="syncjButton" alignment="1" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="canceljButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="syncjButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="syncjScrollPane" min="-2" pref="218" max="-2" attributes="0"/>
@@ -306,11 +306,20 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="onlineTagjTextField" min="-2" pref="100" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="onlineTagjLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="bOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="onlineTagjLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="aOnlineTAGjComboBox" min="-2" pref="120" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="bVersionTagjLabel" min="-2" max="-2" attributes="0"/>
@@ -323,43 +332,52 @@
                           <Component id="aVersionTagjTextField" min="-2" pref="105" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <Component id="alwaysUserLatestPHPTagjCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="9" max="32767" attributes="0"/>
                   <Component id="needCreatePHPTagjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="234" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="aVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="aVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="bVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="bVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="onlineTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="onlineTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="needCreatePHPTagjCheckBox" min="-2" pref="48" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="needCreatePHPTagjCheckBox" alignment="3" min="-2" pref="48" max="-2" attributes="0"/>
+                              <Component id="alwaysUserLatestPHPTagjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="4" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="onlineTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="aOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="onlineTagjLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="bOnlineTAGjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="aVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="aVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="bVersionTagjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="bVersionTagjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                          </Group>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -393,10 +411,39 @@
         </Component>
         <Component class="javax.swing.JLabel" name="onlineTagjLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="online tag&#xff1a;"/>
+            <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;A&#x7248;&#x672c; TAG&#xff1a;"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="onlineTagjTextField">
+        <Component class="javax.swing.JLabel" name="onlineTagjLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x7ebf;&#x4e0a;B&#x7248;&#x672c; TAG&#xff1a;"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="aOnlineTAGjComboBox">
+          <Properties>
+            <Property name="editable" type="boolean" value="true"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="bOnlineTAGjComboBox">
+          <Properties>
+            <Property name="editable" type="boolean" value="true"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="alwaysUserLatestPHPTagjCheckBox">
+          <Properties>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="&#x603b;&#x662f;&#x4f7f;&#x7528;&#x6700;&#x65b0;&#x7684;tag"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="alwaysUserLatestPHPTagjCheckBoxActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
