@@ -236,6 +236,8 @@
                   <Component id="envDEjCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="envSPjCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="envTWjCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="envPTjCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -251,6 +253,7 @@
                       <Component id="envDEjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="envSPjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="envPTjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="envTWjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
               </Group>
@@ -279,13 +282,17 @@
         <Component class="javax.swing.JCheckBox" name="envSPjCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x897f;&#x73ed;&#x7259;&#x8bed;"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="envPTjCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x8461;&#x8404;&#x7259;&#x8bed;"/>
             <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="envTWjCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="&#x7e41;&#x4f53;&#x4e2d;&#x6587;"/>
           </Properties>
         </Component>
       </SubComponents>

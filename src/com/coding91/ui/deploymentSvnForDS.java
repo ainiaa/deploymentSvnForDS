@@ -140,8 +140,9 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         envENjCheckBox = new javax.swing.JCheckBox();
         envFRjCheckBox = new javax.swing.JCheckBox();
         envDEjCheckBox = new javax.swing.JCheckBox();
-        envSPjCheckBox = new javax.swing.JCheckBox();
+        envESjCheckBox = new javax.swing.JCheckBox();
         envPTjCheckBox = new javax.swing.JCheckBox();
+        envTWjCheckBox = new javax.swing.JCheckBox();
         phpTagjPanel = new javax.swing.JPanel();
         aVersionTagjLabel = new javax.swing.JLabel();
         newAVersionTagjTextField = new javax.swing.JTextField();
@@ -266,11 +267,23 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
             }
         });
 
-        envSPjCheckBox.setText("西班牙语");
-        envSPjCheckBox.setEnabled(false);
+        envESjCheckBox.setText("西班牙语");
+        envESjCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                envESjCheckBoxActionPerformed(evt);
+            }
+        });
 
         envPTjCheckBox.setText("葡萄牙语");
         envPTjCheckBox.setEnabled(false);
+
+        envTWjCheckBox.setText("繁体中文");
+        envTWjCheckBox.setEnabled(false);
+        envTWjCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                envTWjCheckBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout environmentjPanelLayout = new javax.swing.GroupLayout(environmentjPanel);
         environmentjPanel.setLayout(environmentjPanelLayout);
@@ -284,8 +297,10 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(envDEjCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(envSPjCheckBox)
+                .addComponent(envESjCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(envTWjCheckBox)
+                .addGap(5, 5, 5)
                 .addComponent(envPTjCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -296,9 +311,10 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                     .addComponent(envENjCheckBox)
                     .addComponent(envFRjCheckBox)
                     .addComponent(envDEjCheckBox)
-                    .addComponent(envSPjCheckBox)
-                    .addComponent(envPTjCheckBox))
-                .addGap(0, 8, Short.MAX_VALUE))
+                    .addComponent(envESjCheckBox)
+                    .addComponent(envPTjCheckBox)
+                    .addComponent(envTWjCheckBox))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         phpTagjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "创建 PHP Tag", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(255, 51, 153))); // NOI18N
@@ -458,7 +474,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
 
         editjMenu.setText("编辑");
 
-        editConfjMenuItem.setText("修改配置项(EN_US)");
+        editConfjMenuItem.setText("修改配置项");
         editConfjMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editConfjMenuItemActionPerformed(evt);
@@ -493,7 +509,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(phpjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(syncjScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                .addComponent(syncjScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -514,7 +530,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         if (envDEjCheckBox.isSelected()) {//德语
             envList.add("de_de");
         }
-        if (envSPjCheckBox.isSelected()) {//西班牙语
+        if (envESjCheckBox.isSelected()) {//西班牙语
             envList.add("sp_sp");
         }
         if (envPTjCheckBox.isSelected()) {//葡萄牙语
@@ -824,7 +840,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
     }//GEN-LAST:event_syncFlashjButtonActionPerformed
 
     private boolean isEnvSelected() {
-        return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected());
+        return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected()|| envESjCheckBox.isSelected() || envTWjCheckBox.isSelected());
     }
 
     private int calcCheckBoxCount() {
@@ -838,6 +854,13 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         if (envDEjCheckBox.isSelected()) {
             selectedCheckboxCount += 1;
         }
+        if (envESjCheckBox.isSelected()) {
+            selectedCheckboxCount += 1;
+        }
+        if (envTWjCheckBox.isSelected()) {
+            selectedCheckboxCount += 1;
+        }
+        
         return selectedCheckboxCount;
     }
 
@@ -1007,6 +1030,26 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         testCommit();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void envESjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envESjCheckBoxActionPerformed
+        int calc = calcCheckBoxCount();
+        if (isEnvSelected()) {
+            boolean exceptCommitButton = (calc > 1);
+            enableAllButton(exceptCommitButton);
+        } else {
+            disableAllButton();
+        }
+    }//GEN-LAST:event_envESjCheckBoxActionPerformed
+
+    private void envTWjCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_envTWjCheckBoxActionPerformed
+        int calc = calcCheckBoxCount();
+        if (isEnvSelected()) {
+            boolean exceptCommitButton = (calc > 1);
+            enableAllButton(exceptCommitButton);
+        } else {
+            disableAllButton();
+        }
+    }//GEN-LAST:event_envTWjCheckBoxActionPerformed
+
     private void testCommit() {
         WorkingCopyImprove wc;//new WorkingCopyImprove(env);
 
@@ -1145,9 +1188,10 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
     private javax.swing.JMenu editjMenu;
     private javax.swing.JCheckBox envDEjCheckBox;
     private javax.swing.JCheckBox envENjCheckBox;
+    private javax.swing.JCheckBox envESjCheckBox;
     private javax.swing.JCheckBox envFRjCheckBox;
     private javax.swing.JCheckBox envPTjCheckBox;
-    private javax.swing.JCheckBox envSPjCheckBox;
+    private javax.swing.JCheckBox envTWjCheckBox;
     private javax.swing.JPanel environmentjPanel;
     private javax.swing.JMenu filejMenu;
     private javax.swing.JComboBox flashVersionjComboBox;

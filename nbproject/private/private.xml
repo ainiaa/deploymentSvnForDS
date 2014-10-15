@@ -5,11 +5,7 @@
         <group>
             <file>file:/D:/www/GitHub/deploymentSvnForDS/src/resources/properties/de_de.conf.properties</file>
             <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/utility/SVNWorkingCopyManager.java</file>
-            <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/utility/SVNWorkingCopy.java</file>
-            <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/utility/WorkingCopyImprove.java</file>
             <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/utility/PropertiesUtil.java</file>
-            <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/utility/ControllerJFrame.java</file>
-            <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/ui/EditPropConfJFrame.java</file>
             <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/ui/DeploymentSvnForDSAllInOne.java</file>
             <file>file:/D:/www/GitHub/deploymentSvnForDS/src/com/coding91/ui/DeploymentSvnForDS.java</file>
         </group>

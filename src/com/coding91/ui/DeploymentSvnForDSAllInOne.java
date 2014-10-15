@@ -125,6 +125,7 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         envDEjCheckBox = new javax.swing.JCheckBox();
         envSPjCheckBox = new javax.swing.JCheckBox();
         envPTjCheckBox = new javax.swing.JCheckBox();
+        envTWjCheckBox = new javax.swing.JCheckBox();
         phpTagjPanel = new javax.swing.JPanel();
         aVersionTagjLabel = new javax.swing.JLabel();
         aVersionTagjTextField = new javax.swing.JTextField();
@@ -218,10 +219,11 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
         envDEjCheckBox.setText("德语");
 
         envSPjCheckBox.setText("西班牙语");
-        envSPjCheckBox.setEnabled(false);
 
         envPTjCheckBox.setText("葡萄牙语");
         envPTjCheckBox.setEnabled(false);
+
+        envTWjCheckBox.setText("繁体中文");
 
         javax.swing.GroupLayout environmentjPanelLayout = new javax.swing.GroupLayout(environmentjPanel);
         environmentjPanel.setLayout(environmentjPanelLayout);
@@ -236,6 +238,8 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
                 .addComponent(envDEjCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(envSPjCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(envTWjCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(envPTjCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -248,7 +252,8 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
                     .addComponent(envFRjCheckBox)
                     .addComponent(envDEjCheckBox)
                     .addComponent(envSPjCheckBox)
-                    .addComponent(envPTjCheckBox))
+                    .addComponent(envPTjCheckBox)
+                    .addComponent(envTWjCheckBox))
                 .addGap(0, 8, Short.MAX_VALUE))
         );
 
@@ -1043,6 +1048,7 @@ public class DeploymentSvnForDSAllInOne extends javax.swing.JFrame {
     private javax.swing.JCheckBox envFRjCheckBox;
     private javax.swing.JCheckBox envPTjCheckBox;
     private javax.swing.JCheckBox envSPjCheckBox;
+    private javax.swing.JCheckBox envTWjCheckBox;
     private javax.swing.JPanel environmentjPanel;
     private javax.swing.JMenu filejMenu;
     private javax.swing.JMenuBar jMenuBar;

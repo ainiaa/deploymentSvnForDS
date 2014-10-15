@@ -21,7 +21,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -64,7 +63,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
             if (langArray.length > 0) {
                 currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
             } else {
-                langArray = new String[]{"en_us", "fr_fr", "de_de"};
+                langArray = new String[]{"en_us", "fr_fr", "de_de","es_es", "zh_tw"};
                 currentLangjComboBox.setModel(new DefaultComboBoxModel(langArray));
             }
         }
@@ -126,7 +125,7 @@ public class EditPropConfJFrame extends javax.swing.JFrame {
                     if (langArray.length > 0) {
                         currentLangjComboBox.setModel(new DefaultComboBoxModel<>(langArray));
                     } else {
-                        langArray = new String[]{"en_us", "fr_fr", "de_de"};
+                        langArray = new String[]{"en_us", "fr_fr", "de_de","es_es", "zh_tw"};
                         currentLangjComboBox.setModel(new DefaultComboBoxModel<>(langArray));
                     }
                 }
