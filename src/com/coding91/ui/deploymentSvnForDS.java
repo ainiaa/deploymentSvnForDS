@@ -2,6 +2,7 @@ package com.coding91.ui;
 
 import com.coding91.utility.ControllerJFrame;
 import com.coding91.utility.MessageUtil;
+import com.coding91.utility.TortoiseProcUtil;
 import com.coding91.utility.WorkingCopyImprove;
 import java.awt.Toolkit;
 import java.io.File;
@@ -31,19 +32,19 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
      * Creates new form deploymentSvnForDS
      */
     public DeploymentSvnForDS() {
-        
+
         try {
             javax.swing.UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(DeploymentSvnForDS.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        
+
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(
                 getClass().getClassLoader().getResource("resources/images/sync.png")));//这个不能以 '/'开头
         //下面的方式可以设置成功
 //        ImageIcon iconImage = SwingResourceManager.getIcon(DeploymentSvnForDS.class, "/resources/images/sync.png");
 //        this.setIconImage(iconImage.getImage());
-        
+
         initComponents();
 
         try {
@@ -624,7 +625,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
             System.exit(-1);
         }
     }
-    
+
     public static List<String> getBranchOrTagListByEnvConf(WorkingCopyImprove wc, String env, String content, boolean isOnline) {
         try {
             List<String> branchList = new ArrayList<>();
@@ -840,7 +841,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
     }//GEN-LAST:event_syncFlashjButtonActionPerformed
 
     private boolean isEnvSelected() {
-        return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected()|| envESjCheckBox.isSelected() || envTWjCheckBox.isSelected());
+        return (envENjCheckBox.isSelected() || envFRjCheckBox.isSelected() || envDEjCheckBox.isSelected() || envESjCheckBox.isSelected() || envTWjCheckBox.isSelected());
     }
 
     private int calcCheckBoxCount() {
@@ -860,7 +861,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         if (envTWjCheckBox.isSelected()) {
             selectedCheckboxCount += 1;
         }
-        
+
         return selectedCheckboxCount;
     }
 
@@ -973,17 +974,16 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                 WorkingCopyImprove wc;
                 wc = new WorkingCopyImprove(env, special, content);
                 String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
-                try {
-                    Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:commit /path:" + onlineContentPath + " /logmsg:\"commit resource to online env\" /closeonend:2");
-                    int result = process.waitFor();
-                    changeButtonEnableExcept("commitFlashjButton");
-                    if (result == -1) {
-                        System.out.println("commit canceled");
-                    } else if (result == 0) {
-                        System.out.println("commit done!");
-                    }
-                } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+
+                String commitLog = "commit resource to online env";
+                int result = TortoiseProcUtil.commit(onlineContentPath, commitLog);
+
+                changeButtonEnableExcept("commitFlashjButton");
+
+                if (result == -1) {
+                    System.out.println("commit canceled");
+                } else if (result == 0) {
+                    System.out.println("commit done!");
                 }
             }
         }).start();
@@ -1002,17 +1002,16 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
                 WorkingCopyImprove wc;
                 wc = new WorkingCopyImprove(env, special, content);
                 String onlineContentPath = wc.getConfByEnv(env).get(onlineContentPathKey);
-                try {
-                    Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:commit /path:" + onlineContentPath + " /logmsg:\"commit flash to online env\" /closeonend:2");
-                    int result = process.waitFor();
-                    changeButtonEnableExcept("commitResourcesjButton");
-                    if (result == -1) {
-                        System.out.println("commit canceled");
-                    } else if (result == 0) {
-                        System.out.println("commit done!");
-                    }
-                } catch (IOException | InterruptedException ex) {
-                    Logger.getLogger(DeploymentSvnForDS.class.getName()).log(Level.SEVERE, null, ex);
+                String commitLog = "commit flash to online env";
+
+                int result = TortoiseProcUtil.commit(onlineContentPath, commitLog);
+
+                changeButtonEnableExcept("commitResourcesjButton");
+
+                if (result == -1) {
+                    System.out.println("commit canceled");
+                } else if (result == 0) {
+                    System.out.println("commit done!");
                 }
             }
         }).start();
@@ -1162,7 +1161,7 @@ public class DeploymentSvnForDS extends javax.swing.JFrame {
         }
         //</editor-fold>
         /* Create and display the form */
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 DeploymentSvnForDS ds = new DeploymentSvnForDS();

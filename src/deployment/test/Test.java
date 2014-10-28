@@ -42,14 +42,10 @@ public class Test {
 //        } catch (InterruptedException ex) {
 //            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-        
 //        System.out.println(System.getProperty("java.class.path"));//
 //        System.out.println(Test.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 //        String path = System.getProperty("user.dir");
 //        System.out.println(path);//
-        
-        
-        
         //        List<String> test = new ArrayList<>();
 //        test.add("V0.8.4.2000");
 //        test.add("V0.8.4.2001");
@@ -74,9 +70,15 @@ public class Test {
 //            }
 //        }
 //        copyStreamToFile();
-        copyFile(new File("d:/j建筑升级newly.xls"), new File("d:/j建筑升级newlylyly.xls"));
+//        copyFile(new File("d:/j建筑升级newly.xls"), new File("d:/j建筑升级newlylyly.xls"));
+        
+        String path = "C:\\Program Files\\TortoiseSVN\\bin";
+        String filePath1 = "D:\\www\\dessert\\code\\branches\\dev\\j7\\app\\ACTION\\Base\\PrepareGuideACTION.php";
+        String filePath2 = "D:\\www\\dessert\\code\\branches\\master\\code\\j7\\app\\ACTION\\Base\\PrepareGuideHttpACTION.php";
+        Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:diff /path:" + filePath1 + " /path2:" + filePath2 + " /closeonend:2");
+
     }
-    
+
     // 复制文件
     public static void copyFile(File sourceFile, File targetFile) throws IOException {
         BufferedInputStream inBuff = null;
@@ -98,17 +100,18 @@ public class Test {
             outBuff.flush();
         } finally {
             // 关闭流
-            if (inBuff != null)
+            if (inBuff != null) {
                 inBuff.close();
-            if (outBuff != null)
+            }
+            if (outBuff != null) {
                 outBuff.close();
+            }
         }
     }
-    
-    public static void copyStreamToFile() throws IOException
-    {
+
+    public static void copyStreamToFile() throws IOException {
         FileOutputStream foutOutput = null;
-        String oldDir =  "d:/j建筑升级.xls";
+        String oldDir = "d:/j建筑升级.xls";
         System.out.println(oldDir);
         String newDir = "d:/j建筑升级newly.xls";  // name as the destination file name to be done
         File f = new File(oldDir);

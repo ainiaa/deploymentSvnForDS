@@ -9,28 +9,13 @@
             <Property name="text" type="java.lang.String" value="&#x6587;&#x4ef6;"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="createPHPTagjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x521b;&#x5efa;PHPTag"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="syncResourcesjMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;resources"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="syncFlashjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;flash"/>
+                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjMenuItemActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncResourcesjMenuItemActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="syncPHPjMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&#x540c;&#x6b65;PHP"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -43,6 +28,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x4fee;&#x6539;&#x914d;&#x7f6e;&#x9879;"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editConfjMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -72,8 +60,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="environmentjPanel" max="32767" attributes="0"/>
-          <Component id="contentjPanel" max="32767" attributes="0"/>
+          <Component id="syncjScrollPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="jToolBar1" alignment="0" max="32767" attributes="0"/>
+          <Component id="environmentjPanel" alignment="0" max="32767" attributes="0"/>
+          <Component id="contentjPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -81,89 +71,41 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Component id="environmentjPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="contentjPanel" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="contentjPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="143" max="32767" attributes="0"/>
+              <Component id="syncjScrollPane" min="-2" pref="325" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="environmentjPanel">
+    <Container class="javax.swing.JScrollPane" name="syncjScrollPane">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="&#x540c;&#x6b65;&#x73af;&#x5883;">
+            <TitledBorder justification="1" title="&#x540c;&#x6b65;&#x7ed3;&#x679c;">
               <Font PropertyName="font" name="Monospaced" size="14" style="1"/>
-              <Color PropertyName="color" blue="ff" green="33" red="33" type="rgb"/>
+              <Color PropertyName="color" blue="ff" green="0" red="ff" type="rgb"/>
             </TitledBorder>
           </Border>
         </Property>
+        <Property name="autoscrolls" type="boolean" value="true"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="sync result"/>
+      </AccessibilityProperties>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+    </Container>
+    <Container class="javax.swing.JToolBar" name="jToolBar1">
+      <Properties>
+        <Property name="rollover" type="boolean" value="true"/>
       </Properties>
 
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="envENjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="envFRjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="envDEjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="envSPjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="envTWjCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="envENjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="envFRjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="envDEjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="envSPjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="envTWjCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="envENjCheckBox">
-          <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="&#x82f1;&#x8bed;"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="envFRjCheckBox">
-          <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="&#x6cd5;&#x8bed;"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="envDEjCheckBox">
-          <Properties>
-            <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="&#x5fb7;&#x8bed;"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="envSPjCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="&#x897f;&#x73ed;&#x7259;&#x8bed;"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="envTWjCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="&#x7e41;&#x4f53;&#x4e2d;&#x6587;"/>
-          </Properties>
-        </Component>
-      </SubComponents>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
     </Container>
     <Container class="javax.swing.JPanel" name="contentjPanel">
       <Properties>
@@ -181,34 +123,35 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                  <Component id="syncResourcesjButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="commitResourcesjButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-                  <Component id="flashVersionjLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="flashVersionjComboBox" min="-2" pref="92" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                  <Component id="syncResourcesjButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="commitResourcesjButton" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="syncFlashjButton" min="-2" pref="133" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="commitFlashjButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="30" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="syncFlashjButton1" min="-2" pref="133" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="commitFlashjButton1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="syncResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="syncFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="commitResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="commitFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="flashVersionjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="flashVersionjComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="syncFlashjButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="commitFlashjButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace pref="23" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -250,18 +193,213 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitFlashjButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="flashVersionjLabel">
+        <Component class="javax.swing.JButton" name="commitFlashjButton1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="flash&#x7248;&#x672c;:"/>
+            <Property name="text" type="java.lang.String" value="&#x63d0;&#x4ea4;flash&#x5230;svn"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitFlashjButton1ActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JComboBox" name="flashVersionjComboBox">
+        <Component class="javax.swing.JButton" name="syncFlashjButton1">
           <Properties>
-            <Property name="editable" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; flash"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjButton1ActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="environmentjPanel">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="&#x540c;&#x6b65;&#x73af;&#x5883;">
+              <Font PropertyName="font" name="Monospaced" size="14" style="1"/>
+              <Color PropertyName="color" blue="ff" green="33" red="33" type="rgb"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="kGEnUsJCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="fBDedeJCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="KGEnUsJComboBox" pref="116" max="32767" attributes="0"/>
+                              <Component id="FBDedeJComboBox" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Component id="fBEnUsJCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="FBEnUsJComboBox" min="-2" pref="114" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jTextField3" max="32767" attributes="0"/>
+                          <Component id="KGEnUsJTextField" pref="120" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="FBEnUsJTextField" alignment="1" min="-2" pref="120" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="77" pref="77" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="aGEnUsJCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="AGEnUsJComboBox" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="fBFrfrJCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="FBFrfrJComboBox" min="-2" pref="114" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="1" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="FBFrfrJTextField" alignment="0" min="-2" pref="120" max="-2" attributes="0"/>
+                      <Component id="AGEnUsJTextField" alignment="1" min="-2" pref="121" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="FBEnUsJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="FBEnUsJTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="FBFrfrJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="FBFrfrJTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fBEnUsJCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fBFrfrJCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="FBDedeJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AGEnUsJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="AGEnUsJTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fBDedeJCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="aGEnUsJCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="KGEnUsJComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="KGEnUsJTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="kGEnUsJCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JComboBox" name="FBEnUsJComboBox">
+          <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="FBEnUsJTextField">
+        </Component>
+        <Component class="javax.swing.JTextField" name="FBFrfrJTextField">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="FBFrfrJComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="jTextField3">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="FBDedeJComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="AGEnUsJTextField">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="AGEnUsJComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="KGEnUsJTextField">
+        </Component>
+        <Component class="javax.swing.JComboBox" name="KGEnUsJComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="fBEnUsJCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="FB en_us:"/>
+            <Property name="name" type="java.lang.String" value="fb_en_us" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fBEnUsJCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="kGEnUsJCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="KG en_us:"/>
+            <Property name="name" type="java.lang.String" value="kg_en_us" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="kGEnUsJCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="fBDedeJCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="FB de_de:"/>
+            <Property name="name" type="java.lang.String" value="fb_de_de" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fBDedeJCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="aGEnUsJCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="AG en_us:"/>
+            <Property name="name" type="java.lang.String" value="ag_en_us" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aGEnUsJCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="fBFrfrJCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="FB fr_fr:"/>
+            <Property name="name" type="java.lang.String" value="fb_fr_fr" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fBFrfrJCheckBoxActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
