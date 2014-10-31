@@ -72,8 +72,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="environmentjPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="contentjPanel" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="contentjPanel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
               <Component id="syncjScrollPane" min="-2" pref="325" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
@@ -132,9 +132,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="commitFlashjButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="syncFlashjButton1" min="-2" pref="133" max="-2" attributes="0"/>
+                  <Component id="syncPHPjButton" min="-2" pref="133" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="commitFlashjButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="commitPHPjButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -148,10 +148,10 @@
                       <Component id="syncFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="commitResourcesjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="commitFlashjButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="syncFlashjButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="commitFlashjButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="syncPHPjButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="commitPHPjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="23" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -193,22 +193,22 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitFlashjButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="commitFlashjButton1">
+        <Component class="javax.swing.JButton" name="commitPHPjButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&#x63d0;&#x4ea4;flash&#x5230;svn"/>
+            <Property name="text" type="java.lang.String" value="&#x63d0;&#x4ea4;PHP&#x5230;svn"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitFlashjButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="commitPHPjButtonActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="syncFlashjButton1">
+        <Component class="javax.swing.JButton" name="syncPHPjButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; flash"/>
+            <Property name="text" type="java.lang.String" value="&#x5f00;&#x59cb;&#x540c;&#x6b65; PHP"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncFlashjButton1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="syncPHPjButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

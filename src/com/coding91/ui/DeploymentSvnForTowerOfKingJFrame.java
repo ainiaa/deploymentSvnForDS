@@ -95,8 +95,8 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
         syncFlashjButton = new javax.swing.JButton();
         commitResourcesjButton = new javax.swing.JButton();
         commitFlashjButton = new javax.swing.JButton();
-        commitFlashjButton1 = new javax.swing.JButton();
-        syncFlashjButton1 = new javax.swing.JButton();
+        commitPHPjButton = new javax.swing.JButton();
+        syncPHPjButton = new javax.swing.JButton();
         environmentjPanel = new javax.swing.JPanel();
         FBEnUsJComboBox = new javax.swing.JComboBox();
         FBEnUsJTextField = new javax.swing.JTextField();
@@ -160,19 +160,19 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
             }
         });
 
-        commitFlashjButton1.setText("提交flash到svn");
-        commitFlashjButton1.setEnabled(false);
-        commitFlashjButton1.addActionListener(new java.awt.event.ActionListener() {
+        commitPHPjButton.setText("提交PHP到svn");
+        commitPHPjButton.setEnabled(false);
+        commitPHPjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                commitFlashjButton1ActionPerformed(evt);
+                commitPHPjButtonActionPerformed(evt);
             }
         });
 
-        syncFlashjButton1.setText("开始同步 flash");
-        syncFlashjButton1.setEnabled(false);
-        syncFlashjButton1.addActionListener(new java.awt.event.ActionListener() {
+        syncPHPjButton.setText("开始同步 PHP");
+        syncPHPjButton.setEnabled(false);
+        syncPHPjButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                syncFlashjButton1ActionPerformed(evt);
+                syncPHPjButtonActionPerformed(evt);
             }
         });
 
@@ -190,9 +190,9 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(commitFlashjButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(syncFlashjButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(syncPHPjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(commitFlashjButton1)
+                .addComponent(commitPHPjButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contentjPanelLayout.setVerticalGroup(
@@ -204,9 +204,9 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
                     .addComponent(syncFlashjButton)
                     .addComponent(commitResourcesjButton)
                     .addComponent(commitFlashjButton)
-                    .addComponent(syncFlashjButton1)
-                    .addComponent(commitFlashjButton1))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(syncPHPjButton)
+                    .addComponent(commitPHPjButton))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         environmentjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "同步环境", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Monospaced", 1, 14), new java.awt.Color(51, 51, 255))); // NOI18N
@@ -360,8 +360,8 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(environmentjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(contentjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(contentjPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(syncjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -862,13 +862,13 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
         initRelativeComboBoxModelList(kGEnUsJCheckBox.getName());
     }//GEN-LAST:event_kGEnUsJCheckBoxActionPerformed
 
-    private void commitFlashjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitFlashjButton1ActionPerformed
+    private void commitPHPjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commitPHPjButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_commitFlashjButton1ActionPerformed
+    }//GEN-LAST:event_commitPHPjButtonActionPerformed
 
-    private void syncFlashjButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncFlashjButton1ActionPerformed
+    private void syncPHPjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_syncPHPjButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_syncFlashjButton1ActionPerformed
+    }//GEN-LAST:event_syncPHPjButtonActionPerformed
 
     private void testCommit() {
         SVNWorkingCopyManager svnWorkingCopyManager;//new WorkingCopyImprove(env);
@@ -999,7 +999,7 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField KGEnUsJTextField;
     private javax.swing.JCheckBox aGEnUsJCheckBox;
     private javax.swing.JButton commitFlashjButton;
-    private javax.swing.JButton commitFlashjButton1;
+    private javax.swing.JButton commitPHPjButton;
     private javax.swing.JButton commitResourcesjButton;
     private javax.swing.JPanel contentjPanel;
     private javax.swing.JMenuItem editConfjMenuItem;
@@ -1014,7 +1014,7 @@ public class DeploymentSvnForTowerOfKingJFrame extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JCheckBox kGEnUsJCheckBox;
     private javax.swing.JButton syncFlashjButton;
-    private javax.swing.JButton syncFlashjButton1;
+    private javax.swing.JButton syncPHPjButton;
     private javax.swing.JButton syncResourcesjButton;
     private javax.swing.JMenuItem syncResourcesjMenuItem;
     private javax.swing.JScrollPane syncjScrollPane;
