@@ -72,10 +72,13 @@ public class Test {
 //        copyStreamToFile();
 //        copyFile(new File("d:/j建筑升级newly.xls"), new File("d:/j建筑升级newlylyly.xls"));
         
-        String path = "C:\\Program Files\\TortoiseSVN\\bin";
-        String filePath1 = "D:\\www\\dessert\\code\\branches\\dev\\j7\\app\\ACTION\\Base\\PrepareGuideACTION.php";
-        String filePath2 = "D:\\www\\dessert\\code\\branches\\master\\code\\j7\\app\\ACTION\\Base\\PrepareGuideHttpACTION.php";
-        Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:diff /path:" + filePath1 + " /path2:" + filePath2 + " /closeonend:2");
+//        String path = "C:\\Program Files\\TortoiseSVN\\bin";
+//        String filePath1 = "D:\\www\\dessert\\code\\branches\\dev\\j7\\app\\ACTION\\Base\\PrepareGuideACTION.php";
+//        String filePath2 = "D:\\www\\dessert\\code\\branches\\master\\code\\j7\\app\\ACTION\\Base\\PrepareGuideHttpACTION.php";
+//        Process process = Runtime.getRuntime().exec("TortoiseProc.exe /command:diff /path:" + filePath1 + " /path2:" + filePath2 + " /closeonend:2");
+        
+        System.out.println(1L<<32);
+        System.out.println(Math.pow(2, 32));
 
     }
 

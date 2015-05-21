@@ -1327,10 +1327,10 @@ public class Sync
 			final boolean uniqueMatching = performSourceTargetFileMatching(sFiles, tFiles);
 
 			/* matched source files, to be time-synced or renamed if necessary */
-			final List<FileUnit> sFilesMatched = new ArrayList<FileUnit>();
+			final List<FileUnit> sFilesMatched = new ArrayList<>();
 
 			/* unmatched source files, to be copied */
-			final List<FileUnit> sFilesUnmatched = new ArrayList<FileUnit>();
+			final List<FileUnit> sFilesUnmatched = new ArrayList<>();
 
 			/* unmatched target files and subdirectories, to be deleted */
 			final Map<File,FileUnit> tFilesDirsUnmatched = new TreeMap<File,FileUnit>();
